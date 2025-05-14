@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Lexer {
-    private static final String OPERATOR_CHARS = "+-*/%()^=<>";
+    private static final String OPERATOR_CHARS = "+-*/%()^=<>!&|";
+    private static final String SINGLE_OPERATOR = "+-*/^%";
     private static final TokenType[] OPERATOR_TOKENS = {
             TokenType.PLUS,
             TokenType.MINUS,
@@ -18,6 +19,7 @@ public final class Lexer {
             TokenType.LESS,
             TokenType.MORE
     };
+
     private final String input;
     private final int length;
     private final List<Token> tokens;
@@ -43,14 +45,11 @@ public final class Lexer {
                 next();
             }
         }
-        for (Token token : tokens){
-            System.out.println(token.getType());
-            System.out.println(token.getText());
-        }
+
         for (int i = 0; i < tokens.size() - 1; i++) {
-            if(
-               (OPERATOR_CHARS.contains(tokens.get(i).getText()) && OPERATOR_CHARS.contains(tokens.get(i + 1).getText())) ||
-               (!OPERATOR_CHARS.contains(tokens.get(i + 1).getText()) && !OPERATOR_CHARS.contains(tokens.get(i).getText()))
+            if (
+                    (SINGLE_OPERATOR.contains(tokens.get(i).getText()) && SINGLE_OPERATOR.contains(tokens.get(i + 1).getText())) ||
+                            (!OPERATOR_CHARS.contains(tokens.get(i + 1).getText()) && !OPERATOR_CHARS.contains(tokens.get(i).getText()))
             ) {
                 throw new RuntimeException("Wrong input");
             }
@@ -67,7 +66,31 @@ public final class Lexer {
             buffer.append(current);
             current = next();
         }
-        addToken(TokenType.WORD, buffer.toString());
+
+        String word = buffer.toString();
+
+        if (buffer.toString().equals("true")) {
+            addToken(TokenType.TRUE, "true");
+            return;
+        }
+
+        if (buffer.toString().equals("false")) {
+            addToken(TokenType.FALSE, "false");
+            return;
+        }
+
+        if (buffer.toString().equals("null")) {
+            addToken(TokenType.NULL, "null");
+            return;
+        }
+
+        if (peek(0) == '(') {
+            List<String> args = parseFunctionArguments();
+            tokens.add(new Token(TokenType.FUNCTION, word, args));
+        } else {
+            addToken(TokenType.WORD, word);
+        }
+
     }
 
     private void tokenizeString() {
@@ -90,8 +113,59 @@ public final class Lexer {
     }
 
     private void tokenizeOperator() {
-        final int position = OPERATOR_CHARS.indexOf(peek(0));
-        addToken(OPERATOR_TOKENS[position], input.charAt(pos) + "");
+        char current = peek(0);
+        char next = peek(1);
+
+        if (current == '&' && next == '&') {
+            addToken(TokenType.AND, "&&");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '|' && next == '|') {
+            addToken(TokenType.OR, "||");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '=' && next == '=') {
+            addToken(TokenType.EQ, "==");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '!' && next == '=') {
+            addToken(TokenType.NOT_EQ, "!=");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '<' && next == '=') {
+            addToken(TokenType.LESS_EQ, "<=");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '>' && next == '=') {
+            addToken(TokenType.MORE_EQ, ">=");
+            next();
+            next();
+            return;
+        }
+
+        if (current == '!') {
+            addToken(TokenType.NOT, "!");
+            next();
+            return;
+        }
+
+        final int position = OPERATOR_CHARS.indexOf(current);
+        addToken(OPERATOR_TOKENS[position], String.valueOf(current));
         next();
     }
 
@@ -133,5 +207,126 @@ public final class Lexer {
         tokens.add(new Token(type, text));
     }
 
+    public List<Token> tokenizeComplex() {
+        while (pos < length) {
+            char current = peek(0);
 
+            if (current == '(') {
+                addToken(TokenType.OPEN_PAREN, "(");
+                next();
+            } else if (current == ')') {
+                addToken(TokenType.CLOSE_PAREN, ")");
+                next();
+            } else if (lookAhead("number(")) {
+                tokenizeNumberExpression();
+            } else if (lookAhead("str(")) {
+                tokenizeStrExpression();
+            } else if (Character.isLetter(current)) tokenizeWord();
+
+            else if (OPERATOR_CHARS.indexOf(current) != -1) {
+                tokenizeOperator();
+            } else {
+                next();
+            }
+        }
+
+        if (input.contains(")(")) {
+            throw new RuntimeException("Wrong input");
+        }
+
+        return tokens;
+    }
+
+    private boolean lookAhead(String prefix) {
+        if (pos + prefix.length() > length) return false;
+        return input.startsWith(prefix, pos);
+    }
+
+    private void tokenizeNumberExpression() {
+        pos += "number(".length();
+        StringBuilder buffer = new StringBuilder();
+
+
+        int bracketsCount = 1;
+        while (pos < length && bracketsCount > 0) {
+            char current = peek(0);
+            if (current == '(') bracketsCount++;
+            if (current == ')') bracketsCount--;
+
+            if (bracketsCount > 0) {
+                buffer.append(current);
+            }
+            next();
+        }
+
+        addToken(TokenType.MATH, buffer.toString().trim());
+    }
+
+    private void tokenizeStrExpression() {
+        pos += "str(".length();
+        StringBuilder buffer = new StringBuilder();
+
+        int bracketsCount = 1;
+        while (pos < length && bracketsCount > 0) {
+            char current = peek(0);
+            if (current == '(') bracketsCount++;
+            if (current == ')') bracketsCount--;
+
+            if (bracketsCount > 0) {
+                buffer.append(current);
+            }
+            next();
+        }
+        addToken(TokenType.STR, buffer.toString().trim());
+    }
+
+    private List<String> parseFunctionArguments() {
+        next();
+
+        List<String> arguments = new ArrayList<>();
+        StringBuilder buffer = new StringBuilder();
+        int bracketCount = 1;
+        boolean inString = false;
+        char stringQuote = '\0';
+
+        while (pos < length && bracketCount > 0) {
+            char current = peek(0);
+
+            if ((current == '"' || current == '\'') && peek(-1) != '\\') {
+                if (!inString) {
+                    inString = true;
+                    stringQuote = current;
+                } else if (current == stringQuote) {
+                    inString = false;
+                }
+            }
+
+            if (!inString) {
+                if (current == '(') {
+                    bracketCount++;
+                } else if (current == ')') {
+                    bracketCount--;
+                    if (bracketCount == 0) {
+                        if (buffer.length() > 0) {
+                            arguments.add(buffer.toString().trim());
+                        }
+                        next();
+                        return arguments;
+                    }
+                } else if (current == ',' && bracketCount == 1) {
+                    if (buffer.length() > 0) {
+                        arguments.add(buffer.toString().trim());
+                    }
+                    buffer = new StringBuilder();
+                    next();
+                    continue;
+                }
+            }
+
+            buffer.append(current);
+            next();
+        }
+
+        return arguments;
+    }
 }

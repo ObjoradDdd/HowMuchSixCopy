@@ -1,10 +1,17 @@
 package App.howmuchsix
 
+
 import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
+import App.howmuchsix.hms.Blocks.FunctionBlock
+import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
+import App.howmuchsix.hms.Blocks.IfBlock
+import App.howmuchsix.hms.Blocks.PrintBlock
+import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.hms.Library.Variables
+import kotlin.system.measureTimeMillis
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -36,57 +43,86 @@ class MainActivity : ComponentActivity() {
             var wrongBlockNumber = 1
 
 
-            runBlocking {
-                launch {
-                    try {
-
-                        program.add(
-                            DeclarationBlock(
-                                listOf("x"),
-                                arrayListOf("1.0"),
-                                Types.DOUBLE
+                runBlocking {
+                    launch {
+                    //    try {
+                            program.add(
+                                DeclarationBlock(
+                                    listOf("x"),
+                                    listOf("21"),
+                                    Types.DOUBLE
+                                )
                             )
-                        )
 
-                        wrongBlockNumber++
-
-                        program.add(
-                            DeclarationBlock(
-                                listOf("egf"),
-                                arrayListOf("x"),
-                                Types.STRING
+                            program.add(
+                                FunctionDeclarationBlock(
+                                    Types.INT,
+                                    "Sum",
+                                    listOf(Types.INT),
+                                    listOf("y"),
+                                    listOf(
+                                        ReturnBlock("y + 1")
+                                    )
+                                )
                             )
-                        )
 
-                        program.add(
-                            AssignmentBlock("egf", "egf + x")
-                        )
+                            program.add(
+                                FunctionBlock(
+                                    "Sum",
+                                    listOf("")
+                                )
+                            )
 
-                        wrongBlockNumber++
+                            program.add(
+                                IfBlock(
+                                    "number(x) == number(2)",
+                                    listOf(
+                                        DeclarationBlock(
+                                            listOf("y"),
+                                            listOf("Sum(4)"),
+                                            Types.INT
+                                        ),
+                                        PrintBlock(
+                                            "number(y)"
+                                        )
+                                    ),
+                                    listOf(
+                                        DeclarationBlock(
+                                            listOf("z"),
+                                            listOf("Sum(2)"),
+                                            Types.INT
+                                        ),
+                                        PrintBlock(
+                                            "number(z)"
+                                        )
+                                    )
+                                )
+                            )
 
-                        wrongBlockNumber = 1
-
-                        for (block in program) {
-                            block.Action()
                             wrongBlockNumber++
-                        }
 
-                        consoleString += Variables.get("egf")
-                        consoleString += "\n"
-                        consoleString += Variables.get("x")
+                            wrongBlockNumber = 1
+                            val timeMillis = measureTimeMillis {
+                                for (block in program) {
+                                    block.Action(listOf("MainScope"))
+                                    wrongBlockNumber++
+                                }
+                            }
 
-                    } catch (e: Exception) {
-                        consoleString = """                   
+                            consoleString += "\n"
+
+
+                            consoleString += "\n $timeMillis"
+
+                /*       } catch (e: Exception) {
+                            consoleString = """                   
                         ${e.message}
                         Error in block $wrongBlockNumber
                     """.trimIndent()
+                        }*/
                     }
-
-                    println(consoleString)
-
                 }
-            }
-            
+
             Greeting(consoleString)
         }
     }
@@ -104,7 +140,7 @@ fun Greeting(name: String = " ") {
         )
         Text(
             text = name,
-            fontSize = 40.sp
+            fontSize = 30.sp
         )
     }
 }

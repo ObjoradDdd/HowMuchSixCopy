@@ -23,6 +23,7 @@ public final  class IntExpression implements Expression<Integer>{
         return type;
     }
 
+
     @NonNull
     @Override
     public String toString(){

@@ -1,33 +1,41 @@
 package App.howmuchsix.hms.Expression;
-
-import java.util.Objects;
-
 import App.howmuchsix.hms.Blocks.Types;
 
-public class LogicalExpression implements Expression<Boolean>{
-    private final Expression<?> ex1;
-    private final Expression<?> ex2;
-    private final String operation;
+public class LogicalExpression implements Expression<Boolean> {
+    private final String operator;
+    private final Expression<?> left;
+    private final Expression<?> right;
 
-    public LogicalExpression(String operation, Expression<?> ex1, Expression<?> ex2) {
-        this.operation = operation;
-        this.ex1 = ex1;
-        this.ex2 = ex2;
+    public LogicalExpression(String operator, Expression<?> left, Expression<?> right) {
+        this.operator = operator;
+        this.left = left;
+        this.right = right;
     }
 
     @Override
     public Boolean eval() {
-        Object val1 = ex1.eval();
-        Object val2 = ex2.eval();
-
-        if (val1 instanceof String || val2 instanceof String) {
-            return evaluateString(val1, val2);
-        } else if (val1 instanceof Number && val2 instanceof Number) {
-            return evaluateNumber((Number) val1, (Number) val2);
+        if (operator.equals("!")) {
+            return !toBoolean(left.eval());
         }
 
-        throw new IllegalArgumentException("Unsupported types for operation: " +
-                val1.getClass() + " and " + val2.getClass());
+        if (operator.isEmpty()){
+            return toBoolean(left.eval());
+        }
+
+        Object leftVal = left.eval();
+        Object rightVal = right.eval();
+
+        return switch (operator) {
+            case "&&" -> toBoolean(leftVal) && toBoolean(rightVal);
+            case "||" -> toBoolean(leftVal) || toBoolean(rightVal);
+            case "==" -> equals(leftVal, rightVal);
+            case "!=" -> !equals(leftVal, rightVal);
+            case ">" -> compare(leftVal, rightVal) > 0;
+            case "<" -> compare(leftVal, rightVal) < 0;
+            case ">=" -> compare(leftVal, rightVal) >= 0;
+            case "<=" -> compare(leftVal, rightVal) <= 0;
+            default -> throw new RuntimeException("Unknown operator: " + operator);
+        };
     }
 
     @Override
@@ -35,26 +43,36 @@ public class LogicalExpression implements Expression<Boolean>{
         return null;
     }
 
-    private boolean evaluateString(Object val1, Object val2) {
 
-        return switch (operation) {
-            case "=" -> String.valueOf(val1).equals(String.valueOf(val2));
-            case "<" -> String.valueOf(val1).compareTo(String.valueOf(val2)) < 0;
-            case ">" -> String.valueOf(val1).compareTo(String.valueOf(val2)) > 0;
-            default -> throw new UnsupportedOperationException(
-                    "Operation " + operation + " is not supported for Strings"
-            );
-        };
+    private boolean equals(Object left, Object right) {
+        if (left == null) return right == null;
+        if (right == null) return false;
+        return left.equals(right);
     }
 
-    private boolean evaluateNumber(Number val1, Number val2) {
-            return switch (operation) {
-                case "=" -> Objects.equals(val1, val2);
-                case ">" -> val1.doubleValue() > val2.doubleValue();
-                case "<" -> val1.doubleValue() < val2.doubleValue();
-                default -> throw new UnsupportedOperationException(
-                        "Unknown operation: " + operation
-                );
-            };
+    private int compare(Object left, Object right) {
+        if (left instanceof Number && right instanceof Number) {
+            return Double.compare(
+                    ((Number) left).doubleValue(),
+                    ((Number) right).doubleValue()
+            );
+        }
+        if (left instanceof String && right instanceof String) {
+            return ((String) left).compareTo((String) right);
+        }
+        throw new RuntimeException("Cannot compare " + left + " and " + right);
+    }
+
+    private boolean toBoolean(Object value) {
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue() != 0;
+        }
+        if (value instanceof String) {
+            return !((String) value).isEmpty();
+        }
+        return value != null;
     }
 }

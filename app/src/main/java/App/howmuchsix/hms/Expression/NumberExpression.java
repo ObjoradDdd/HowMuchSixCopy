@@ -11,6 +11,12 @@ public class NumberExpression implements Expression<Number> {
     public NumberExpression(Expression<? extends Number> expression) {
         this.expression = expression;
     }
+    public NumberExpression(int expressionValue) {
+        this.expression = new IntExpression(expressionValue);
+    }
+    public NumberExpression(double expressionValue) {
+        this.expression = new DoubleExpression(expressionValue);
+    }
 
     @Override
     public Number eval() {

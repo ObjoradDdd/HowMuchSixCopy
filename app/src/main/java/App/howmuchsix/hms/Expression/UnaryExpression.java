@@ -32,6 +32,7 @@ public class UnaryExpression<T> implements Expression<T> {
         return null;
     }
 
+
     private Number evaluateNumber(Number value) {
         boolean useDouble = value instanceof Double;
 

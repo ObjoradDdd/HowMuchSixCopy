@@ -5,5 +5,6 @@ public enum Types {
     DOUBLE,
     STRING,
     BOOLEAN,
+    FUNCTION,
     NUll
 }

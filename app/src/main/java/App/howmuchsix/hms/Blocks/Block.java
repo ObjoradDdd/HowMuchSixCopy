@@ -1,8 +1,21 @@
 package App.howmuchsix.hms.Blocks;
 
 
-public class Block {
-    String blockID;
-    public void Action(){}
+import java.util.List;
+import java.util.Optional;
 
+public class Block {
+    public String blockID;
+    List<String> scopeNames = List.of("MainScope");
+
+    public void Action(List<String> scopes) {
+    }
+
+    public void setScopes(List<String> scopes) {
+        this.scopeNames = scopes;
+    }
+
+    public Object eval(List<String> scopes) {
+        return null;
+    }
 }

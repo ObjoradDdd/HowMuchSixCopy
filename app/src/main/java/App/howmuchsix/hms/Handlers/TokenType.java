@@ -20,8 +20,16 @@ public enum TokenType {
     MORE_EQ, // >=
     LESS, // <
     LESS_EQ, // <=
-    EQ_EQ, // ==
     NOT_EQ, // !=
+    AND,       // &&
+    OR,        // ||
+    NOT,       // !
+    MATH,
+    STR,
+    TRUE,
+    FUNCTION,
+    FALSE,
+    NULL,
     EOF
 
 }

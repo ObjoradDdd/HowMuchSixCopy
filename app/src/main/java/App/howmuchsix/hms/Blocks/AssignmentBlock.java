@@ -1,39 +1,61 @@
 package App.howmuchsix.hms.Blocks;
 
+import java.util.List;
+
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Library.Variables;
 
 public class AssignmentBlock extends Block {
     String variable;
-
     String stringValue;
+
 
     public AssignmentBlock(String variable, String value) {
         this.blockID = "assignment_block";
         this.variable = variable;
         this.stringValue = value;
     }
-
-    public void Action() {
-        Expression<?> variableExpression = Variables.getExpressionWithNoType(this.variable);
+    public void Action(List<String> scopes) {
+        this.scopeNames = scopes;
+        Expression<?> variableExpression = Variables.getExpressionWithNoType(this.variable, scopeNames);
         Types variableType = variableExpression.getType();
 
         switch (variableType) {
             case INT -> {
-                Object result = new ArithmeticBlock(stringValue).eval().eval();
-                if (result instanceof Integer) {
-                    Variables.set(variable, new ArithmeticBlock(stringValue).eval());
+                Expression<?> expressionResult = new ArithmeticBlock(stringValue).eval(scopeNames);
+                Object result = expressionResult.eval();
+                if (result instanceof Integer || result == null) {
+                    Variables.set(variable, expressionResult, scopeNames);
                 } else {
                     throw new RuntimeException("Invalid type");
                 }
             }
             case DOUBLE -> {
-                Variables.set(variable, new ArithmeticBlock(stringValue, true).eval());
+                Expression<?> expressionResult = new ArithmeticBlock(stringValue, true).eval(scopeNames);
+                Object result = expressionResult.eval();
+                if (result instanceof Double || result == null) {
+                    Variables.set(variable, expressionResult, scopeNames);
+                } else {
+                    throw new RuntimeException("Invalid type");
+                }
             }
             case STRING -> {
-                Variables.set(variable, new StringBlock(stringValue).eval());
+                Expression<?> expressionResult = new StringBlock(stringValue).eval(scopeNames);
+                Object result = expressionResult.eval();
+                if (result instanceof String || result == null) {
+                    Variables.set(variable, expressionResult, scopeNames);
+                } else {
+                    throw new RuntimeException("Invalid type");
+                }
             }
             case BOOLEAN -> {
+                Expression<?> expressionResult = new LogicalBlock(stringValue).eval(scopeNames);
+                Object result = expressionResult.eval();
+                if (result instanceof Boolean || result == null) {
+                    Variables.set(variable, expressionResult, scopeNames);
+                } else {
+                    throw new RuntimeException("Invalid type");
+                }
             }
             case NUll -> {
             }
