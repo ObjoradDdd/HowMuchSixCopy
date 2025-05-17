@@ -1,6 +1,5 @@
 package App.howmuchsix.hms.Expression;
 
-import java.util.List;
 import java.util.Objects;
 
 import App.howmuchsix.hms.Blocks.Types;
@@ -39,12 +38,6 @@ public final class BinaryExpression<T> implements Expression<T> {
     public Types getType() {
         return null;
     }
-
-    @Override
-    public String toString(){
-        return this.eval().toString();
-    }
-
 
     private String evaluateString(Object val1, Object val2) {
         if (Objects.equals(operation, "+")) {

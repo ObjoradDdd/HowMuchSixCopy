@@ -2,63 +2,49 @@ package App.howmuchsix.hms.Blocks;
 
 import java.util.List;
 
+import App.howmuchsix.hms.Expression.ArrayExpression;
 import App.howmuchsix.hms.Expression.Expression;
+import App.howmuchsix.hms.Handlers.Lexer;
+import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
 public class AssignmentBlock extends Block {
     String variable;
     String stringValue;
-
-
     public AssignmentBlock(String variable, String value) {
         this.blockID = "assignment_block";
         this.variable = variable;
         this.stringValue = value;
     }
     public void Action(List<String> scopes) {
-        this.scopeNames = scopes;
-        Expression<?> variableExpression = Variables.getExpressionWithNoType(this.variable, scopeNames);
-        Types variableType = variableExpression.getType();
-
-        switch (variableType) {
-            case INT -> {
-                Expression<?> expressionResult = new ArithmeticBlock(stringValue).eval(scopeNames);
-                Object result = expressionResult.eval();
-                if (result instanceof Integer || result == null) {
-                    Variables.set(variable, expressionResult, scopeNames);
-                } else {
-                    throw new RuntimeException("Invalid type");
+        Token isSubscriptable = new Lexer(variable).tokenizeForAssignment();
+        if (isSubscriptable.getBody() == null) {
+            Expression<?> variableExpression = Variables.getExpressionWithNoType(variable, scopes);
+            Types variableType = variableExpression.getType();
+            if(variableType == Types.ARRAY){
+                ArrayExpression newValue = (ArrayExpression) variableType.getValue(stringValue, scopes);
+                ArrayExpression currentValue =  (ArrayExpression) variableExpression;
+                if (newValue.getInsideType() == currentValue.getInsideType()){
+                    Variables.set(variable, newValue, scopes);
+                    return;
+                }
+                else{
+                    throw new RuntimeException(variable + " contains " + currentValue.getInsideType() + " not " + newValue.getInsideType());
                 }
             }
-            case DOUBLE -> {
-                Expression<?> expressionResult = new ArithmeticBlock(stringValue, true).eval(scopeNames);
-                Object result = expressionResult.eval();
-                if (result instanceof Double || result == null) {
-                    Variables.set(variable, expressionResult, scopeNames);
-                } else {
-                    throw new RuntimeException("Invalid type");
-                }
+            Variables.set(variable, variableType.getValue(stringValue, scopes), scopes);
+        }
+        else{
+            Expression<?> variableExpression = Variables.getExpressionWithNoType(isSubscriptable.getText(), scopes);
+            Types variableType = variableExpression.getType();
+            Types insideType;
+            if (variableType == Types.ARRAY){
+                insideType = ((ArrayExpression) variableExpression).getInsideType();
             }
-            case STRING -> {
-                Expression<?> expressionResult = new StringBlock(stringValue).eval(scopeNames);
-                Object result = expressionResult.eval();
-                if (result instanceof String || result == null) {
-                    Variables.set(variable, expressionResult, scopeNames);
-                } else {
-                    throw new RuntimeException("Invalid type");
-                }
+            else{
+                throw new RuntimeException(variable + " is not subscriptable");
             }
-            case BOOLEAN -> {
-                Expression<?> expressionResult = new LogicalBlock(stringValue).eval(scopeNames);
-                Object result = expressionResult.eval();
-                if (result instanceof Boolean || result == null) {
-                    Variables.set(variable, expressionResult, scopeNames);
-                } else {
-                    throw new RuntimeException("Invalid type");
-                }
-            }
-            case NUll -> {
-            }
+            Variables.setValueIntoArray(isSubscriptable.getText(), isSubscriptable.getBody(), insideType.getValue(stringValue, scopes), scopes);
         }
     }
 }

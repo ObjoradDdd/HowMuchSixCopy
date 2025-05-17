@@ -23,13 +23,10 @@ public class FunctionDeclarationBlock extends Block{
     }
 
     @Override
-    public void Action(List<String> scopes){
+    public void Action(List<String> scopes) {
         if (Variables.isExistsFunction(name)) {
-            Variables.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body), List.of("MainScope"));
-        }
-        else{
-            throw new RuntimeException("Function " + name + " is already declared");
+            Variables.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body), "MainScope");
+
         }
     }
-
 }

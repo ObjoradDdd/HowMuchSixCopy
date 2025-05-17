@@ -1,18 +1,14 @@
 package App.howmuchsix
 
-
 import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
 import App.howmuchsix.hms.Blocks.DeclarationBlock
-import App.howmuchsix.hms.Blocks.FunctionBlock
+import App.howmuchsix.hms.Blocks.ForBlock
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.IfBlock
-import App.howmuchsix.hms.Blocks.PrintBlock
 import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.hms.Blocks.Types
-import App.howmuchsix.hms.Library.Variables
-import kotlin.system.measureTimeMillis
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,86 +39,96 @@ class MainActivity : ComponentActivity() {
 
             var wrongBlockNumber = 1
 
-
-                runBlocking {
-                    launch {
+            runBlocking {
+                launch {
                     //    try {
-                            program.add(
-                                DeclarationBlock(
-                                    listOf("x"),
-                                    listOf("21"),
-                                    Types.DOUBLE
-                                )
-                            )
 
-                            program.add(
-                                FunctionDeclarationBlock(
-                                    Types.INT,
-                                    "Sum",
-                                    listOf(Types.INT),
-                                    listOf("y"),
-                                    listOf(
-                                        ReturnBlock("y + 1")
-                                    )
-                                )
-                            )
+                    program.addAll(
+                        listOf(
 
-                            program.add(
-                                FunctionBlock(
-                                    "Sum",
-                                    listOf("")
-                                )
-                            )
-
-                            program.add(
-                                IfBlock(
-                                    "number(x) == number(2)",
-                                    listOf(
-                                        DeclarationBlock(
-                                            listOf("y"),
-                                            listOf("Sum(4)"),
-                                            Types.INT
-                                        ),
-                                        PrintBlock(
-                                            "number(y)"
+                            FunctionDeclarationBlock(
+                                Types.ARRAY,
+                                "BubbleSort",
+                                listOf(Types.ARRAY, Types.INT),
+                                listOf("Numbers", "n"),
+                                listOf(
+                                    ForBlock(
+                                        DeclarationBlock("i", "0", Types.INT),
+                                        "number(i) < number(n)",
+                                        AssignmentBlock("i", "i+1"),
+                                        listOf(
+                                            ForBlock(
+                                                DeclarationBlock("j", "0", Types.INT),
+                                                "number(j) < number(n-1)",
+                                                AssignmentBlock("j", "j+1"),
+                                                listOf(
+                                                    IfBlock(
+                                                        "number(Numbers[j]) > number(Numbers[j+1]))",
+                                                        listOf(
+                                                            DeclarationBlock(
+                                                                "temporary",
+                                                                "Numbers[j]",
+                                                                Types.INT
+                                                            ),
+                                                            AssignmentBlock(
+                                                                "Numbers[j]",
+                                                                "Numbers[j+1]"
+                                                            ),
+                                                            AssignmentBlock(
+                                                                "Numbers[j+1]",
+                                                                "temporary"
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
                                         )
                                     ),
-                                    listOf(
-                                        DeclarationBlock(
-                                            listOf("z"),
-                                            listOf("Sum(2)"),
-                                            Types.INT
-                                        ),
-                                        PrintBlock(
-                                            "number(z)"
-                                        )
-                                    )
+                                    ReturnBlock("Numbers")
+                                ),
+                            ),
+                            DeclarationBlock("x", "20", Types.INT),
+
+                            DeclarationArrayBlock(
+                                Types.INT, "N", listOf(
+                                    "5", "4", "3", "2", "1",
+                                    "20", "19", "18", "17", "16",
+                                    "15", "14", "13", "12", "11",
+                                    "10", "9", "8", "7", "6"
                                 )
+                            ),
+
+                            AssignmentBlock(
+                                "N", "BubbleSort(N, x)"
                             )
+                        )
+                    )
 
+                    wrongBlockNumber++
+
+                    wrongBlockNumber = 1
+                    val timeMillis = measureTimeMillis {
+                        for (block in program) {
+                            block.Action(listOf("MainScope"))
                             wrongBlockNumber++
-
-                            wrongBlockNumber = 1
-                            val timeMillis = measureTimeMillis {
-                                for (block in program) {
-                                    block.Action(listOf("MainScope"))
-                                    wrongBlockNumber++
-                                }
-                            }
-
-                            consoleString += "\n"
-
-
-                            consoleString += "\n $timeMillis"
-
-                /*       } catch (e: Exception) {
-                            consoleString = """                   
-                        ${e.message}
-                        Error in block $wrongBlockNumber
-                    """.trimIndent()
-                        }*/
+                        }
                     }
+
+
+
+                    consoleString += "\n"
+
+
+                    consoleString += "\n $timeMillis"
+
+                    /*       } catch (e: Exception) {
+                                consoleString = """
+                            ${e.message}
+                            Error in block $wrongBlockNumber
+                        """.trimIndent()
+                            }*/
                 }
+            }
 
             Greeting(consoleString)
         }

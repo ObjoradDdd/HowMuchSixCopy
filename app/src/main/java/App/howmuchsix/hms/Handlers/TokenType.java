@@ -14,8 +14,6 @@ public enum TokenType {
     POWER, // ^
     WORD,
     EQ, // =
-    DOUBLE_QUOTES, // "
-    SINGLE_QUOTES, // '
     MORE, // >
     MORE_EQ, // >=
     LESS, // <
@@ -30,6 +28,7 @@ public enum TokenType {
     FUNCTION,
     FALSE,
     NULL,
+    ARRAY,
     EOF
 
 }

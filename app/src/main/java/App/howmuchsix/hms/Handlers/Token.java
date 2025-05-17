@@ -8,8 +8,15 @@ public final class Token {
 
     private TokenType type;
     private final String text;
+
+    private String body = null;
     private List<String> arguments = emptyList();
 
+    public Token(TokenType type, String text, String body) {
+        this.type = type;
+        this.text = text;
+        this.body = body;
+    }
     public Token(TokenType type, String text) {
         this.type = type;
         this.text = text;
@@ -29,6 +36,9 @@ public final class Token {
         return arguments;
     }
 
+    public String getBody(){
+        return body;
+    }
 
     public String getText() {
         return text;

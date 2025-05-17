@@ -21,7 +21,6 @@ public class BooleanExpression implements Expression<Boolean>{
         return type;
     }
 
-
     @NonNull
     @Override
     public String toString(){

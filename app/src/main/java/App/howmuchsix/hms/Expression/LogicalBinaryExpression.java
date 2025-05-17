@@ -1,15 +1,18 @@
 package App.howmuchsix.hms.Expression;
 import App.howmuchsix.hms.Blocks.Types;
 
-public class LogicalExpression implements Expression<Boolean> {
+public class LogicalBinaryExpression implements Expression<Boolean> {
     private final String operator;
     private final Expression<?> left;
     private final Expression<?> right;
 
-    public LogicalExpression(String operator, Expression<?> left, Expression<?> right) {
+    public LogicalBinaryExpression(String operator, Expression<?> left, Expression<?> right) {
         this.operator = operator;
         this.left = left;
         this.right = right;
+        if (left.eval() == null || right.eval() == null){
+            throw new RuntimeException("You can't use operator " + operator + " with null");
+        }
     }
 
     @Override

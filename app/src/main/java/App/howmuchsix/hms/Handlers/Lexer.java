@@ -87,10 +87,13 @@ public final class Lexer {
         if (peek(0) == '(') {
             List<String> args = parseFunctionArguments();
             tokens.add(new Token(TokenType.FUNCTION, word, args));
+        }
+        else if (peek(0) == '[') {
+            String arrayIndex = parseArrayIndex();
+            tokens.add(new Token(TokenType.ARRAY, word, arrayIndex));
         } else {
             addToken(TokenType.WORD, word);
         }
-
     }
 
     private void tokenizeString() {
@@ -328,5 +331,61 @@ public final class Lexer {
         }
 
         return arguments;
+    }
+
+    private String parseArrayIndex() {
+        next();
+        StringBuilder buffer = new StringBuilder();
+        int bracketCount = 1;
+        boolean inString = false;
+        char stringQuote = '\0';
+
+        while (pos < length && bracketCount > 0) {
+            char current = peek(0);
+
+            if ((current == '"' || current == '\'') && peek(-1) != '\\') {
+                if (!inString) {
+                    inString = true;
+                    stringQuote = current;
+                } else if (current == stringQuote) {
+                    inString = false;
+                }
+            }
+
+            if (!inString) {
+                if (current == '[') {
+                    bracketCount++;
+                } else if (current == ']') {
+                    bracketCount--;
+                    if (bracketCount == 0) {
+                        String result = buffer.toString().trim();
+                        next();
+                        return result;
+                    }
+                }
+            }
+
+            buffer.append(current);
+            next();
+        }
+        throw new RuntimeException("Unclosed array brackets");
+    }
+
+    public Token tokenizeForAssignment(){
+        final StringBuilder buffer = new StringBuilder();
+        char current = peek(0);
+        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '$')) {
+            buffer.append(current);
+            current = next();
+        }
+
+        String word = buffer.toString();
+
+        if (peek(0) == '[') {
+            String arrayIndex = parseArrayIndex();
+            return new Token(TokenType.ARRAY, word, arrayIndex);
+        } else {
+            return  new Token(TokenType.WORD, word);
+        }
     }
 }

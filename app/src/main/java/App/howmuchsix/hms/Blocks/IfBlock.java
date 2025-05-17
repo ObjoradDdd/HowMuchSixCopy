@@ -41,20 +41,20 @@ public class IfBlock extends Block {
         newScopes.add(name);
         Variables.newScope(name);
         if (elifActions == null && falseAction == null) {
-            if (!(new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+            if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
                 for (Block block : trueAction) {
                     block.Action(newScopes);
                 }
             }
         } else if (elifActions != null && falseAction == null) {
-            if (!(new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+            if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
                 for (Block block : trueAction) {
                     block.Action(newScopes);
                 }
                 return;
             }
             for (int i = 0; i < elifActions.size(); i++) {
-                if (!(new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
                     for (Block block : elifActions.get(i)) {
                         block.Action(newScopes);
                     }
@@ -63,7 +63,8 @@ public class IfBlock extends Block {
             }
 
         } else if (elifActions != null) {
-            if (!(new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+
+            if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
                 for (Block block : trueAction) {
                     block.Action(newScopes);
                 }
@@ -71,7 +72,7 @@ public class IfBlock extends Block {
             }
 
             for (int i = 0; i < elifActions.size(); i++) {
-                if (!(new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
                     for (Block block : elifActions.get(i)) {
                         block.Action(newScopes);
                     }
@@ -84,12 +85,16 @@ public class IfBlock extends Block {
             }
 
         } else {
-            for (Block block : falseAction) {
-                block.Action(newScopes);
+            if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+                for (Block block : trueAction) {
+                    block.Action(newScopes);
+                }
+            }else {
+                for (Block block : falseAction) {
+                    block.Action(newScopes);
+                }
             }
         }
         Variables.deleteScope(name);
     }
-
-
 }
