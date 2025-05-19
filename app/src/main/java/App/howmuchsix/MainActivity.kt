@@ -5,10 +5,13 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
+import App.howmuchsix.hms.Blocks.FunctionBlock
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.IfBlock
+import App.howmuchsix.hms.Blocks.PrintBlock
 import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.hms.Blocks.WhileBlock
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,65 +45,47 @@ class MainActivity : ComponentActivity() {
             runBlocking {
                 launch {
                     //    try {
-
                     program.addAll(
                         listOf(
 
                             FunctionDeclarationBlock(
-                                Types.ARRAY,
-                                "BubbleSort",
-                                listOf(Types.ARRAY, Types.INT),
-                                listOf("Numbers", "n"),
+                                Types.INT,
+                                "BinarySearch",
+                                listOf(Types.ARRAY, Types.INT, Types.INT),
+                                listOf("Numbers", "n", "target"),
                                 listOf(
-                                    ForBlock(
-                                        DeclarationBlock("i", "0", Types.INT),
-                                        "number(i) < number(n)",
-                                        AssignmentBlock("i", "i+1"),
-                                        listOf(
-                                            ForBlock(
-                                                DeclarationBlock("j", "0", Types.INT),
-                                                "number(j) < number(n-1)",
-                                                AssignmentBlock("j", "j+1"),
-                                                listOf(
-                                                    IfBlock(
-                                                        "number(Numbers[j]) > number(Numbers[j+1]))",
-                                                        listOf(
-                                                            DeclarationBlock(
-                                                                "temporary",
-                                                                "Numbers[j]",
-                                                                Types.INT
-                                                            ),
-                                                            AssignmentBlock(
-                                                                "Numbers[j]",
-                                                                "Numbers[j+1]"
-                                                            ),
-                                                            AssignmentBlock(
-                                                                "Numbers[j+1]",
-                                                                "temporary"
-                                                            )
-                                                        )
-                                                    )
-                                                )
+                                    DeclarationBlock(listOf("l", "r"), listOf("0","n-1"), Types.INT),
+                                    WhileBlock("number(l) <= number(r)", listOf(
+                                        DeclarationBlock("mid", "(l + r) / 2", Types.INT),
+                                        IfBlock(
+                                            "number(Numbers[mid]) == number(target)",
+                                            listOf(ReturnBlock("mid", Types.INT)),
+                                            listOf("number(Numbers[mid]) > number(target)"),
+                                            listOf(listOf(AssignmentBlock("r", "mid - 1"))),
+                                            listOf(AssignmentBlock("l", "mid + 1"))
                                             )
                                         )
                                     ),
-                                    ReturnBlock("Numbers")
+                                    ReturnBlock("-1", Types.INT)
                                 ),
                             ),
+
                             DeclarationBlock("x", "20", Types.INT),
 
                             DeclarationArrayBlock(
                                 Types.INT, "N", listOf(
-                                    "5", "4", "3", "2", "1",
-                                    "20", "19", "18", "17", "16",
-                                    "15", "14", "13", "12", "11",
-                                    "10", "9", "8", "7", "6"
+                                    "1", "2", "3", "4", "5",
+                                    "6", "7", "8", "9", "10",
+                                    "11", "12", "13", "14", "15",
+                                    "16", "17", "18", "19", "20"
                                 )
                             ),
 
-                            AssignmentBlock(
-                                "N", "BubbleSort(N, x)"
-                            )
+                            FunctionBlock("BinarySearch(N, x, 9)"),
+
+                            DeclarationBlock("index", "BinarySearch(N, x, 9)", Types.INT),
+
+                            PrintBlock("str('index of 9 - ') number(index) ")
                         )
                     )
 

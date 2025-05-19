@@ -3,7 +3,6 @@ package App.howmuchsix.hms.Handlers;
 import java.util.List;
 
 import App.howmuchsix.hms.Blocks.Types;
-import App.howmuchsix.hms.Expression.ArrayExpression;
 import App.howmuchsix.hms.Expression.BinaryExpression;
 import App.howmuchsix.hms.Expression.BooleanExpression;
 import App.howmuchsix.hms.Expression.DoubleExpression;
@@ -14,6 +13,7 @@ import App.howmuchsix.hms.Expression.NullExpression;
 import App.howmuchsix.hms.Expression.NumberExpression;
 import App.howmuchsix.hms.Expression.StringExpression;
 import App.howmuchsix.hms.Expression.UnaryExpression;
+import App.howmuchsix.hms.Expression.UnaryLogicalExpression;
 import App.howmuchsix.hms.Library.Variables;
 
 
@@ -68,7 +68,7 @@ public final class Parser {
             return Variables.getExpression(current.getText(), Types.STRING.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return new StringExpression(Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.STRING.getTypeClass()));
+            return Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.STRING.getTypeClass());
         }
         if (match(TokenType.ARRAY)){
             return Variables.getFromArray(current.getText(), current.getBody(), Types.STRING.getTypeClass(), scopeNames);
@@ -168,12 +168,12 @@ public final class Parser {
             return Variables.getExpression(current.getText(), Types.NUMBER.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            Object value =  Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.NUMBER.getTypeClass());
-            if (value instanceof Double) {
-                return new NumberExpression(new DoubleExpression((Double) value));
+            Expression<? extends Number> value =  Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.NUMBER.getTypeClass());
+            if (value.eval() instanceof Double) {
+                return new NumberExpression(value);
             }
-            if (value instanceof Integer) {
-                return new NumberExpression(new IntExpression((Integer) value));
+            if (value.eval() instanceof Integer) {
+                return new NumberExpression(value);
             }
         }
         if (match(TokenType.ARRAY)){
@@ -217,7 +217,7 @@ public final class Parser {
         }
 
         if (match(TokenType.NOT)) {
-            return new LogicalBinaryExpression("!", primaryLogical(), null);
+            return new UnaryLogicalExpression("!", primaryLogical());
         }
 
         if (match(TokenType.TRUE)) {
@@ -231,7 +231,7 @@ public final class Parser {
             return Variables.getExpression(previous().getText(), Types.BOOLEAN.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return new BooleanExpression(Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.BOOLEAN.getTypeClass()));
+            return Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.BOOLEAN.getTypeClass());
         }
 
         if (match(TokenType.ARRAY)){
@@ -314,7 +314,7 @@ public final class Parser {
             return Variables.getExpression(previous().getText(), Types.ARRAY.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return new ArrayExpression(Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass()));
+            return Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass());
         }
 
         throw new RuntimeException("parse collection error");

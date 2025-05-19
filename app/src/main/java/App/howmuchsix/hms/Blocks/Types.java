@@ -8,7 +8,6 @@ import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
-import App.howmuchsix.hms.Library.Variables;
 
 public enum Types {
     INT(Integer.class) {
@@ -58,7 +57,7 @@ public enum Types {
 
     ARRAY(Arrays.class){
         @Override
-        public Expression<Expression<?>[]> getValue(String input, List<String> scopeNames) {
+        public ArrayExpression getValue(String input, List<String> scopeNames) {
             List<Token> tokens = new Lexer(input).tokenize();
             Expression<?> expression = new Parser(tokens, scopeNames).parseCollection();
             if (expression.getType() == Types.ARRAY){

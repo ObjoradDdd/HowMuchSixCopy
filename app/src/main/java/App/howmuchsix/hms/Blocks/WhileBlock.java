@@ -8,23 +8,13 @@ import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
-public class ForBlock extends Block {
+public class WhileBlock extends Block {
     private final List<Block> body;
-    private final Block iterator;
     private final String logicalExpressionString;
-    private final Block action;
 
-    public ForBlock(AssignmentBlock iterator, String logicalExpressionString, AssignmentBlock action, List<Block> body) {
-        this.iterator = iterator;
-        this.logicalExpressionString = logicalExpressionString;
-        this.action = action;
-        this.body = body;
-    }
 
-    public ForBlock(DeclarationBlock iterator, String logicalExpressionString, AssignmentBlock action, List<Block> body) {
-        this.iterator = iterator;
+    public WhileBlock(String logicalExpressionString, List<Block> body) {
         this.logicalExpressionString = logicalExpressionString;
-        this.action = action;
         this.body = body;
     }
 
@@ -36,18 +26,15 @@ public class ForBlock extends Block {
         Parser logicalExpression = new Parser(tokens, newScopes);
         newScopes.add(name);
         try {
-            iterator.Action(newScopes);
             while (logicalExpression.parseLogical().eval()) {
                 Variables.newScope(name);
                 for (Block block : body) {
                     block.Action(newScopes);
                 }
-                action.Action(newScopes);
                 Variables.deleteScope(name);
             }
         } finally {
             Variables.deleteScope(name);
         }
     }
-
 }

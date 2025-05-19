@@ -17,10 +17,6 @@ public class LogicalBinaryExpression implements Expression<Boolean> {
 
     @Override
     public Boolean eval() {
-        if (operator.equals("!")) {
-            return !toBoolean(left.eval());
-        }
-
         if (operator.isEmpty()){
             return toBoolean(left.eval());
         }
@@ -45,8 +41,6 @@ public class LogicalBinaryExpression implements Expression<Boolean> {
     public Types getType() {
         return null;
     }
-
-
     private boolean equals(Object left, Object right) {
         if (left == null) return right == null;
         if (right == null) return false;

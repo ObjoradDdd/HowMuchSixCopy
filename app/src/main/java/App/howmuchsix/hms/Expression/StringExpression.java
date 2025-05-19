@@ -1,5 +1,7 @@
 package App.howmuchsix.hms.Expression;
 
+import androidx.annotation.NonNull;
+
 import App.howmuchsix.hms.Blocks.Types;
 
 public class StringExpression implements Expression<String>{
@@ -20,6 +22,7 @@ public class StringExpression implements Expression<String>{
         return type;
     }
 
+    @NonNull
     @Override
     public String toString(){
         return value;

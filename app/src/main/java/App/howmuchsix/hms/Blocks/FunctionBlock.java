@@ -3,21 +3,20 @@ package App.howmuchsix.hms.Blocks;
 import java.util.List;
 
 import App.howmuchsix.hms.Expression.FunctionExpression;
+import App.howmuchsix.hms.Handlers.Lexer;
+import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
 public class FunctionBlock extends Block {
-
     String functionName;
-    List<String> functionArguments;
-
-    public FunctionBlock(String functionName, List<String> functionArguments){
+    public FunctionBlock(String functionName){
         this.blockID = "function_block";
         this.functionName = functionName;
-        this.functionArguments = functionArguments;
     }
 
-    public void Action(List<String> scopes){
-        FunctionExpression<?> function = Variables.getFunction(functionName, scopes);
-        function.functionReturn(functionArguments, scopes);
+    public void Action(List<String> scopes) {
+        Token functionToken = new Lexer(functionName).tokenizeFunction();
+        FunctionExpression<?> functionExpression = Variables.getFunction(functionToken.getText());
+        functionExpression.functionReturn(functionToken.getArguments(), scopes);
     }
 }

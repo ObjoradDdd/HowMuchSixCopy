@@ -38,15 +38,6 @@ public class ArrayExpression implements Expression<Expression<?>[]> {
         }
     }
 
-
-    public ArrayExpression(List<Expression<?>> values){
-        this.length = values.size();
-        this.array = new Expression<?>[length];
-        for(int i = 0; i < values.size(); i++){
-            this.array[i] = values.get(i);
-        }
-    }
-
     @Override
     public Expression<?>[] eval() {
         return array;

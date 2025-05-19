@@ -28,7 +28,7 @@ public class DeclarationBlock extends Block {
 
     public void Action(List<String> scopes) {
         for (int i = 0; i < this.variables.size(); i++) {
-            if (!Variables.isExistsVariable(this.variables.get(i))){
+            if (Variables.isExistsVariable(this.variables.get(i))){
                 throw new RuntimeException(this.variables.get(i) + " is already declared");
             }
             if (Objects.equals(this.variables.get(i), "true") || Objects.equals(this.variables.get(i), "false")){

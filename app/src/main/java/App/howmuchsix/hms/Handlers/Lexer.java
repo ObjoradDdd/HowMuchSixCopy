@@ -388,4 +388,21 @@ public final class Lexer {
             return  new Token(TokenType.WORD, word);
         }
     }
+
+    public Token tokenizeFunction(){
+        final StringBuilder buffer = new StringBuilder();
+        char current = peek(0);
+        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '$')) {
+            buffer.append(current);
+            current = next();
+        }
+
+        String word = buffer.toString();
+
+        if (peek(0) == '(') {
+            List<String> args = parseFunctionArguments();
+            return new Token(TokenType.FUNCTION, word, args);
+        }
+        throw new RuntimeException("Invalid function expression");
+    }
 }
