@@ -5,7 +5,7 @@ import java.util.List;
 import App.howmuchsix.hms.Expression.FunctionExpression;
 import App.howmuchsix.hms.Library.Variables;
 
-public class FunctionDeclarationBlock extends Block{
+public final class FunctionDeclarationBlock extends Block{
     final List<Types> argumentsTypes;
     final List<String> argumentNames;
     final String name;

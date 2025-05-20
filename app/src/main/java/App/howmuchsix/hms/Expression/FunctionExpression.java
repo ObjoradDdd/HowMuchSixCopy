@@ -8,7 +8,7 @@ import App.howmuchsix.hms.Blocks.ReturnException;
 import App.howmuchsix.hms.Blocks.Types;
 import App.howmuchsix.hms.Library.Variables;
 
-public class FunctionExpression<T> implements Expression<T> {
+public final class FunctionExpression<T> implements Expression<T> {
 
     final List<Types> argumentsTypes;
     final List<String> argumentNames;

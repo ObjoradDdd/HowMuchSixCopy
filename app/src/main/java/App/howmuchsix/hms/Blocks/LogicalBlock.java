@@ -8,7 +8,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 
-public class LogicalBlock extends Block{
+public final class LogicalBlock extends Block{
     String input;
     public LogicalBlock(String input){
         this.input = input;

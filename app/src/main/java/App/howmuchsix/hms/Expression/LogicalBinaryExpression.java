@@ -1,7 +1,7 @@
 package App.howmuchsix.hms.Expression;
 import App.howmuchsix.hms.Blocks.Types;
 
-public class LogicalBinaryExpression implements Expression<Boolean> {
+public final class LogicalBinaryExpression implements Expression<Boolean> {
     private final String operator;
     private final Expression<?> left;
     private final Expression<?> right;

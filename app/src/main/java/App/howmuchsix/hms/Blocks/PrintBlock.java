@@ -7,7 +7,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 
-public class PrintBlock extends Block{
+public final class PrintBlock extends Block{
     String output;
     public PrintBlock(String output) {
         this.output = output;

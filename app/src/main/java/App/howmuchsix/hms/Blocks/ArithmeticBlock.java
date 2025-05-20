@@ -10,7 +10,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 
-public class ArithmeticBlock extends Block{
+public final class ArithmeticBlock extends Block{
     String input;
     Boolean isDouble = false;
 

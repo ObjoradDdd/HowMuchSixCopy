@@ -8,7 +8,7 @@ import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
-public class WhileBlock extends Block {
+public final class WhileBlock extends Block {
     private final List<Block> body;
     private final String logicalExpressionString;
 
@@ -33,6 +33,7 @@ public class WhileBlock extends Block {
                 }
                 Variables.deleteScope(name);
             }
+        } catch (BreakException ignored) {
         } finally {
             Variables.deleteScope(name);
         }
