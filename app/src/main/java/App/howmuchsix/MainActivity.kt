@@ -1,17 +1,8 @@
 package App.howmuchsix
 
-import App.howmuchsix.hms.Blocks.AssignmentBlock
-import App.howmuchsix.hms.Blocks.Block
-import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
-import App.howmuchsix.hms.Blocks.DeclarationBlock
-import App.howmuchsix.hms.Blocks.ForBlock
-import App.howmuchsix.hms.Blocks.FunctionBlock
-import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
-import App.howmuchsix.hms.Blocks.IfBlock
-import App.howmuchsix.hms.Blocks.PrintBlock
-import App.howmuchsix.hms.Blocks.ReturnBlock
-import App.howmuchsix.hms.Blocks.Types
-import App.howmuchsix.hms.Blocks.WhileBlock
+
+
+import App.howmuchsix.hms.Blocks.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,45 +38,15 @@ class MainActivity : ComponentActivity() {
                     //    try {
                     program.addAll(
                         listOf(
-
-                            FunctionDeclarationBlock(
-                                Types.INT,
-                                "BinarySearch",
-                                listOf(Types.ARRAY, Types.INT, Types.INT),
-                                listOf("Numbers", "n", "target"),
+                            ForBlock(
+                                DeclarationBlock("i", "0", Types.INT),
+                                "number(i) < number(15)",
+                                AssignmentBlock("i", "i+1"),
                                 listOf(
-                                    DeclarationBlock(listOf("l", "r"), listOf("0","n-1"), Types.INT),
-                                    WhileBlock("number(l) <= number(r)", listOf(
-                                        DeclarationBlock("mid", "(l + r) / 2", Types.INT),
-                                        IfBlock(
-                                            "number(Numbers[mid]) == number(target)",
-                                            listOf(ReturnBlock("mid", Types.INT)),
-                                            listOf("number(Numbers[mid]) > number(target)"),
-                                            listOf(listOf(AssignmentBlock("r", "mid - 1"))),
-                                            listOf(AssignmentBlock("l", "mid + 1"))
-                                            )
-                                        )
-                                    ),
-                                    ReturnBlock("-1", Types.INT)
-                                ),
-                            ),
-
-                            DeclarationBlock("x", "20", Types.INT),
-
-                            DeclarationArrayBlock(
-                                Types.INT, "N", listOf(
-                                    "1", "2", "3", "4", "5",
-                                    "6", "7", "8", "9", "10",
-                                    "11", "12", "13", "14", "15",
-                                    "16", "17", "18", "19", "20"
+                                    PrintBlock("number(i)"),
+                                    IfBlock("number(i) == number(8)", listOf(PrintBlock("str('END')"), BreakBlock()))
                                 )
-                            ),
-
-                            FunctionBlock("BinarySearch(N, x, 9)"),
-
-                            DeclarationBlock("index", "BinarySearch(N, x, 9)", Types.INT),
-
-                            PrintBlock("str('index of 9 - ') number(index) ")
+                            )
                         )
                     )
 

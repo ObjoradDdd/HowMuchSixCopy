@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public final  class IntExpression implements Expression<Integer>{
+public final class IntExpression implements Expression<Integer>{
     private final int value;
     static final Types type = Types.INT;
 

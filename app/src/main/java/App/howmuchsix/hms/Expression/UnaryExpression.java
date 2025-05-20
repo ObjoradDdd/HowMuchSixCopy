@@ -2,7 +2,7 @@ package App.howmuchsix.hms.Expression;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public class UnaryExpression<T> implements Expression<T> {
+public final class UnaryExpression<T> implements Expression<T> {
     private final Expression<T> ex1;
     private final String operation;
 

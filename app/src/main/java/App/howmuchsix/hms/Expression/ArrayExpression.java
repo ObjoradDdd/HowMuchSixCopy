@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import App.howmuchsix.hms.Blocks.Types;
 
-public class ArrayExpression implements Expression<Expression<?>[]> {
+public final class ArrayExpression implements Expression<Expression<?>[]> {
     Expression<?>[] array;
     private final int length;
     Types type = Types.ARRAY;

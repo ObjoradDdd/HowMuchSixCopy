@@ -8,7 +8,7 @@ import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
-public class ForBlock extends Block {
+public final class ForBlock extends Block {
     private final List<Block> body;
     private final Block iterator;
     private final String logicalExpressionString;
@@ -31,12 +31,14 @@ public class ForBlock extends Block {
     @Override
     public void Action(List<String> scopes) throws ReturnException {
         String name = "Scope - " + Variables.getNumberOfScopes();
+        String iteratorScope = "Scope - " + Variables.getNumberOfScopes();
         List<String> newScopes = new ArrayList<>(scopes);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenizeComplex();
         Parser logicalExpression = new Parser(tokens, newScopes);
-        newScopes.add(name);
+        Variables.newScope(iteratorScope);
         try {
             iterator.Action(newScopes);
+            newScopes.add(name);
             while (logicalExpression.parseLogical().eval()) {
                 Variables.newScope(name);
                 for (Block block : body) {
@@ -45,6 +47,7 @@ public class ForBlock extends Block {
                 action.Action(newScopes);
                 Variables.deleteScope(name);
             }
+        } catch (BreakException ignored) {
         } finally {
             Variables.deleteScope(name);
         }

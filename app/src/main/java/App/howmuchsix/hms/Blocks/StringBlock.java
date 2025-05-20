@@ -9,7 +9,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
 
-public class StringBlock extends Block{
+public final class StringBlock extends Block{
     String input;
     public StringBlock(String input){
         this.input = input;

@@ -8,7 +8,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
-public class AssignmentBlock extends Block {
+public final class AssignmentBlock extends Block {
     String variable;
     String stringValue;
     public AssignmentBlock(String variable, String value) {

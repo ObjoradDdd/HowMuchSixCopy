@@ -2,7 +2,7 @@ package App.howmuchsix.hms.Expression;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public class UnaryLogicalExpression implements Expression<Boolean>{
+public final class UnaryLogicalExpression implements Expression<Boolean>{
     private final String operator;
     private final Expression<?> left;
 

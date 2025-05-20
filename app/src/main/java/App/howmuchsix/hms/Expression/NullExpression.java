@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public class NullExpression<T> implements Expression<T> {
+public final class NullExpression<T> implements Expression<T> {
 
     private final Types type;
 
