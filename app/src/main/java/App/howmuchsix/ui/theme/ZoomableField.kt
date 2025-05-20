@@ -30,6 +30,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ZoomableField(
     placedBlocks: List<PlacedBlock>,
+    onStartDragPlacedBlock: ((String, Offset) -> Unit)? = null,
     modifier: Modifier = Modifier
 ){
     Box(
@@ -46,6 +47,16 @@ fun ZoomableField(
                 modifier = Modifier
                     .offset{IntOffset(block.position.x.roundToInt(), block.position.y.roundToInt())}
                     .size(100.dp, 60.dp)
+                    .pointerInput(block.id){
+                        detectDragGestures(
+                            onDragStart = {offset ->
+                                onStartDragPlacedBlock?.invoke(block.id, offset + block.position)
+                            },
+                            onDrag = { change, _ ->
+                                change.consume()
+                            }
+                        )
+                    }
             ) {
                 BlockItem(
                     block = BlockItemData(block.label),
