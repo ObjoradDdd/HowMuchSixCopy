@@ -5,7 +5,7 @@ import java.util.List;
 
 import App.howmuchsix.hms.Library.Variables;
 
-public class IfBlock extends Block {
+public final class IfBlock extends Block {
     private final String trueCondition;
     private final List<Block> trueAction;
     private List<String> elifConditions = null;

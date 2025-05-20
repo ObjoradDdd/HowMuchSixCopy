@@ -7,7 +7,7 @@ public class Block {
     public String blockID;
     List<String> scopeNames = List.of("MainScope");
 
-    public void Action(List<String> scopes)  throws ReturnException{
+    public void Action(List<String> scopes)  throws ReturnException, BreakException{
     }
 
     public void setScopes(List<String> scopes) {

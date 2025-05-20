@@ -6,7 +6,7 @@ import java.util.Objects;
 import App.howmuchsix.hms.Expression.NullExpression;
 import App.howmuchsix.hms.Library.Variables;
 
-public class DeclarationBlock extends Block {
+public final class DeclarationBlock extends Block {
 
     List<String> variables;
     Types type;

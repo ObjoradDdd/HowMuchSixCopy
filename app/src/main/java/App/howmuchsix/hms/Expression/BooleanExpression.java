@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public class BooleanExpression implements Expression<Boolean>{
+public final class BooleanExpression implements Expression<Boolean>{
     private final Boolean value;
     private static final Types type = Types.BOOLEAN;
     public BooleanExpression(Boolean value) {

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public class NumberExpression implements Expression<Number> {
+public final class NumberExpression implements Expression<Number> {
 
     private final Expression<? extends Number> expression;
 

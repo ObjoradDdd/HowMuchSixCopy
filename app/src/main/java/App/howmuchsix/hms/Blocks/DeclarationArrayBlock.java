@@ -7,7 +7,7 @@ import App.howmuchsix.hms.Expression.ArrayExpression;
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Library.Variables;
 
-public class DeclarationArrayBlock extends Block {
+public final class DeclarationArrayBlock extends Block {
     private final String name;
     private final int length;
     Types type;

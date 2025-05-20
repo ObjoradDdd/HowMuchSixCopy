@@ -5,7 +5,7 @@ import java.util.List;
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Expression.NullExpression;
 
-public class ReturnBlock extends Block{
+public final class ReturnBlock extends Block{
 
     private final String valueString;
     private final Types returnType;

@@ -7,7 +7,7 @@ import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Token;
 import App.howmuchsix.hms.Library.Variables;
 
-public class FunctionBlock extends Block {
+public final class FunctionBlock extends Block {
     String functionName;
     public FunctionBlock(String functionName){
         this.blockID = "function_block";
