@@ -317,7 +317,7 @@ public final class Parser {
             return Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass());
         }
 
-        throw new RuntimeException("parse collection error");
+        throw new RuntimeException("Parse collection error");
 
     }
 

@@ -19,12 +19,12 @@ public final class DeclarationBlock extends Block {
         this.values = values;
     }
 
-    public DeclarationBlock(String variables, String values, Types type) {
+    /*public DeclarationBlock(String variables, String values, Types type) {
         this.blockID = "declaration_block";
         this.variables = List.of(variables);
         this.type = type;
         this.values = List.of(values);
-    }
+    }*/
 
     public void Action(List<String> scopes) {
         for (int i = 0; i < this.variables.size(); i++) {

@@ -31,7 +31,7 @@ public final class ForBlock extends Block {
     @Override
     public void Action(List<String> scopes) throws ReturnException {
         String name = "Scope - " + Variables.getNumberOfScopes();
-        String iteratorScope = "Scope - " + Variables.getNumberOfScopes();
+        String iteratorScope = "Scope - " + (Variables.getNumberOfScopes() + 1);
         List<String> newScopes = new ArrayList<>(scopes);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenizeComplex();
         Parser logicalExpression = new Parser(tokens, newScopes);
