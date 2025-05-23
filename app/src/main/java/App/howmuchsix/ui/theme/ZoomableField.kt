@@ -5,8 +5,8 @@ import App.howmuchsix.ui.theme.design_elements.FieldBG
 import App.howmuchsix.ui.theme.design_elements.GridColor
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.ui.theme.drawGrid
-import App.howmuchsix.viewmodel.BlockItemData
-import App.howmuchsix.viewmodel.PlacedBlock
+import App.howmuchsix.viewmodel.*
+import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +30,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ZoomableField(
-    placedBlocks: List<PlacedBlock>,
-    onStartDragPlacedBlock: ((String, Offset) -> Unit)? = null,
+    placedBlocks: List<PlacedBlockUI>,
+    onStartDragPlacedBlock: (String, Offset) -> Unit,
     modifier: Modifier = Modifier
 ){
     Box(
@@ -46,11 +47,12 @@ fun ZoomableField(
             Box(
                 modifier = Modifier
                     .offset{IntOffset(block.position.x.roundToInt(), block.position.y.roundToInt())}
-                    .size(100.dp, 60.dp)
+                    .wrapContentSize()
                     .pointerInput(block.id){
                         detectDragGestures(
                             onDragStart = {offset ->
-                                onStartDragPlacedBlock?.invoke(block.id, offset + block.position)
+                                //onStartDragPlacedBlock?.invoke(block.id, offset + block.position)
+                                onStartDragPlacedBlock(block.id, offset + block.position)
                             },
                             onDrag = { change, _ ->
                                 change.consume()
@@ -58,11 +60,7 @@ fun ZoomableField(
                         )
                     }
             ) {
-                BlockItem(
-                    block = BlockItemData(block.label),
-                    color = BlockPink,
-                    isDraggable = false
-                )
+                block.uiBlock.Render(modifier)
             }
         }
     }

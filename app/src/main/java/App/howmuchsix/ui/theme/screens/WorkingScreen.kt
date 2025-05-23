@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import App.howmuchsix.R
 import App.howmuchsix.viewmodel.BlockEditorViewModel
-import App.howmuchsix.viewmodel.PlacedBlock
+import App.howmuchsix.viewmodel.*
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Spacer
@@ -60,6 +60,7 @@ import App.howmuchsix.ui.theme.BlockPanel
 import App.howmuchsix.ui.theme.BottomMenuContent
 import androidx.compose.material3.FabPosition
 import App.howmuchsix.ui.theme.ZoomableField
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -74,29 +75,28 @@ fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel()){
     val draggedPlacedBlockId = viewModel.draggedPlacedBlockId
 
     val blockCategories = listOf(
-        BlockCategory("Logic", listOf(BlockItemData("if"), BlockItemData("while")), BlockOrange),
-        BlockCategory("Math", listOf(BlockItemData("add"), BlockItemData("substruct")), BlockYellow)
+        BlockCategory(
+            name = "Variables",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.Declaration,
+                    label = "Declare",
+                    color = BlockYellow
+                )
+            ),
+            blockColor = BlockYellow
+        )
     )
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .wrapContentSize()
             .pointerInput(Unit){
                 detectPointerPositionChanges {position ->
                     if (viewModel.isDragging) {
                         viewModel.updatePosition(position)
                     }
                 }
-
-                /*awaitPointerEventScope {
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val dragEvent = event.changes.find { !it.pressed.not() && viewModel.isDragging }
-                        if (dragEvent != null){
-                            viewModel.stopDragging(placeOnField = true)
-                        }
-                    }
-                }*/
             }
             .pointerInput(Unit){
                 awaitPointerEventScope {
@@ -120,11 +120,11 @@ fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel()){
             Box(
                 modifier = Modifier
                     .offset{IntOffset(dragPosition.x.roundToInt(), dragPosition.y.roundToInt())}
-                    .size(100.dp, 60.dp)
+                    .wrapContentSize()
             ) {
                 BlockItem(
                     block = block,
-                    color = BlockPink,
+                    color = block.color,
                     isDraggable = false
                 )
             }

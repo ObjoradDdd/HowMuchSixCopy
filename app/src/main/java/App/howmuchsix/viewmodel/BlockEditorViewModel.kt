@@ -1,13 +1,26 @@
 package App.howmuchsix.viewmodel
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.ui.blocks.BlockUI
+import App.howmuchsix.ui.blocks.DeclarationBlockUI
+import App.howmuchsix.ui.blocks.ForBlockUI
+import App.howmuchsix.ui.blocks.IfBlockUI
+import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import java.util.UUID
 
-data class BlockItemData(val label: String)
+enum class BlockType{
+    Declaration, If, For
+}
+
+data class BlockItemData(
+    val label: String,
+    val color: Color,
+    val type: BlockType
+)
 
 data class BlockCategory(
     val name: String,
@@ -15,16 +28,17 @@ data class BlockCategory(
     val blockColor: Color
 )
 
-data class PlacedBlock(
+data class PlacedBlockUI(
     val id: String = UUID.randomUUID().toString(),
-    val label: String,
-    val position: Offset
+    val type: BlockType,
+    val uiBlock: BlockUI,
+    val position: Offset,
 )
 
 class BlockEditorViewModel : ViewModel() {
 
-    private val _placedBlocks = mutableStateListOf<PlacedBlock>()
-    val placedBlocks: List<PlacedBlock> = _placedBlocks
+    private val _placedBlocks = mutableStateListOf<PlacedBlockUI>()
+    val placedBlocks: List<PlacedBlockUI> = _placedBlocks
 
     private val _draggedBlock = mutableStateOf<BlockItemData?>(null)
     val draggedBlock: BlockItemData? get() = _draggedBlock.value
@@ -46,9 +60,13 @@ class BlockEditorViewModel : ViewModel() {
     }
 
     fun startDraggingPlacedBlock(blockId :String, initialOffset: Offset){
-        val placedBlock = _placedBlocks.find {it.id == blockId} ?: return
+        val block = _placedBlocks.find {it.id == blockId} ?: return
 
-        _draggedBlock.value = BlockItemData(placedBlock.label)
+        _draggedBlock.value = BlockItemData(
+            type = block.type,
+            label = block.type.name,
+            color = BlockOrange
+        )
         _dragPosition.value = initialOffset
         _isDragging.value = true
         _draggedPlacedBlockId.value = blockId
@@ -72,9 +90,11 @@ class BlockEditorViewModel : ViewModel() {
                 }
             }
             else {
+                val uiBlock = createUIBlockByType(currentBlock.type)
                 _placedBlocks.add(
-                    PlacedBlock(
-                        label = currentBlock.label,
+                    PlacedBlockUI(
+                        type = currentBlock.type,
+                        uiBlock = uiBlock,
                         position = currentPosition
                     )
                 )
@@ -84,6 +104,14 @@ class BlockEditorViewModel : ViewModel() {
         _dragPosition.value = Offset.Zero
         _isDragging.value = false
         _draggedPlacedBlockId.value = null
+    }
+
+    private fun createUIBlockByType(type: BlockType): BlockUI{
+        return when (type) {
+            BlockType.Declaration -> DeclarationBlockUI()
+            BlockType.If -> IfBlockUI()
+            BlockType.For -> ForBlockUI()
+        }
     }
 
 }

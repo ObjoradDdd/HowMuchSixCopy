@@ -2,8 +2,10 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-class WhileBlockUI : BlockUI {
+class WhileBlockUI : BlockUI() {
     override fun metamorphosis(params: HashMap<String, Any>): Block {
 
         val condition = params["condition"] as? String
@@ -18,5 +20,10 @@ class WhileBlockUI : BlockUI {
         } ?: throw IllegalArgumentException("Body parameter is required")
 
         return WhileBlock(condition, bodyBlocks)
+    }
+
+    @Composable
+    override fun Render(modifier: Modifier) {
+        TODO("Not yet implemented")
     }
 }

@@ -30,6 +30,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Surface
 
 @Composable
@@ -42,7 +43,7 @@ fun BlockItem(
 ){
     val baseModifier = if (isDraggable && onStartDrag != null) {
         modifier
-            .size(100.dp,60.dp)
+            .wrapContentSize()
             .pointerInput(Unit) {
                 detectDragGestures (
                     onDragStart = {offset ->
@@ -56,7 +57,7 @@ fun BlockItem(
                 )
             }
     } else {
-        modifier.size(100.dp,60.dp)
+        modifier.wrapContentSize()
     }
 
     Surface (
