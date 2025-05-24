@@ -82,9 +82,41 @@ fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel()){
                     type = BlockType.Declaration,
                     label = "Declare",
                     color = BlockYellow
+                ),
+                BlockItemData(
+                    type = BlockType.Assignment,
+                    label = "Assign",
+                    color = BlockYellow
                 )
             ),
             blockColor = BlockYellow
+        ),
+        BlockCategory(
+            name = "Logic",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.Break,
+                    label = "Break",
+                    color = BlockOrange
+                ),
+                BlockItemData(
+                    type = BlockType.Return,
+                    label = "Return",
+                    color = BlockOrange
+                )
+            ),
+            blockColor = BlockOrange
+        ),
+        BlockCategory(
+            name = "Action",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.Print,
+                    label = "Print",
+                    color = BlockPink
+                )
+            ),
+            blockColor = BlockPink
         )
     )
 

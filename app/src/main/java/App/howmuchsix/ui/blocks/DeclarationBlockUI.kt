@@ -46,12 +46,15 @@ class DeclarationBlockUI : BlockUI() {
             ButtonTextField(
                 value = name,
                 onValueChange = {name = it},
-                textStyle = ProjectTitle,
+                textStyle = SubTitle1,
                 placeholder = "name"
             )
 
             Spacer(Modifier.width(8.dp))
-            Text("=", modifier = Modifier.align(Alignment.CenterVertically))
+            Text(text ="=",
+                style = SubTitle1,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             Spacer(Modifier.width(8.dp))
 
             ButtonTextField(

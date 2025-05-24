@@ -1,10 +1,20 @@
 package App.howmuchsix.viewmodel
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.BreakBlock
+import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
+import App.howmuchsix.ui.blocks.AssignmentBlockUI
 import App.howmuchsix.ui.blocks.BlockUI
+import App.howmuchsix.ui.blocks.BreakBlockUI
+import App.howmuchsix.ui.blocks.DeclarationArrayBlockUI
 import App.howmuchsix.ui.blocks.DeclarationBlockUI
 import App.howmuchsix.ui.blocks.ForBlockUI
+import App.howmuchsix.ui.blocks.FunctionBlockUI
+import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
+import App.howmuchsix.ui.blocks.PrintBlockUI
+import App.howmuchsix.ui.blocks.ReturnBlockUI
+import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -13,7 +23,10 @@ import androidx.compose.ui.graphics.Color
 import java.util.UUID
 
 enum class BlockType{
-    Declaration, If, For
+    Declaration, Assignment, Break,
+    DeclarationArray, For, Function,
+    If, Print, Return, While,
+    FunctionDeclaration
 }
 
 data class BlockItemData(
@@ -109,8 +122,16 @@ class BlockEditorViewModel : ViewModel() {
     private fun createUIBlockByType(type: BlockType): BlockUI{
         return when (type) {
             BlockType.Declaration -> DeclarationBlockUI()
-            BlockType.If -> IfBlockUI()
+            BlockType.Assignment -> AssignmentBlockUI()
             BlockType.For -> ForBlockUI()
+            BlockType.Break -> BreakBlockUI()
+            BlockType.DeclarationArray -> DeclarationArrayBlockUI()
+            BlockType.Function -> FunctionBlockUI()
+            BlockType.FunctionDeclaration -> FunctionDeclarationBlockUI()
+            BlockType.If -> IfBlockUI()
+            BlockType.Print -> PrintBlockUI()
+            BlockType.Return -> ReturnBlockUI()
+            BlockType.While -> WhileBlockUI()
         }
     }
 
