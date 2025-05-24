@@ -10,10 +10,6 @@ data class BlockCategory(
     val blockColor: Color
 )
 
-data class BlockItemData(
-    val label: String
-)
-
 data class BottomMenuContent(
     val title: String,
     @DrawableRes val iconId: Int

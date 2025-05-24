@@ -61,6 +61,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.max
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.ui.theme.Project
+import App.howmuchsix.ui.theme.CustomTextField
 
 val cardColors = listOf(BlockOrange, BlockYellow, BlockPink)
 
@@ -246,46 +247,5 @@ fun ProjectCard(project: Project, cardColor: Color) {
                 color = TextWhite
             )
         }
-    }
-}
-
-@Composable
-fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier,
-    isSingleLine: Boolean = true,
-    textStyle: TextStyle = InputText,
-    borderColor: Color = DarkerBeige,
-    focusedBorderColor: Color = TextOrange,
-    cornerRadius: Int = 16,
-) {
-    var isFocused by remember { mutableStateOf(false) }
-
-    Column (modifier = modifier.fillMaxWidth()){
-        Text(
-            text = label,
-            style = ButtonText,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            singleLine = isSingleLine,
-            textStyle = textStyle,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(cornerRadius.dp))
-                .border(
-                    width = 2.dp,
-                    color = if (isFocused) focusedBorderColor else borderColor,
-                    shape = RoundedCornerShape(cornerRadius.dp)
-                )
-                .padding(10.dp)
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
-                }
-        )
     }
 }

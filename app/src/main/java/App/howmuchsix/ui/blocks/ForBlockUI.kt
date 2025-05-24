@@ -4,8 +4,10 @@ import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-class ForBlockUI : BlockUI {
+class ForBlockUI : BlockUI() {
     override fun metamorphosis(params: HashMap<String, Any>): Block {
 
         val iterator = params["iterator"]?.let { iteratorValue ->
@@ -34,5 +36,10 @@ class ForBlockUI : BlockUI {
             is DeclarationBlock -> ForBlock(iterator, logicalExpression, action, bodyBlocks)
             else -> throw IllegalStateException("Unexpected iterator type")
         }
+    }
+
+    @Composable
+    override fun Render(modifier: Modifier) {
+        TODO("Not yet implemented")
     }
 }

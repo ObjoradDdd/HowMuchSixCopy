@@ -3,8 +3,10 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.Types
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-class FunctionDeclarationBlockUI : BlockUI {
+class FunctionDeclarationBlockUI : BlockUI() {
     override fun metamorphosis(params: HashMap<String, Any>): Block {
 
         val returnType = params["returnType"] as? Types
@@ -44,5 +46,10 @@ class FunctionDeclarationBlockUI : BlockUI {
         }
 
         return FunctionDeclarationBlock(returnType, name, argumentTypes, argumentNames, bodyBlocks)
+    }
+
+    @Composable
+    override fun Render(modifier: Modifier) {
+        TODO("Not yet implemented")
     }
 }

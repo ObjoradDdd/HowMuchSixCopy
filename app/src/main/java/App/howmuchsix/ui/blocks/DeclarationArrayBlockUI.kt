@@ -3,8 +3,10 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
 import App.howmuchsix.hms.Blocks.Types
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-class DeclarationArrayBlockUI : BlockUI {
+class DeclarationArrayBlockUI : BlockUI() {
     override fun metamorphosis(params: HashMap<String, Any>): Block {
 
         val type = params["type"] as? Types ?: throw IllegalArgumentException("Type parameter is required")
@@ -34,5 +36,10 @@ class DeclarationArrayBlockUI : BlockUI {
             else ->
                 DeclarationArrayBlock(type, name, length)
         }
+    }
+
+    @Composable
+    override fun Render(modifier: Modifier) {
+        TODO("Not yet implemented")
     }
 }
