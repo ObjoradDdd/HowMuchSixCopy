@@ -54,7 +54,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.lifecycle.viewmodel.compose.viewModel
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.ui.theme.BlockCategory
-import App.howmuchsix.ui.theme.Project
 import App.howmuchsix.ui.theme.BlockItem
 import App.howmuchsix.ui.theme.BlockPanel
 import App.howmuchsix.ui.theme.BottomMenuContent
@@ -64,9 +63,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.navigation.NavController
 
 @Composable
-fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel()){
+fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel(), navController: NavController){
     var isBlockPanelVisible by remember { mutableStateOf(false) }
 
     val placedBlocks = viewModel.placedBlocks

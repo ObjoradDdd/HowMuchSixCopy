@@ -27,14 +27,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import App.howmuchsix.R
+import App.howmuchsix.navigation.Screens
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.text.font.FontWeight
 import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.viewmodel.ProjectViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
-fun StartingScreen(){
+fun StartingScreen(navController: NavController){
     Box(modifier = Modifier
         .background(BackgroundOrange)
         .fillMaxSize()
@@ -54,7 +58,7 @@ fun StartingScreen(){
         ) {
             StartingText()
             Spacer(modifier = Modifier.height(350.dp))
-            DisplayButton()
+            DisplayButton(navController)
         }
     }
 }
@@ -82,9 +86,9 @@ fun StartingText(){
 }
 
 @Composable
-fun DisplayButton(){
+fun DisplayButton(navController: NavController){
     Button(
-        onClick = { },
+        onClick = { navController.navigate(Screens.ProjectListScreen.name) },
         shape = RoundedCornerShape(20.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Beige,
