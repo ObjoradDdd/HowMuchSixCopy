@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import App.howmuchsix.R
+import App.howmuchsix.navigation.Screens
+import App.howmuchsix.ui.console.Console
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.*
 import androidx.compose.animation.AnimatedVisibility
@@ -66,8 +68,9 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.navigation.NavController
 
 @Composable
-fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel(), navController: NavController){
+fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel(), navController: NavController, consoleViewModel: ConsoleViewModel = viewModel()){
     var isBlockPanelVisible by remember { mutableStateOf(false) }
+    var isConsoleVisible by remember { mutableStateOf(false) }
 
     val placedBlocks = viewModel.placedBlocks
     val draggedBlock = viewModel.draggedBlock
@@ -147,6 +150,17 @@ fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel(), navController: 
             )
         }
 
+        AnimatedVisibility(
+            visible = isConsoleVisible,
+            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 88.dp)
+        ) {
+            Console(consoleViewModel)
+        }
+
         BottomMenu(
             items = listOf(
                 BottomMenuContent("Blocks", R.drawable.ic_blocks),
@@ -156,7 +170,20 @@ fun WorkingScreen(viewModel: BlockEditorViewModel = viewModel(), navController: 
             ),
             onItemClick = { item ->
                 when (item.title) {
-                    "Blocks" -> isBlockPanelVisible = !isBlockPanelVisible
+                    "Blocks" -> {
+                        consoleViewModel.updateConsole("Jopa")
+                        isBlockPanelVisible = !isBlockPanelVisible
+                        isConsoleVisible = false
+                    }
+                    "Console" -> {
+                        isConsoleVisible = !isConsoleVisible
+                        isBlockPanelVisible = false
+                    }
+                    "Home" -> {
+                        navController.navigate(Screens.ProjectListScreen.name)
+                        isConsoleVisible = false
+                        isBlockPanelVisible = false
+                    }
                 }
             },
             modifier = Modifier.align(Alignment.BottomCenter)

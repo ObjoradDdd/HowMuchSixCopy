@@ -27,7 +27,7 @@ class ProjectRepository {
         prefs.edit().putString("projects_list", json).apply()
     }
 
-    suspend fun getProjectById(id: Int): Project? {
+    fun getProjectById(id: Int): Project? {
         return _projects.value.find { it.id == id }
     }
 
