@@ -16,29 +16,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import App.howmuchsix.ui.theme.ButtonTextField
+import App.howmuchsix.ui.theme.design_elements.InputText
 //import android.text.Layout.Alignment
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
+import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.ui.theme.design_elements.ProjectTitle
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.viewmodel.BlockEditorViewModel
+import androidx.compose.foundation.layout.size
 
 class DeclarationBlockUI : BlockUI() {
     private var name by mutableStateOf("")
     private var value by mutableStateOf("")
     private var selectedType by mutableStateOf<_types?>(null)
 
-    fun initializeFromBD(variables: List<String>, valuesList: List<String>, dataType: String) {
-        name = variables.joinToString(", ")
-        value = valuesList.joinToString(", ")
-        selectedType = try {
-            _types.fromString(dataType)
-        } catch (e: IllegalArgumentException) {
-            _types.Int
-        }
-    }
-
     @Composable
-    override fun Render(modifier: Modifier){
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(8.dp))
@@ -72,20 +67,23 @@ class DeclarationBlockUI : BlockUI() {
         }
     }
 
-    override fun metamorphosis(): Block {
-        if (selectedType == null) {
-            throw IllegalArgumentException("Type must be selected")
-        }
+    override fun metamorphosis(params: HashMap<String, Any>): Block {
+        val names = params["names"]?.let { namesValue ->
+            when (namesValue) {
+                is List<*> -> namesValue.filterIsInstance<String>()
+                else -> listOf()
+            }
+        } ?: listOf()
 
-        val variablesList = name.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-        val valuesList = value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        val values = params["values"]?.let { valuesValue ->
+            when (valuesValue) {
+                is List<*> -> valuesValue.filterIsInstance<String>()
+                else -> listOf()
+            }
+        } ?: listOf()
 
-        if (variablesList.isEmpty()) {
-            throw IllegalArgumentException("Variables list cannot be empty")
-        }
+        val type = params["type"] as? Types
 
-        val types = selectedType!!.toTypes()
-
-        return DeclarationBlock(variablesList, valuesList, types)
+        return DeclarationBlock(names, values, type)
     }
 }
