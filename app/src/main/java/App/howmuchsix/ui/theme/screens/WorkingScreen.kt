@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
+import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
 import App.howmuchsix.ui.console.Console
 import App.howmuchsix.ui.theme.BlockCategory
@@ -59,6 +60,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WorkingScreen(
     viewModel: BlockEditorViewModel = viewModel(),
+    projectId : String,
     navController: NavController,
     consoleViewModel: ConsoleViewModel = viewModel()
 ) {

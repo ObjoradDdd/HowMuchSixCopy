@@ -23,7 +23,7 @@ fun Navigation() {
         composable(route = "${Screens.ProjectScreen.name}/{projectId}") { backStackEntry ->
             val projectIdString = backStackEntry.arguments?.getString("projectId")
             if (projectIdString != null) {
-                WorkingScreen(navController = navController, projectID = projectIdString)
+                WorkingScreen(navController = navController, projectId = projectIdString)
             } else {
                 navController.navigate(Screens.ProjectListScreen.name)
             }
