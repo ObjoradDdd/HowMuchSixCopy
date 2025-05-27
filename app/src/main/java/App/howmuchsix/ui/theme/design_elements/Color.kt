@@ -12,5 +12,6 @@ import androidx.compose.ui.graphics.Color
     val BlockOrange = Color(0xFFED7B38)
     val BlockYellow = Color(0xFFFFBE26)
     val BlockPink = Color(0xFFFA7070)
+    val BlockRed = Color(0xFFF54242)
     val LighterBeige = Color(0xFFFFF2D7)
     val DarkerBeige = Color(0xFFEEDAAE)

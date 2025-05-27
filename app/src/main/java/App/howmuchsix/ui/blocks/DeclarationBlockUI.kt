@@ -30,16 +30,6 @@ class DeclarationBlockUI : BlockUI() {
     private var value by mutableStateOf("")
     private var selectedType by mutableStateOf<_types?>(null)
 
-    fun initializeFromBD(variables: List<String>, valuesList: List<String>, dataType: String) {
-        name = variables.joinToString(", ")
-        value = valuesList.joinToString(", ")
-        selectedType = try {
-            _types.fromString(dataType)
-        } catch (e: IllegalArgumentException) {
-            _types.Int
-        }
-    }
-
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
@@ -75,7 +65,19 @@ class DeclarationBlockUI : BlockUI() {
         }
     }
 
+
+    fun initializeFromBD(variables: List<String>, valuesList: List<String>, dataType: String) {
+        name = variables.joinToString(", ")
+        value = valuesList.joinToString(", ")
+        selectedType = try {
+            _types.fromString(dataType)
+        } catch (e: IllegalArgumentException) {
+            _types.Int
+        }
+    }
+
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+
         if (selectedType == null) {
             throw IllegalArgumentException("Type must be selected")
         }

@@ -124,6 +124,26 @@ class BlockEditorViewModel : ViewModel() {
     private val _dropZoneHighlight = mutableStateOf<DropZoneHighlight?>(null)
     val dropZoneHighlight: DropZoneHighlight? get() = _dropZoneHighlight.value
 
+    private val _dropZoneContents = mutableStateMapOf<String, PlacedBlockUI>()
+    val dropZoneContents: Map<String, PlacedBlockUI> = _dropZoneContents
+
+    private val _functionNames = mutableStateMapOf<String, String>()
+    val functionNames: Map<String, String> = _functionNames
+
+    fun updateFunctionName(blockId: String, functionName: String) {
+        if (functionName.isBlank()) {
+            _functionNames.remove(blockId)
+        } else {
+            _functionNames[blockId] = functionName
+        }
+    }
+    fun getAllFunNames(): List<String> {
+        return _functionNames.values.filter { it.isNotBlank() }
+    }
+    fun removeFunctionName(blockId: String){
+        _functionNames.remove(blockId)
+    }
+
     fun findDropZoneAtPosition(position: Offset) : DropZoneTarget? {
         return _dropZoneTargets.find { target ->
             val dropZoneRect = Rect(
@@ -136,7 +156,19 @@ class BlockEditorViewModel : ViewModel() {
     fun addBlockToDropZone(blockId: String, dropZoneTarget: DropZoneTarget){
         val block = _placedBlocks.find { it.id == blockId } ?: return
         _placedBlocks.removeIf{ it.id == blockId}
+
+        if(block.type == BlockType.FunctionDeclaration){
+            removeFunctionName(blockId)
+        }
+        _dropZoneContents[dropZoneTarget.id] = block
     }
+    fun removeBlockFropmDropZone(dropZoneId: String) {
+        val removedBlock = _dropZoneContents.remove(dropZoneId)
+    }
+    fun getDropZoneContent(dropZoneId: String): PlacedBlockUI? {
+        return _dropZoneContents[dropZoneId]
+    }
+
     fun registerDropZone(dropZone: DropZoneTarget){
         _dropZoneTargets.removeIf { it.id == dropZone.id }
         _dropZoneTargets.add(dropZone)
