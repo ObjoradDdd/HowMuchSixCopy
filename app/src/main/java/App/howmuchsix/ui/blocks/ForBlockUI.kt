@@ -4,6 +4,7 @@ import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
+import App.howmuchsix.viewmodel.BlockEditorViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,7 +53,9 @@ class ForBlockUI : BlockUI() {
     }
 
     @Composable
-    override fun Render(modifier: Modifier) {
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         TODO("Not yet implemented")
     }
+
+
 }

@@ -54,18 +54,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import java.util.UUID
 import kotlin.math.roundToInt
 
 @Composable
 fun WorkingScreen(
     viewModel: BlockEditorViewModel = viewModel(),
-    consoleViewModel: ConsoleViewModel = viewModel(),
     navController: NavController,
-    projectID : String
+    consoleViewModel: ConsoleViewModel = viewModel()
 ) {
-
-    consoleViewModel.updateConsole(projectID)
     var isBlockPanelVisible by remember { mutableStateOf(false) }
     var isConsoleVisible by remember { mutableStateOf(false) }
 
@@ -73,6 +69,8 @@ fun WorkingScreen(
     val draggedBlock = viewModel.draggedBlock
     val dragPosition = viewModel.dragPosition
     val draggedPlacedBlockId = viewModel.draggedPlacedBlockId
+    val nearbyConnectionPoint = viewModel.nearbyConnectionPoint
+    val dropZoneHighlight = viewModel.dropZoneHighlight
 
     val blockCategories = listOf(
         BlockCategory(
@@ -143,22 +141,31 @@ fun WorkingScreen(
     ) {
         ZoomableField(
             placedBlocks = placedBlocks.filter { it.id != draggedPlacedBlockId },
+            nearbyConnectionPoint = nearbyConnectionPoint,
+            dropZoneHighlight = dropZoneHighlight,
             onStartDragPlacedBlock = { blockId, offset ->
                 viewModel.startDraggingPlacedBlock(blockId, offset)
             }
         )
 
         draggedBlock?.let { block ->
+            val draggedPlacedBlock = draggedPlacedBlockId?.let { id ->
+                placedBlocks.find { it.id == id }
+            }
             Box(
                 modifier = Modifier
                     .offset { IntOffset(dragPosition.x.roundToInt(), dragPosition.y.roundToInt()) }
                     .wrapContentSize()
             ) {
-                BlockItem(
-                    block = block,
-                    color = block.color,
-                    isDraggable = false
-                )
+                if (draggedPlacedBlock != null) {
+                    draggedPlacedBlock.uiBlock.Render(Modifier)
+                } else {
+                    BlockItem(
+                        block = block,
+                        color = block.color,
+                        isDraggable = false
+                    )
+                }
             }
         }
 
