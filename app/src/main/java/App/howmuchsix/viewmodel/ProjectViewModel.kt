@@ -11,12 +11,8 @@ import kotlinx.coroutines.flow.map
 import java.util.UUID
 
 
-object ProjectRepositoryProvider {
-    val repository = ProjectRepository()
-}
-
 class ProjectViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = ProjectRepositoryProvider.repository
+    private val repository = ProjectRepository()
     init {
         repository.loadFromPrefs(getApplication())
     }

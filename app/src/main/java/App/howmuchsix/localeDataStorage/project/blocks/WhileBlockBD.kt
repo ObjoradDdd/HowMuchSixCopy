@@ -1,8 +1,8 @@
 package App.howmuchsix.localeDataStorage.project.blocks
 
 import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.ui.blocks.BlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
+import App.howmuchsix.ui.blocks.BlockUI
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +14,9 @@ data class WhileBlockBD(
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val whileUI = WhileBlockUI()
+
         val bodyUI = body.map { it.fromBDBlocToUI() }
+
         whileUI.initializeFromBD(condition, bodyUI)
         return whileUI
     }
