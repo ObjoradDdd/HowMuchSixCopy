@@ -92,7 +92,7 @@ fun DropZone(
                         )
                     }
             ){
-                currBlock.uiBlock.Render(Modifier)
+                currBlock.uiBlock.Render(Modifier, viewModel)
             }
         } else {
             Text(

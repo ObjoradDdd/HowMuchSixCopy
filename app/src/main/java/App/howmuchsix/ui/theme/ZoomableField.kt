@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -40,7 +41,8 @@ fun ZoomableField(
     nearbyConnectionPoint: NearbyConnection?,
     dropZoneHighlight: DropZoneHighlight?,
     onStartDragPlacedBlock: (String, Offset) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: BlockEditorViewModel = viewModel()
 ){
     Box(
         modifier = modifier
@@ -70,7 +72,7 @@ fun ZoomableField(
                 when (block.uiBlock) {
                     is ReturnBlockUI -> block.uiBlock.setOwnerId(block.id)
                 }
-                block.uiBlock.Render(modifier)
+                block.uiBlock.Render(modifier, viewModel)
             }
         }
 
