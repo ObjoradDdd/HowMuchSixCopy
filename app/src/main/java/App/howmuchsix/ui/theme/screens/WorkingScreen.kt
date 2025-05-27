@@ -147,7 +147,8 @@ fun WorkingScreen(
             dropZoneHighlight = dropZoneHighlight,
             onStartDragPlacedBlock = { blockId, offset ->
                 viewModel.startDraggingPlacedBlock(blockId, offset)
-            }
+            },
+            viewModel = viewModel
         )
 
         draggedBlock?.let { block ->
@@ -160,7 +161,7 @@ fun WorkingScreen(
                     .wrapContentSize()
             ) {
                 if (draggedPlacedBlock != null) {
-                    draggedPlacedBlock.uiBlock.Render(Modifier)
+                    draggedPlacedBlock.uiBlock.Render(Modifier, viewModel)
                 } else {
                     BlockItem(
                         block = block,

@@ -9,6 +9,5 @@ abstract class BlockUI {
     abstract fun metamorphosis() : Block
 
     @Composable
-    abstract fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?
-    = null)
+    abstract fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?)
 }
