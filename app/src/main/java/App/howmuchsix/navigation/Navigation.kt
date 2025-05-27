@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import java.util.UUID
 
 
 @Composable
@@ -19,8 +20,13 @@ fun Navigation() {
         composable(route = Screens.ProjectListScreen.name) {
             ProjectsScreen(navController = navController)
         }
-        composable(route = Screens.ProjectScreen.name) {
-            WorkingScreen(navController = navController)
+        composable(route = "${Screens.ProjectScreen.name}/{projectId}") { backStackEntry ->
+            val projectIdString = backStackEntry.arguments?.getString("projectId")
+            if (projectIdString != null) {
+                WorkingScreen(navController = navController, projectID = projectIdString)
+            } else {
+                navController.navigate(Screens.ProjectListScreen.name)
+            }
         }
     }
 }

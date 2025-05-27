@@ -5,7 +5,10 @@ import App.howmuchsix.localeDataStorage.ProjectRepository
 import App.howmuchsix.localeDataStorage.project.Project
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import java.util.UUID
 
 
 object ProjectRepositoryProvider {
@@ -22,7 +25,14 @@ class ProjectViewModel(application: Application) : AndroidViewModel(application)
         return repository.projects
     }
 
+    fun getProjectByID(uuid: UUID): Flow<Project?> {
+        return repository.projects.map { projects ->
+            projects.find { project -> project.id == uuid.toString()}
+        }
+    }
+
     fun addProject(project: Project) {
+        project.setUUID(UUID.randomUUID())
         repository.addProject(getApplication(), project)
     }
     

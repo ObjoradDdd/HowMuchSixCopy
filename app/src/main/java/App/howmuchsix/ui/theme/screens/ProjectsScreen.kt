@@ -1,7 +1,6 @@
 package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
-import App.howmuchsix.localeDataStorage.ProjectRepository
 import App.howmuchsix.localeDataStorage.project.Program
 import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
@@ -53,11 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
@@ -69,8 +65,6 @@ fun ProjectsScreen(
     viewModel: ProjectViewModel = viewModel()
 ) {
     var isAddPanelVisible by remember { mutableStateOf(false) }
-    var projects by remember { mutableStateOf(listOf<Project>()) }
-    var projectList : List<Project> = mutableListOf()
 
     Box(
         modifier = Modifier
@@ -95,7 +89,7 @@ fun ProjectsScreen(
                 })
             }
             Box(modifier = Modifier.weight(1f)) {
-                DisplayProjects(viewModel, navController =  navController)
+                DisplayProjects(viewModel, navController = navController)
             }
         }
 
@@ -111,7 +105,13 @@ fun ProjectsScreen(
             AddPanel(
                 onAddProject = { title, description ->
                     if (title.isNotBlank()) {
-                        viewModel.addProject(Project(title, description, program = Program(emptyList())))
+                        viewModel.addProject(
+                            Project(
+                                title,
+                                description,
+                                program = Program(emptyList())
+                            )
+                        )
                         isAddPanelVisible = false
                     }
                 },
@@ -238,7 +238,9 @@ fun ProjectCard(project: Project, cardColor: Color, navController: NavController
         color = cardColor,
         shape = RoundedCornerShape(20.dp),
         onClick = {
-            navController.navigate(Screens.ProjectScreen.name)
+            if (project.id != null) {
+                navController.navigate(Screens.createProjectRoute(project.id!!))
+            }
         }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

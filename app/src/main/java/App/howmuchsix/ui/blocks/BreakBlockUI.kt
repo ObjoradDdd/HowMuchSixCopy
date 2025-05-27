@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 class BreakBlockUI : BlockUI() {
-    override fun metamorphosis(params: HashMap<String, Any>): Block {
+    override fun metamorphosis(): Block {
         return BreakBlock()
     }
 

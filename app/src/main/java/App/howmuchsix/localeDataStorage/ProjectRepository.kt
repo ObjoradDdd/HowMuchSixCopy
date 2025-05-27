@@ -27,10 +27,6 @@ class ProjectRepository {
         prefs.edit().putString("projects_list", json).apply()
     }
 
-    fun getProjectById(id: Int): Project? {
-        return _projects.value.find { it.id == id }
-    }
-
     fun addProject(context: Context, project: Project) {
         _projects.update { currentList -> currentList + project }
         saveToPrefs(context)
