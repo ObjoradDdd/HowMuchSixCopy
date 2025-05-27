@@ -1,6 +1,13 @@
 package App.howmuchsix.ui.theme
 
+import App.howmuchsix.ui.blocks.DeclarationArrayBlockUI
+import App.howmuchsix.ui.blocks.ForBlockUI
+import App.howmuchsix.ui.blocks.FunctionBlockUI
+import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
+import App.howmuchsix.ui.blocks.IfBlockUI
+import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
+import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.FieldBG
 import App.howmuchsix.ui.theme.design_elements.GridColor
@@ -70,7 +77,13 @@ fun ZoomableField(
                     }
             ) {
                 when (block.uiBlock) {
-                    is ReturnBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is PrintBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is IfBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is ForBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is WhileBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is FunctionDeclarationBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is FunctionBlockUI -> block.uiBlock.setOwnerId(block.id)
+                    is DeclarationArrayBlockUI -> block.uiBlock.setOwnerId(block.id)
                 }
                 block.uiBlock.Render(modifier, viewModel)
             }

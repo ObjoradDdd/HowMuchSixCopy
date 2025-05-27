@@ -3,8 +3,7 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row

@@ -9,10 +9,7 @@ import App.howmuchsix.ui.theme.BlockItem
 import App.howmuchsix.ui.theme.BlockPanel
 import App.howmuchsix.ui.theme.BottomMenuContent
 import App.howmuchsix.ui.theme.ZoomableField
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
-import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockItemData
 import App.howmuchsix.viewmodel.BlockType
@@ -76,6 +73,27 @@ fun WorkingScreen(
 
     val blockCategories = listOf(
         BlockCategory(
+            name = "Functions",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.FunctionDeclaration,
+                    label = "Declare function",
+                    color = BlockPink
+                ),
+                BlockItemData(
+                    type = BlockType.Function,
+                    label = "Call function",
+                    color = BlockPink
+                ),
+                BlockItemData(
+                    type = BlockType.Break,
+                    label = "Break",
+                    color = BlockPink
+                )
+            ),
+            blockColor = BlockPink
+        ),
+        BlockCategory(
             name = "Variables",
             blocks = listOf(
                 BlockItemData(
@@ -87,6 +105,11 @@ fun WorkingScreen(
                     type = BlockType.Assignment,
                     label = "Assign",
                     color = BlockYellow
+                ),
+                BlockItemData(
+                    type = BlockType.DeclarationArray,
+                    label = "Declare array",
+                    color = BlockYellow
                 )
             ),
             blockColor = BlockYellow
@@ -95,8 +118,18 @@ fun WorkingScreen(
             name = "Logic",
             blocks = listOf(
                 BlockItemData(
-                    type = BlockType.Break,
-                    label = "Break",
+                    type = BlockType.If,
+                    label = "If",
+                    color = BlockOrange
+                ),
+                BlockItemData(
+                    type = BlockType.For,
+                    label = "For",
+                    color = BlockOrange
+                ),
+                BlockItemData(
+                    type = BlockType.While,
+                    label = "While",
                     color = BlockOrange
                 ),
                 BlockItemData(
@@ -113,10 +146,10 @@ fun WorkingScreen(
                 BlockItemData(
                     type = BlockType.Print,
                     label = "Print",
-                    color = BlockPink
+                    color = BlockRed
                 )
             ),
-            blockColor = BlockPink
+            blockColor = BlockRed
         )
     )
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,19 +37,18 @@ fun DropZone(
     ownerBlockId: String,
     viewModel: BlockEditorViewModel,
     acceptedTypes: List<BlockType> = emptyList(),
-    currBlock: PlacedBlockUI? = null,
     placeholder: String = "Drop here",
-    onBlockDropped: (PlacedBlockUI) -> Unit = {},
-    onBlockRemoved: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val dropZoneHighlight = viewModel.dropZoneHighlight
     val isHighlighted = dropZoneHighlight?.targetId == id
     val isValidDrop = dropZoneHighlight?.isValid == true
 
+    val currBlock = viewModel.getDropZoneContent(id)
+
     Box(
         modifier = modifier
-            .height(40.dp)
+            .defaultMinSize(minHeight = 60.dp)
             .background(
                 color = when {
                     isHighlighted && isValidDrop -> Color.Green.copy(alpha = 0.3f)
@@ -85,10 +85,12 @@ fun DropZone(
         if (currBlock != null) {
             Box(
                 modifier = Modifier
-                    .scale(0.8f)
+                    .scale(1f)
                     .pointerInput(currBlock.id) {
                         detectTapGestures(
-                            onLongPress = { onBlockRemoved() }
+                            onLongPress = {
+                                viewModel.removeBlockFropmDropZone(id)
+                            }
                         )
                     }
             ){

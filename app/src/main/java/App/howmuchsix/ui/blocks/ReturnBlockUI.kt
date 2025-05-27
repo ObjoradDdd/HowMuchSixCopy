@@ -6,14 +6,17 @@ import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.PlacedBlockUI
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,22 +32,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 class ReturnBlockUI : BlockUI() {
 
-    private var textValue by mutableStateOf("")
-    private var droppedBlock by mutableStateOf<PlacedBlockUI?>(null)
-    private var useDropZone by mutableStateOf(true)
-    private var ownerBlockId by mutableStateOf("")
-
-    fun setOwnerId(id: String){
-        ownerBlockId = id
-    }
-
+    private var value by mutableStateOf("")
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
                 .background(BlockOrange, RoundedCornerShape(8.dp))
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(8.dp)
         ){
             Spacer(Modifier.width(8.dp))
 
@@ -54,25 +48,12 @@ class ReturnBlockUI : BlockUI() {
             )
             Spacer(Modifier.width(8.dp))
 
-            if (viewModel != null) {
-                DropZone(
-                    id = "return_dropzone_${ownerBlockId}",
-                    ownerBlockId = ownerBlockId,
-                    viewModel = viewModel,
-                    acceptedTypes = listOf(
-                        BlockType.Declaration,
-                        BlockType.Assignment
-                    ),
-                    currBlock = droppedBlock,
-                    placeholder = "value",
-                    onBlockDropped = { block ->
-                        droppedBlock = block
-                    },
-                    onBlockRemoved = {
-                        droppedBlock = null
-                    }
-                )
-            }
+            ButtonTextField(
+                value = value,
+                onValueChange = {value = it},
+                textStyle = SubTitle1,
+                placeholder = "value"
+            )
         }
     }
 
