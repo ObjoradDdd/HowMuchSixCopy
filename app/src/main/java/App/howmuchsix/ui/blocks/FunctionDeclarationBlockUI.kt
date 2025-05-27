@@ -14,6 +14,7 @@ import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextOrange
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import android.widget.Space
 import androidx.compose.foundation.background
@@ -168,7 +169,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         }
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (functionName.isEmpty()) {
             throw IllegalArgumentException("Function name is required")
         }
@@ -183,7 +184,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         val argumentsTypesEnum = argumentsTypes.map { stringToTypes(it) }
 
 
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
 
         return FunctionDeclarationBlock(
             returnTypeEnum,

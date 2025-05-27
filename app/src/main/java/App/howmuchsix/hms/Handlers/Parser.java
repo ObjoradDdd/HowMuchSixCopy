@@ -24,11 +24,14 @@ public final class Parser {
 
     private final List<String> scopeNames;
     private int pos;
+    
+    private Variables lib;
 
-    public Parser(List<Token> tokens, List<String> scopeNames) {
+    public Parser(List<Token> tokens, List<String> scopeNames, Variables lib) {
         this.scopeNames = scopeNames;
         this.tokens = tokens;
         size = tokens.size();
+        this.lib = lib;
     }
 
     public Expression<String> parseString() {
@@ -65,13 +68,13 @@ public final class Parser {
             return new NullExpression<>(Types.STRING);
         }
         if (match(TokenType.WORD)) {
-            return Variables.getExpression(current.getText(), Types.STRING.getTypeClass(), scopeNames);
+            return lib.getExpression(current.getText(), Types.STRING.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.STRING.getTypeClass());
+            return lib.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.STRING.getTypeClass());
         }
         if (match(TokenType.ARRAY)){
-            return Variables.getFromArray(current.getText(), current.getBody(), Types.STRING.getTypeClass(), scopeNames);
+            return lib.getFromArray(current.getText(), current.getBody(), Types.STRING.getTypeClass(), scopeNames);
         }
         if (match(TokenType.OPEN_PAREN)) {
             Expression<String> result = stringExpression();
@@ -165,10 +168,10 @@ public final class Parser {
         }
 
         if (match(TokenType.WORD)) {
-            return Variables.getExpression(current.getText(), Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getExpression(current.getText(), Types.NUMBER.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            Expression<? extends Number> value =  Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.NUMBER.getTypeClass());
+            Expression<? extends Number> value =  lib.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.NUMBER.getTypeClass());
             if (value.eval() instanceof Double) {
                 return new NumberExpression(value);
             }
@@ -177,7 +180,7 @@ public final class Parser {
             }
         }
         if (match(TokenType.ARRAY)){
-            return Variables.getFromArray(current.getText(), current.getBody(), Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getFromArray(current.getText(), current.getBody(), Types.NUMBER.getTypeClass(), scopeNames);
         }
         if (match(TokenType.OPEN_PAREN)) {
             Expression<Number> result = numberExpression();
@@ -228,14 +231,14 @@ public final class Parser {
         }
 
         if (match(TokenType.WORD)) {
-            return Variables.getExpression(previous().getText(), Types.BOOLEAN.getTypeClass(), scopeNames);
+            return lib.getExpression(previous().getText(), Types.BOOLEAN.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.BOOLEAN.getTypeClass());
+            return lib.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.BOOLEAN.getTypeClass());
         }
 
         if (match(TokenType.ARRAY)){
-            return Variables.getFromArray(previous().getText(), previous().getBody(), Types.BOOLEAN.getTypeClass(), scopeNames);
+            return lib.getFromArray(previous().getText(), previous().getBody(), Types.BOOLEAN.getTypeClass(), scopeNames);
         }
 
         Expression<?> left = primaryValue();
@@ -265,11 +268,11 @@ public final class Parser {
     private Expression<?> primaryValue() {
         if (match(TokenType.MATH)) {
             List<Token> tokens = new Lexer(previous().getText()).tokenize();
-            return new Parser(tokens, scopeNames).parseArithmetic();
+            return new Parser(tokens, scopeNames, lib).parseArithmetic();
         }
         if (match(TokenType.STR)) {
             List<Token> tokens = new Lexer(previous().getText()).tokenize();
-            return new Parser(tokens, scopeNames).parseString();
+            return new Parser(tokens, scopeNames, lib).parseString();
         }
 
         throw new RuntimeException("Invalid BOOLEAN expression");
@@ -282,23 +285,23 @@ public final class Parser {
             Token current = peek(0);
             if (match(TokenType.MATH)) {
                 List<Token> tokens = new Lexer(previous().getText()).tokenize();
-                returnString.append(new Parser(tokens, scopeNames).parseArithmetic().toString());
+                returnString.append(new Parser(tokens, scopeNames, lib).parseArithmetic().toString());
                 continue;
             }
             if (match(TokenType.STR)) {
                 List<Token> tokens = new Lexer(previous().getText()).tokenize();
-                returnString.append(new Parser(tokens, scopeNames).parseString().toString());
+                returnString.append(new Parser(tokens, scopeNames, lib).parseString().toString());
                 continue;
             }
             if (match(TokenType.WORD)){
-                returnString.append(Variables.getExpression(current.getText(), Types.OBJECT.getTypeClass(), scopeNames).toString());
+                returnString.append(lib.getExpression(current.getText(), Types.OBJECT.getTypeClass(), scopeNames).toString());
                 continue;
             }
             if (match(TokenType.FUNCTION)) {
-                return new StringExpression(Variables.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.OBJECT.getTypeClass()).toString());
+                return new StringExpression(lib.getFunctionValue(current.getText(),scopeNames,current.getArguments(), Types.OBJECT.getTypeClass()).toString());
             }
             if (match(TokenType.ARRAY)){
-                return Variables.getFromArray(current.getText(), current.getBody(), Types.OBJECT.getTypeClass(), scopeNames);
+                return lib.getFromArray(current.getText(), current.getBody(), Types.OBJECT.getTypeClass(), scopeNames);
             }
             if (!matchWithoutMove(TokenType.MATH) && !matchWithoutMove(TokenType.STR) && !matchWithoutMove(TokenType.WORD)){
                 returnString.append(current.getText());
@@ -311,10 +314,10 @@ public final class Parser {
         pos = 0;
 
         if (match(TokenType.WORD)) {
-            return Variables.getExpression(previous().getText(), Types.ARRAY.getTypeClass(), scopeNames);
+            return lib.getExpression(previous().getText(), Types.ARRAY.getTypeClass(), scopeNames);
         }
         if (match(TokenType.FUNCTION)) {
-            return Variables.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass());
+            return lib.getFunctionValue(previous().getText(),scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass());
         }
 
         throw new RuntimeException("Parse collection error");

@@ -16,9 +16,11 @@ public final class FunctionExpression<T> implements Expression<T> {
     private final List<Block> body;
     public List<String> scopes = List.of("MainScope");
     private final Types returnType;
+    private Variables lib;
 
-    public FunctionExpression(Types returnType, String name, List<Types> argumentsTypes, List<String> argumentsNames, List<Block> body) {
-        this.name = name + " " + Variables.getNumberOfScopes();
+    public FunctionExpression(Types returnType, String name, List<Types> argumentsTypes, List<String> argumentsNames, List<Block> body, Variables lib) {
+        this.lib = lib;
+        this.name = name + " " + this.lib.getNumberOfScopes();
         this.body = body;
         this.argumentsTypes = argumentsTypes;
         this.argumentNames = argumentsNames;
@@ -29,7 +31,7 @@ public final class FunctionExpression<T> implements Expression<T> {
 
 
         this.scopes = new ArrayList<>(newScopes);
-        Variables.newScope(name);
+        lib.newScope(name);
         this.scopes.add(name);
         List<String> nameScope = List.of(name);
 
@@ -38,12 +40,12 @@ public final class FunctionExpression<T> implements Expression<T> {
         }
 
         for (int i = 0; i < argumentsTypes.size(); i++) {
-            Variables.set(argumentNames.get(i), argumentsTypes.get(i).getValue(argumentsValuesStrings.get(i), scopes), name);
+            lib.set(argumentNames.get(i), argumentsTypes.get(i).getValue(argumentsValuesStrings.get(i), scopes, lib), name);
         }
 
         try {
             for (Block block : this.body) {
-                block.Action(nameScope);
+                block.Action(nameScope, lib);
             }
 
             if (returnType != Types.VOID){
@@ -61,7 +63,7 @@ public final class FunctionExpression<T> implements Expression<T> {
                 throw new RuntimeException("Invalid return expression type. " + returnType + " was expected");
             }
         }finally {
-            Variables.deleteScope(name);
+            lib.deleteScope(name);
         }
         return null;
     }

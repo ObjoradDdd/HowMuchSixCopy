@@ -7,6 +7,7 @@ import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropdownMenuFunSelector
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 class FunctionBlockUI : BlockUI() {
+
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+       TODO()
+
 
     private var ownerBlockId by mutableStateOf("")
     private var selectedFun by mutableStateOf("")
@@ -86,10 +91,4 @@ class FunctionBlockUI : BlockUI() {
             }
         }
     }
-
-
-    override fun metamorphosis(): Block {
-       TODO()
-    }
-
 }

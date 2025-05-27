@@ -7,6 +7,7 @@ import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.background
@@ -30,8 +31,18 @@ class PrintBlockUI : BlockUI() {
     private var useDropZone by mutableStateOf(true)
     private var ownerBlockId by mutableStateOf("")
 
+    fun initializeFromBD(value: String){
+        this.textValue = value
+    }
+
+
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+        return PrintBlock(value, consoleViewModel)
+
+        
     fun setOwnerId(id: String){
         ownerBlockId = id
+
     }
 
     @Composable
@@ -63,9 +74,5 @@ class PrintBlockUI : BlockUI() {
                 )
             }
         }
-    }
-
-    override fun metamorphosis(): Block {
-        TODO()
     }
 }

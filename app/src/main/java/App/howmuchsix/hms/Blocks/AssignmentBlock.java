@@ -16,26 +16,27 @@ public final class AssignmentBlock extends Block {
         this.variable = variable;
         this.stringValue = value;
     }
-    public void Action(List<String> scopes) {
+    @Override
+    public void Action(List<String> scopes, Variables lib) {
         Token isSubscriptable = new Lexer(variable).tokenizeForAssignment();
         if (isSubscriptable.getBody() == null) {
-            Expression<?> variableExpression = Variables.getExpressionWithNoType(variable, scopes);
+            Expression<?> variableExpression = lib.getExpressionWithNoType(variable, scopes);
             Types variableType = variableExpression.getType();
             if(variableType == Types.ARRAY){
-                ArrayExpression newValue = (ArrayExpression) variableType.getValue(stringValue, scopes);
+                ArrayExpression newValue = (ArrayExpression) variableType.getValue(stringValue, scopes, lib);
                 ArrayExpression currentValue =  (ArrayExpression) variableExpression;
                 if (newValue.getInsideType() == currentValue.getInsideType()){
-                    Variables.set(variable, newValue, scopes);
+                    lib.set(variable, newValue, scopes);
                     return;
                 }
                 else{
                     throw new RuntimeException(variable + " contains " + currentValue.getInsideType() + " not " + newValue.getInsideType());
                 }
             }
-            Variables.set(variable, variableType.getValue(stringValue, scopes), scopes);
+            lib.set(variable, variableType.getValue(stringValue, scopes, lib), scopes);
         }
         else{
-            Expression<?> variableExpression = Variables.getExpressionWithNoType(isSubscriptable.getText(), scopes);
+            Expression<?> variableExpression = lib.getExpressionWithNoType(isSubscriptable.getText(), scopes);
             Types variableType = variableExpression.getType();
             Types insideType;
             if (variableType == Types.ARRAY){
@@ -44,7 +45,7 @@ public final class AssignmentBlock extends Block {
             else{
                 throw new RuntimeException(variable + " is not subscriptable");
             }
-            Variables.setValueIntoArray(isSubscriptable.getText(), isSubscriptable.getBody(), insideType.getValue(stringValue, scopes), scopes);
+            lib.setValueIntoArray(isSubscriptable.getText(), isSubscriptable.getBody(), insideType.getValue(stringValue, scopes, lib), scopes);
         }
     }
 }

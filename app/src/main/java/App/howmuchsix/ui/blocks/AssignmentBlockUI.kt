@@ -5,6 +5,7 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +31,7 @@ class AssignmentBlockUI : BlockUI() {
         value = assignedValue
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (name.isEmpty()) {
             throw IllegalArgumentException("Variable name is required")
         }

@@ -12,6 +12,7 @@ import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -147,7 +148,7 @@ class ForBlockUI : BlockUI() {
         body = bodyUI
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (iterator == null) {
             throw IllegalArgumentException("Iterator is required")
         }
@@ -158,9 +159,9 @@ class ForBlockUI : BlockUI() {
             throw IllegalArgumentException("Action is required")
         }
 
-        val iteratorBlock = iterator!!.metamorphosis()
-        val actionBlock = action!!.metamorphosis() as AssignmentBlock
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val iteratorBlock = iterator!!.metamorphosis(consoleViewModel)
+        val actionBlock = action!!.metamorphosis(consoleViewModel) as AssignmentBlock
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
 
         return when (iteratorBlock) {
             is AssignmentBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)

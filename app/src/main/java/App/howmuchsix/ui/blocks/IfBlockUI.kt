@@ -7,6 +7,7 @@ import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import android.widget.Space
 import androidx.compose.foundation.background
@@ -173,7 +174,7 @@ class IfBlockUI : BlockUI() {
         falseAction = falseActionUI
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (condition.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
@@ -181,10 +182,10 @@ class IfBlockUI : BlockUI() {
             throw IllegalArgumentException("True action is required")
         }
 
-        val trueActionBlocks = trueAction.map { it.metamorphosis() }
-        val falseActionBlocks = falseAction?.map { it.metamorphosis() }
+        val trueActionBlocks = trueAction.map { it.metamorphosis(consoleViewModel) }
+        val falseActionBlocks = falseAction?.map { it.metamorphosis(consoleViewModel) }
         val elifActionsList = elifActions?.map { actionList ->
-            actionList.map { it.metamorphosis() }
+            actionList.map { it.metamorphosis(consoleViewModel) }
         }
 
         return when {

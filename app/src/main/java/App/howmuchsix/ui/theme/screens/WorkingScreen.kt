@@ -3,6 +3,11 @@ package App.howmuchsix.ui.theme.screens
 import App.howmuchsix.R
 import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
+import App.howmuchsix.ui.blocks.AssignmentBlockUI
+import App.howmuchsix.ui.blocks.DeclarationBlockUI
+import App.howmuchsix.ui.blocks.PrintBlockUI
+import App.howmuchsix.ui.blocks.SleepBlockUI
+import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.console.Console
 import App.howmuchsix.ui.theme.BlockCategory
 import App.howmuchsix.ui.theme.BlockItem
@@ -14,6 +19,7 @@ import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockItemData
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.ConsoleViewModel
+import App.howmuchsix.viewmodel.InterpreterViewModel
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -63,6 +69,10 @@ fun WorkingScreen(
 ) {
     var isBlockPanelVisible by remember { mutableStateOf(false) }
     var isConsoleVisible by remember { mutableStateOf(false) }
+
+    val interpreterViewModel = remember {
+        InterpreterViewModel(consoleViewModel)
+    }
 
     val placedBlocks = viewModel.placedBlocks
     val draggedBlock = viewModel.draggedBlock
@@ -243,7 +253,6 @@ fun WorkingScreen(
             onItemClick = { item ->
                 when (item.title) {
                     "Blocks" -> {
-                        consoleViewModel.updateConsole("Jopa")
                         isBlockPanelVisible = !isBlockPanelVisible
                         isConsoleVisible = false
                     }

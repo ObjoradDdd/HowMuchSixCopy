@@ -13,12 +13,7 @@ data class PrintBlockBD(
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val printUI = PrintBlockUI()
-
-
-        TODO("""
-            printUI.initializeFromBD(value)
-        return printUI    
-        """.trimIndent())
-
+        printUI.initializeFromBD(value)
+        return printUI
     }
 }

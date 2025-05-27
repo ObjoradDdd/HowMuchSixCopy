@@ -36,23 +36,23 @@ public final class DeclarationArrayBlock extends Block {
 
 
     @Override
-    public void Action(List<String> scopes) {
+    public void Action(List<String> scopes, Variables lib) {
         if (values == null){
-            Variables.set(name, new ArrayExpression(type, length), scopes.get(scopes.size() - 1));
+            lib.set(name, new ArrayExpression(type, length), scopes.get(scopes.size() - 1));
         }
         else if(values.size() != length){
             List<Expression<?>> valueExpressions = new ArrayList<>();
             for(String input : values){
-                valueExpressions.add(type.getValue(input, scopes));
+                valueExpressions.add(type.getValue(input, scopes, lib));
             }
-            Variables.set(name, new ArrayExpression(type, length, valueExpressions), scopes.get(scopes.size() - 1));
+            lib.set(name, new ArrayExpression(type, length, valueExpressions), scopes.get(scopes.size() - 1));
         }
         else {
             List<Expression<?>> valueExpressions = new ArrayList<>();
             for(String input : values){
-                valueExpressions.add(type.getValue(input, scopes));
+                valueExpressions.add(type.getValue(input, scopes, lib));
             }
-            Variables.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
+            lib.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
         }
     }
 }

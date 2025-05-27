@@ -1,8 +1,6 @@
 package App.howmuchsix.viewmodel
 
-import App.howmuchsix.hms.Blocks.Block
-import App.howmuchsix.hms.Blocks.BreakBlock
-import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
+
 import App.howmuchsix.ui.blocks.AssignmentBlockUI
 import App.howmuchsix.ui.blocks.BlockUI
 import App.howmuchsix.ui.blocks.BreakBlockUI
@@ -16,9 +14,6 @@ import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import android.util.Log
-import android.util.Size
-import androidx.compose.material3.FabPosition
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.geometry.Offset
