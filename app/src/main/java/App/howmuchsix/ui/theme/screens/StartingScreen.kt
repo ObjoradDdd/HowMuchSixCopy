@@ -1,47 +1,42 @@
 package App.howmuchsix.ui.theme.screens
 
+import App.howmuchsix.R
+import App.howmuchsix.navigation.Screens
+import App.howmuchsix.ui.theme.design_elements.BackgroundOrange
+import App.howmuchsix.ui.theme.design_elements.Beige
+import App.howmuchsix.ui.theme.design_elements.ButtonText
+import App.howmuchsix.ui.theme.design_elements.StrictTitle
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextOrange
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import App.howmuchsix.R
-import App.howmuchsix.navigation.Screens
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.text.font.FontWeight
-import App.howmuchsix.ui.theme.design_elements.*
-import App.howmuchsix.viewmodel.ProjectViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun StartingScreen(navController: NavController){
-    Box(modifier = Modifier
-        .background(BackgroundOrange)
-        .fillMaxSize()
+fun StartingScreen(navController: NavController) {
+    Box(
+        modifier = Modifier
+            .background(BackgroundOrange)
+            .fillMaxSize()
     ) {
         Column {
             Image(
@@ -64,10 +59,10 @@ fun StartingScreen(navController: NavController){
 }
 
 @Composable
-fun StartingText(){
-    Column (
+fun StartingText() {
+    Column(
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Spacer(modifier = Modifier.height(140.dp))
         Text(
             modifier = Modifier
@@ -86,7 +81,7 @@ fun StartingText(){
 }
 
 @Composable
-fun DisplayButton(navController: NavController){
+fun DisplayButton(navController: NavController) {
     Button(
         onClick = { navController.navigate(Screens.ProjectListScreen.name) },
         shape = RoundedCornerShape(20.dp),
@@ -101,7 +96,7 @@ fun DisplayButton(navController: NavController){
             .offset(40.dp)
     ) {
         Text(
-            text = "Get started!" ,
+            text = "Get started!",
             style = ButtonText
         )
     }

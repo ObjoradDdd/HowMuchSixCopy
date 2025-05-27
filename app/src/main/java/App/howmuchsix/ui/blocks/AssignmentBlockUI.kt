@@ -31,7 +31,6 @@ class AssignmentBlockUI : BlockUI() {
         value = assignedValue
     }
 
-
     override fun metamorphosis(): Block {
         if (name.isEmpty()) {
             throw IllegalArgumentException("Variable name is required")
