@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
+import App.howmuchsix.viewmodel.BlockEditorViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +31,7 @@ class WhileBlockUI : BlockUI() {
     }
 
     @Composable
-    override fun Render(modifier: Modifier) {
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         TODO("Not yet implemented")
     }
 }

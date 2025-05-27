@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.ProjectTitle
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.viewmodel.BlockEditorViewModel
 
 class DeclarationBlockUI : BlockUI() {
     private var name by mutableStateOf("")
@@ -39,7 +40,7 @@ class DeclarationBlockUI : BlockUI() {
     }
 
     @Composable
-    override fun Render(modifier: Modifier){
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(8.dp))
