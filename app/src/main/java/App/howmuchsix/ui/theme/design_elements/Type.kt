@@ -61,3 +61,12 @@ val ProjectTitle = TextStyle(
     lineHeight = 24.sp,
     color = TextWhite
 )
+
+val PlaceholderText = TextStyle(
+    fontFamily = inter,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 14.sp,
+    lineHeight = 14.sp,
+    color = Beige
+)
+
