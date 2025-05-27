@@ -20,7 +20,6 @@ import App.howmuchsix.ui.theme.ButtonTextField
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.ProjectTitle
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 
 class DeclarationBlockUI : BlockUI() {
