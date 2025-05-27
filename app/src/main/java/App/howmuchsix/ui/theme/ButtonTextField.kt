@@ -49,7 +49,7 @@ fun ButtonTextField(
     textStyle: TextStyle = InputText,
     borderColor: Color = DarkerBeige,
     focusedBorderColor: Color = TextOrange,
-    cornerRadius: Int = 16,
+    cornerRadius: Int = 4,
 ) {
     var isFocused by remember { mutableStateOf(false) }
 

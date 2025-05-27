@@ -1,9 +1,7 @@
 package App.howmuchsix.ui.theme
 
 import App.howmuchsix.ui.blocks._types
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,7 +24,7 @@ fun DropDownMenuTypeSelector(
 
     Box {
         Button(
-            colors = ButtonDefaults.buttonColors(containerColor = BlockPink),
+            colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
             onClick = { expanded = true }
         ) {
             Text(
@@ -45,7 +43,7 @@ fun DropDownMenuTypeSelector(
                     text = { Text(
                         text = type.name,
                         style = SubTitle1,
-                        color = TextOrange
+                        color = BlockRed
                     ) },
                     onClick = {
                         onTypeSelected(type)
