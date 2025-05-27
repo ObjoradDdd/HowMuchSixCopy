@@ -4,6 +4,7 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +45,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         }
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (functionName.isEmpty()) {
             throw IllegalArgumentException("Function name is required")
         }
@@ -59,7 +60,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         val argumentsTypesEnum = argumentsTypes.map { stringToTypes(it) }
 
 
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
 
         return FunctionDeclarationBlock(
             returnTypeEnum,

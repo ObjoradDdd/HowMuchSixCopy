@@ -4,6 +4,7 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,7 @@ class DeclarationArrayBlockUI : BlockUI() {
     }
 
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (dataType == null) {
             throw IllegalArgumentException("Type is required")
         }

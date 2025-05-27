@@ -9,6 +9,7 @@ import App.howmuchsix.hms.Expression.NumberExpression;
 import App.howmuchsix.hms.Handlers.Lexer;
 import App.howmuchsix.hms.Handlers.Parser;
 import App.howmuchsix.hms.Handlers.Token;
+import App.howmuchsix.hms.Library.Variables;
 
 public final class ArithmeticBlock extends Block{
     String input;
@@ -26,10 +27,10 @@ public final class ArithmeticBlock extends Block{
 
 
     @Override
-    public Expression<Number> eval(List<String> scopes){
+    public Expression<Number> eval(List<String> scopes, Variables lib){
         this.scopeNames = scopes;
         List<Token> tokens = new Lexer(this.input).tokenize();
-        Expression<Number> expression = new Parser(tokens, this.scopeNames).parseArithmetic();
+        Expression<Number> expression = new Parser(tokens, this.scopeNames, lib).parseArithmetic();
         Expression<Number> value;
         if (expression.eval() instanceof Double || isDouble){
             value = new NumberExpression(new DoubleExpression(expression.eval().doubleValue()));

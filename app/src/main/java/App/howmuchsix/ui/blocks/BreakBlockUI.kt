@@ -7,6 +7,7 @@ import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +38,7 @@ class BreakBlockUI : BlockUI() {
         }
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         return BreakBlock()
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Expression.NullExpression;
+import App.howmuchsix.hms.Library.Variables;
 
 public final class ReturnBlock extends Block{
 
@@ -22,11 +23,11 @@ public final class ReturnBlock extends Block{
     }
 
     @Override
-    public void Action(List<String> scopes) throws ReturnException {
+    public void Action(List<String> scopes, Variables lib) throws ReturnException {
         if (returnType == Types.VOID){
             throw new ReturnException("return", new NullExpression<>(Types.VOID));
         }
-        Expression<?> valueExpression = returnType.getValue(valueString, scopes);
+        Expression<?> valueExpression = returnType.getValue(valueString, scopes, lib);
         throw new ReturnException("return", valueExpression);
     }
 }

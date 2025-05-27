@@ -3,6 +3,7 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +19,7 @@ class WhileBlockUI : BlockUI() {
         body = bodyUI
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (condition.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
@@ -26,7 +27,7 @@ class WhileBlockUI : BlockUI() {
             throw IllegalArgumentException("Body is required")
         }
 
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
         return WhileBlock(condition, bodyBlocks)
     }
 

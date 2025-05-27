@@ -14,9 +14,7 @@ data class WhileBlockBD(
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val whileUI = WhileBlockUI()
-
         val bodyUI = body.map { it.fromBDBlocToUI() }
-
         whileUI.initializeFromBD(condition, bodyUI)
         return whileUI
     }

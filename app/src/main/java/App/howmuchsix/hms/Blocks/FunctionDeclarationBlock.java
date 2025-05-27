@@ -23,9 +23,9 @@ public final class FunctionDeclarationBlock extends Block{
     }
 
     @Override
-    public void Action(List<String> scopes) {
-        if (Variables.isExistsFunction(name)) {
-            Variables.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body), "MainScope");
+    public void Action(List<String> scopes, Variables lib) {
+        if (lib.isExistsFunction(name)) {
+            lib.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body, lib), "MainScope");
 
         }
     }

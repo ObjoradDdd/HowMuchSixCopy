@@ -19,23 +19,23 @@ public final class WhileBlock extends Block {
     }
 
     @Override
-    public void Action(List<String> scopes) throws ReturnException {
-        String name = "Scope - " + Variables.getNumberOfScopes();
+    public void Action(List<String> scopes, Variables lib) throws ReturnException {
+        String name = "Scope - " + lib.getNumberOfScopes();
         List<String> newScopes = new ArrayList<>(scopes);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenizeComplex();
-        Parser logicalExpression = new Parser(tokens, newScopes);
+        Parser logicalExpression = new Parser(tokens, newScopes, lib);
         newScopes.add(name);
         try {
             while (logicalExpression.parseLogical().eval()) {
-                Variables.newScope(name);
+                lib.newScope(name);
                 for (Block block : body) {
-                    block.Action(newScopes);
+                    block.Action(newScopes, lib);
                 }
-                Variables.deleteScope(name);
+                lib.deleteScope(name);
             }
         } catch (BreakException ignored) {
         } finally {
-            Variables.deleteScope(name);
+            lib.deleteScope(name);
         }
     }
 }

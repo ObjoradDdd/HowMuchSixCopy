@@ -10,6 +10,7 @@ import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -77,7 +78,7 @@ class ReturnBlockUI : BlockUI() {
     }
 
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         TODO("Not yet implemented")
     }
 

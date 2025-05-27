@@ -5,6 +5,7 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +31,7 @@ class ForBlockUI : BlockUI() {
         body = bodyUI
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (iterator == null) {
             throw IllegalArgumentException("Iterator is required")
         }
@@ -41,9 +42,9 @@ class ForBlockUI : BlockUI() {
             throw IllegalArgumentException("Action is required")
         }
 
-        val iteratorBlock = iterator!!.metamorphosis()
-        val actionBlock = action!!.metamorphosis() as AssignmentBlock
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val iteratorBlock = iterator!!.metamorphosis(consoleViewModel)
+        val actionBlock = action!!.metamorphosis(consoleViewModel) as AssignmentBlock
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
 
         return when (iteratorBlock) {
             is AssignmentBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)

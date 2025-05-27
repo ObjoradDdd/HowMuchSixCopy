@@ -1,10 +1,9 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
-import App.howmuchsix.hms.Blocks.PrintBlock
+import App.howmuchsix.hms.Blocks.SleepBlock
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
@@ -23,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-class PrintBlockUI : BlockUI() {
+class SleepBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
 
@@ -33,7 +32,7 @@ class PrintBlockUI : BlockUI() {
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return PrintBlock(value, consoleViewModel)
+        return SleepBlock(value)
     }
 
     @Composable

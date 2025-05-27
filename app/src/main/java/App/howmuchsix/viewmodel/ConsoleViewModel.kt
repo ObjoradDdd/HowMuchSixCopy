@@ -11,7 +11,7 @@ class ConsoleViewModel : ViewModel() {
     private val _state = MutableStateFlow(ConsoleState())
     val state: StateFlow<ConsoleState> = _state.asStateFlow()
 
-    fun updateConsole(newText: String) {
+    fun addToConsole(newText: String) {
         _state.update { currentState ->
             val newContent = if (currentState.text.isEmpty()) {
                 newText
@@ -19,6 +19,12 @@ class ConsoleViewModel : ViewModel() {
                 "${currentState.text}\n$newText"
             }
             currentState.copy(text = newContent)
+        }
+    }
+
+    fun updateConsole(newText: String){
+        _state.update { currentState ->
+            currentState.copy(text = newText)
         }
     }
 

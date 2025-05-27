@@ -19,25 +19,19 @@ public final class DeclarationBlock extends Block {
         this.values = values;
     }
 
-    /*public DeclarationBlock(String variables, String values, Types type) {
-        this.blockID = "declaration_block";
-        this.variables = List.of(variables);
-        this.type = type;
-        this.values = List.of(values);
-    }*/
 
-    public void Action(List<String> scopes) {
+    public void Action(List<String> scopes, Variables lib) {
         for (int i = 0; i < this.variables.size(); i++) {
-            if (Variables.isExistsVariable(this.variables.get(i))){
+            if (lib.isExistsVariable(this.variables.get(i))){
                 throw new RuntimeException(this.variables.get(i) + " is already declared");
             }
             if (Objects.equals(this.variables.get(i), "true") || Objects.equals(this.variables.get(i), "false")){
                 throw new RuntimeException("Variable cannot be named true or false");
             }
             if (i < this.values.size()) {
-                Variables.set(this.variables.get(i), type.getValue(values.get(i), scopes), scopes.get(scopes.size() - 1));
+                lib.set(this.variables.get(i), type.getValue(values.get(i), scopes, lib), scopes.get(scopes.size() - 1));
             } else {
-                Variables.set(this.variables.get(i), new NullExpression<>(type), scopes.get(scopes.size() - 1));
+                lib.set(this.variables.get(i), new NullExpression<>(type), scopes.get(scopes.size() - 1));
             }
         }
     }

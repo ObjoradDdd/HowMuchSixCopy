@@ -6,26 +6,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import App.howmuchsix.hms.Blocks.Types;
 import App.howmuchsix.hms.Expression.ArrayExpression;
-import App.howmuchsix.hms.Expression.DoubleExpression;
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Expression.FunctionExpression;
 import App.howmuchsix.hms.Expression.NullExpression;
-import App.howmuchsix.hms.Expression.StringExpression;
+
 
 public final class Variables {
-    private static final Map<String, Map<String, Expression<?>>> variablesScopes;
+    private final Map<String, Map<String, Expression<?>>> variablesScopes = new HashMap<>();
 
-    static {
-        variablesScopes = new HashMap<>();
-        variablesScopes.put("MainScope", new HashMap<>());
-        Objects.requireNonNull(variablesScopes.get("MainScope")).put("PI", new DoubleExpression(Math.PI));
-        Objects.requireNonNull(variablesScopes.get("MainScope")).put("Name", new StringExpression("Andrew"));
+    public Variables(){
+        this.variablesScopes.put("MainScope", new HashMap<>());
     }
 
-    public static boolean isExistsVariable(String key) {
+    public boolean isExistsVariable(String key) {
         List<String> scopes = new ArrayList<>(variablesScopes.keySet());
         for (int i = 0; i < scopes.size(); i++) {
             String scope = scopes.get(i);
@@ -42,14 +37,14 @@ public final class Variables {
         return false;
     }
 
-    public static boolean isExistsFunction(String key) {
+    public boolean isExistsFunction(String key) {
         if (Objects.requireNonNull(variablesScopes.get("MainScope")).containsKey(key)) {
             return Objects.requireNonNull(Objects.requireNonNull(variablesScopes.get("MainScope")).get(key)).getType() != Types.FUNCTION;
         }
         return true;
     }
 
-    public static <T> Expression<T> getExpression(String key, Class<?> expectedType, List<String> scopes) {
+    public <T> Expression<T> getExpression(String key, Class<?> expectedType, List<String> scopes) {
         Expression<?> expression;
         for (String scope : scopes) {
             Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
@@ -75,7 +70,7 @@ public final class Variables {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Expression<T> getFromArray(String key, String indexString, Class<?> expectedType, List<String> scopes) {
+    public <T> Expression<T> getFromArray(String key, String indexString, Class<?> expectedType, List<String> scopes) {
         if (isExistsVariable(key)) {
             for (String scope : scopes) {
                 Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
@@ -87,7 +82,7 @@ public final class Variables {
                             throw new RuntimeException("Wrong type");
                         }
                         int length = array.getLength();
-                        int index = (int) Types.INT.getValue(indexString, scopes).eval();
+                        int index = (int) Types.INT.getValue(indexString, scopes, this).eval();
                         if (index > length - 1 || index < 0) {
                             throw new RuntimeException("Wrong index");
                         }
@@ -103,7 +98,7 @@ public final class Variables {
         throw new RuntimeException("Unknown variable " + key);
     }
 
-    public static void setValueIntoArray(String key, String indexString, Expression<?> value, List<String> scopes) {
+    public void setValueIntoArray(String key, String indexString, Expression<?> value, List<String> scopes) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             String scope = scopes.get(i);
             Map<String, Expression<?>> scopeMap = variablesScopes.get(scope);
@@ -114,7 +109,7 @@ public final class Variables {
                     if (expression != null && expression.getType() == Types.ARRAY) {
                         ArrayExpression array = ((ArrayExpression) expression);
                         int length = array.getLength();
-                        int index = (int) Types.INT.getValue(indexString, scopes).eval();
+                        int index = (int) Types.INT.getValue(indexString, scopes, this).eval();
                         if (index > length - 1 || index < 0) {
                             throw new RuntimeException("Wrong index");
                         }
@@ -127,7 +122,7 @@ public final class Variables {
         }
     }
 
-    public static Expression<?> getExpressionWithNoType(String key, List<String> scopes) {
+    public Expression<?> getExpressionWithNoType(String key, List<String> scopes) {
         if (scopes == null || scopes.isEmpty()) {
             scopes = List.of("MainScope");
         }
@@ -144,7 +139,7 @@ public final class Variables {
         }
         throw new RuntimeException("Unknown variable " + key);
     }
-    public static FunctionExpression<?> getFunction(String key) {
+    public FunctionExpression<?> getFunction(String key) {
         if (isExistsVariable(key)) {
             Set<String> scopes = variablesScopes.keySet();
             for (String scope : scopes) {
@@ -163,7 +158,7 @@ public final class Variables {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Expression<T> getFunctionValue(String key, List<String> scopes, List<String> arguments, Class<?> expectedType) {
+    public <T> Expression<T> getFunctionValue(String key, List<String> scopes, List<String> arguments, Class<?> expectedType) {
         FunctionExpression<?> function;
         if (!scopes.contains("MainScope")) {
             scopes = new ArrayList<>(scopes);
@@ -194,11 +189,11 @@ public final class Variables {
     }
 
 
-    public static void set(String key, Expression<?> value, String scope) {
+    public void set(String key, Expression<?> value, String scope) {
         Objects.requireNonNull(variablesScopes.get(scope)).put(key, value);
     }
 
-    public static void set(String key, Expression<?> value, List<String> scopes) {
+    public void set(String key, Expression<?> value, List<String> scopes) {
 
         for (int i = scopes.size() - 1; i >= 0; i--) {
             String scope = scopes.get(i);
@@ -213,15 +208,15 @@ public final class Variables {
         }
     }
 
-    public static void newScope(String name) {
+    public void newScope(String name) {
         variablesScopes.put(name, new HashMap<>());
     }
 
-    public static int getNumberOfScopes() {
+    public int getNumberOfScopes() {
         return variablesScopes.keySet().size();
     }
 
-    public static void deleteScope(String name) {
+    public void deleteScope(String name) {
         if (!"MainScope".equals(name)) {
             variablesScopes.remove(name);
         }

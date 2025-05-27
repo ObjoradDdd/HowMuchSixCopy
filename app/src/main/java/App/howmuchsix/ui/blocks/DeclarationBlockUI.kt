@@ -23,6 +23,7 @@ import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.ProjectTitle
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 
 class DeclarationBlockUI : BlockUI() {
     private var name by mutableStateOf("")
@@ -74,7 +75,7 @@ class DeclarationBlockUI : BlockUI() {
         }
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (selectedType == null) {
             throw IllegalArgumentException("Type must be selected")
         }

@@ -1,22 +1,17 @@
-package App.howmuchsix.hms.Blocks;
+package App.howmuchsix.hms.Blocks
 
-import java.util.List;
+import App.howmuchsix.hms.Expression.Expression
+import App.howmuchsix.hms.Handlers.Lexer
+import App.howmuchsix.hms.Handlers.Parser
+import App.howmuchsix.hms.Handlers.Token
+import App.howmuchsix.hms.Library.Variables
+import App.howmuchsix.viewmodel.ConsoleViewModel
 
-import App.howmuchsix.hms.Expression.Expression;
-import App.howmuchsix.hms.Handlers.Lexer;
-import App.howmuchsix.hms.Handlers.Parser;
-import App.howmuchsix.hms.Handlers.Token;
-
-public final class PrintBlock extends Block{
-    String output;
-    public PrintBlock(String output) {
-        this.output = output;
-    }
-
-    @Override
-    public void Action(List<String> scopes){
-        List<Token> tokens = new Lexer(output).tokenizeComplex();
-        Expression<String> outputString = new Parser(tokens, scopes).parseToPrint();
-        System.out.println(outputString.eval());
+class PrintBlock(private val output: String, private val consoleViewModel: ConsoleViewModel) : Block() {
+    override fun Action(scopes: List<String>, lib: Variables) {
+        val tokens: List<Token> = Lexer(output).tokenizeComplex()
+        val outputString: Expression<String> = Parser(tokens, scopes, lib).parseToPrint()
+        println(outputString.eval())
+        consoleViewModel.updateConsole(outputString.eval())
     }
 }
