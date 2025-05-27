@@ -1,5 +1,6 @@
 package App.howmuchsix.ui.theme
 
+import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.FieldBG
 import App.howmuchsix.ui.theme.design_elements.GridColor
@@ -7,6 +8,7 @@ import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.ui.theme.drawGrid
 import App.howmuchsix.viewmodel.*
 import App.howmuchsix.viewmodel.PlacedBlockUI
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -31,6 +37,8 @@ import kotlin.math.roundToInt
 @Composable
 fun ZoomableField(
     placedBlocks: List<PlacedBlockUI>,
+    nearbyConnectionPoint: NearbyConnection?,
+    dropZoneHighlight: DropZoneHighlight?,
     onStartDragPlacedBlock: (String, Offset) -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -51,7 +59,6 @@ fun ZoomableField(
                     .pointerInput(block.id){
                         detectDragGestures(
                             onDragStart = {offset ->
-                                //onStartDragPlacedBlock?.invoke(block.id, offset + block.position)
                                 onStartDragPlacedBlock(block.id, offset + block.position)
                             },
                             onDrag = { change, _ ->
@@ -60,7 +67,25 @@ fun ZoomableField(
                         )
                     }
             ) {
+                when (block.uiBlock) {
+                    is ReturnBlockUI -> block.uiBlock.setOwnerId(block.id)
+                }
                 block.uiBlock.Render(modifier)
+            }
+        }
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            nearbyConnectionPoint?.let { nearbyConn ->
+                val targetBlock = placedBlocks.find{ it.id == nearbyConn.ownerBlockId }
+
+                targetBlock?.let { block ->
+                    val absolutePosition = block.position + nearbyConn.connectionPoint.position
+                    drawCircle(
+                        color = Color.Magenta,
+                        radius = 10f,
+                        center = absolutePosition
+                    )
+                }
             }
         }
     }

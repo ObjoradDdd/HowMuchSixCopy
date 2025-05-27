@@ -4,55 +4,43 @@ import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
+import App.howmuchsix.viewmodel.BlockEditorViewModel
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 class ForBlockUI : BlockUI() {
-    private var iterator by mutableStateOf<BlockUI?>(null)
-    private var condition by mutableStateOf("")
-    private var action by mutableStateOf<BlockUI?>(null)
-    private var body by mutableStateOf<List<BlockUI>>(emptyList())
+    override fun metamorphosis(params: HashMap<String, Any>): Block {
 
+        val iterator = params["iterator"]?.let { iteratorValue ->
+            when (iteratorValue) {
+                is AssignmentBlock -> iteratorValue
+                is DeclarationBlock -> iteratorValue
+                else -> throw IllegalArgumentException("Iterator must be an AssignmentBlock or DeclarationBlock")
+            }
+        } ?: throw IllegalArgumentException("Iterator parameter is required")
 
-    fun initializeFromBD(
-        iteratorUI: BlockUI,
-        conditionString: String,
-        actionUI: BlockUI,
-        bodyUI: List<BlockUI>
-    ) {
-        iterator = iteratorUI
-        condition = conditionString
-        action = actionUI
-        body = bodyUI
-    }
+        val logicalExpression = params["condition"] as? String
+            ?: throw IllegalArgumentException("Logical expression parameter is required")
 
-    override fun metamorphosis(): Block {
-        if (iterator == null) {
-            throw IllegalArgumentException("Iterator is required")
-        }
-        if (condition.isEmpty()) {
-            throw IllegalArgumentException("Condition is required")
-        }
-        if (action == null) {
-            throw IllegalArgumentException("Action is required")
-        }
+        val action = params["action"] as? AssignmentBlock
+            ?: throw IllegalArgumentException("Action parameter must be an AssignmentBlock")
 
-        val iteratorBlock = iterator!!.metamorphosis()
-        val actionBlock = action!!.metamorphosis() as AssignmentBlock
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val bodyBlocks = params["body"]?.let { bodyValue ->
+            when (bodyValue) {
+                is List<*> -> bodyValue.filterIsInstance<Block>()
+                else -> listOf()
+            }
+        } ?: listOf()
 
-        return when (iteratorBlock) {
-            is AssignmentBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)
-            is DeclarationBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)
-            else -> throw IllegalStateException("Iterator must be AssignmentBlock or DeclarationBlock")
+        return when (iterator) {
+            is AssignmentBlock -> ForBlock(iterator, logicalExpression, action, bodyBlocks)
+            is DeclarationBlock -> ForBlock(iterator, logicalExpression, action, bodyBlocks)
+            else -> throw IllegalStateException("Unexpected iterator type")
         }
     }
 
     @Composable
-    override fun Render(modifier: Modifier) {
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         TODO("Not yet implemented")
     }
 }

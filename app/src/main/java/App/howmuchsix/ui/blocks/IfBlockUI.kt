@@ -2,60 +2,72 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.IfBlock
+import App.howmuchsix.viewmodel.BlockEditorViewModel
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 class IfBlockUI : BlockUI() {
-    private var condition by mutableStateOf("")
-    private var trueAction by mutableStateOf<List<BlockUI>>(emptyList())
-    private var elifConditions by mutableStateOf<List<String>?>(null)
-    private var elifActions by mutableStateOf<List<List<BlockUI>>?>(null)
-    private var falseAction by mutableStateOf<List<BlockUI>?>(null)
+    override fun metamorphosis(params: HashMap<String, Any>): Block {
+
+        val condition = params["condition"] as? String
+            ?: throw IllegalArgumentException("Condition parameter is required")
 
 
-    fun initializeFromBD(
-        conditionString: String,
-        trueActionUI: List<BlockUI>,
-        elifConditionsList: List<String>?,
-        elifActionsUI: List<List<BlockUI>>?,
-        falseActionUI: List<BlockUI>?
-    ) {
-        condition = conditionString
-        trueAction = trueActionUI
-        elifConditions = elifConditionsList
-        elifActions = elifActionsUI
-        falseAction = falseActionUI
-    }
+        val trueAction = params["trueAction"]?.let { actionValue ->
+            when (actionValue) {
+                is List<*> -> actionValue.filterIsInstance<Block>()
+                else -> throw IllegalArgumentException("True action must be a list of blocks")
+            }
+        } ?: throw IllegalArgumentException("True action parameter is required")
 
-    override fun metamorphosis(): Block {
-        if (condition.isEmpty()) {
-            throw IllegalArgumentException("Condition is required")
-        }
-        if (trueAction.isEmpty()) {
-            throw IllegalArgumentException("True action is required")
+
+        val falseAction = params["falseAction"]?.let { actionValue ->
+            when (actionValue) {
+                is List<*> -> actionValue.filterIsInstance<Block>()
+                else -> listOf()
+            }
         }
 
-        val trueActionBlocks = trueAction.map { it.metamorphosis() }
-        val falseActionBlocks = falseAction?.map { it.metamorphosis() }
-        val elifActionsList = elifActions?.map { actionList ->
-            actionList.map { it.metamorphosis() }
+        val elifConditions = params["elifConditions"]?.let { conditionsValue ->
+            when (conditionsValue) {
+                is List<*> -> conditionsValue.filterIsInstance<String>()
+                else -> listOf()
+            }
+        }
+
+        val elifActions = params["elifActions"]?.let { actionsValue ->
+            when (actionsValue) {
+                is List<*> -> actionsValue.mapNotNull { action ->
+                    when (action) {
+                        is List<*> -> action.filterIsInstance<Block>()
+                        else -> null
+                    }
+                }
+                else -> listOf()
+            }
+        }
+
+
+        if ((elifConditions == null && elifActions != null) ||
+            (elifConditions != null && elifActions == null) ||
+            (elifConditions != null && elifActions != null && elifConditions.size != elifActions.size)) {
+            throw IllegalArgumentException("Elif conditions and actions must match")
         }
 
         return when {
-            elifActionsList != null && elifConditions != null && falseActionBlocks != null ->
-                IfBlock(condition, trueActionBlocks, elifConditions!!, elifActionsList, falseActionBlocks)
-            falseActionBlocks != null ->
-                IfBlock(condition, trueActionBlocks, falseActionBlocks)
+            elifConditions != null && falseAction != null ->
+                IfBlock(condition, trueAction, elifConditions, elifActions!!, falseAction)
+
+            falseAction != null ->
+                IfBlock(condition, trueAction, falseAction)
+
             else ->
-                IfBlock(condition, trueActionBlocks)
+                IfBlock(condition, trueAction)
         }
     }
 
     @Composable
-    override fun Render(modifier: Modifier) {
+    override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         TODO("Not yet implemented")
     }
 }
