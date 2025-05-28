@@ -14,6 +14,6 @@ class PrintBlock(private val output: String, private val consoleViewModel: Conso
         val outputString: Expression<String> =
             Parser(tokens, scopes, lib).parseStringInterpolation()
         println(outputString.eval())
-        consoleViewModel.updateConsole(outputString.eval())
+        consoleViewModel.addToConsole(outputString.eval())
     }
 }

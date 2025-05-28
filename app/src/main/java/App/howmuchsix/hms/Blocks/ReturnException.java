@@ -5,8 +5,8 @@ import App.howmuchsix.hms.Expression.Expression;
 public class ReturnException extends Exception {
     private final Expression<?> value;
 
-    public ReturnException(String returnExpressionString, Expression<?> value) {
-        super(returnExpressionString);
+    public ReturnException(Expression<?> value) {
+        super("Return block outside a function");
         this.value = value;
     }
 

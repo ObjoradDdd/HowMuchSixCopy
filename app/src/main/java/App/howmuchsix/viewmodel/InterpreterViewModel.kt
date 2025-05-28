@@ -56,6 +56,7 @@ class InterpreterViewModel(private val consoleViewModel: ConsoleViewModel) : Vie
                     withContext(Dispatchers.Main) {
                         consoleViewModel.addToConsole("\n${e.message}")
                     }
+                    break
                 }
             }
             if(isSuccess){

@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.BreakBlock
 import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.ui.DropZone
@@ -60,7 +61,7 @@ class ReturnBlockUI : BlockUI() {
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO("Not yet implemented")
+        return ReturnBlock()
     }
 
 }
