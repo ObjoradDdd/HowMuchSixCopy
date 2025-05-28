@@ -42,7 +42,13 @@ public final class ForBlock extends Block {
             while (logicalExpression.parseLogical().eval()) {
                 lib.newScope(name);
                 for (Block block : body) {
-                    block.Action(newScopes, lib);
+                    try {
+                        block.Action(newScopes, lib);
+                    }
+                    catch (ContinueException ignored){
+                        break;
+                    }
+
                 }
                 action.Action(newScopes, lib);
                 lib.deleteScope(name);
