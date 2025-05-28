@@ -50,19 +50,18 @@ class DeclarationArrayBlockUI : BlockUI() {
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(8.dp))
                 .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
+                .defaultMinSize(minWidth = 190.dp, minHeight = 140.dp)
         ) {
+            Text(
+                text = "Array",
+                style = SubTitle1,
+                color = TextWhite
+            )
+            Spacer(Modifier.height(12.dp))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Array",
-                    style = SubTitle1,
-                    color = TextWhite
-                )
-                Spacer(Modifier.width(12.dp))
-
                 DropDownMenuTypeSelector(
                     selectedType = selectedType,
                     onTypeSelected = { selectedType = it}
@@ -96,7 +95,7 @@ class DeclarationArrayBlockUI : BlockUI() {
                             BlockType.Assignment
                         ),
                         placeholder = "components",
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = 170.dp, minHeight = 40.dp)
                     )
                 }
             }

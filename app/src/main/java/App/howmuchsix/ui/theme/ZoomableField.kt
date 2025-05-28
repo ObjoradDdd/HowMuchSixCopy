@@ -7,6 +7,7 @@ import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
+import App.howmuchsix.ui.blocks.SleepBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.FieldBG
@@ -77,7 +78,6 @@ fun ZoomableField(
                     }
             ) {
                 when (block.uiBlock) {
-                    is PrintBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is IfBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is ForBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is WhileBlockUI -> block.uiBlock.setOwnerId(block.id)

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 
 class FunctionDeclarationBlockUI : BlockUI() {
 
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var funName by mutableStateOf("")
     private var selectedType by mutableStateOf<_types?>(null)
@@ -59,16 +60,16 @@ class FunctionDeclarationBlockUI : BlockUI() {
                 .padding(12.dp)
                 .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
         ) {
+            Text(
+                text = "Fun",
+                style = SubTitle1,
+                color = TextWhite
+            )
+            Spacer(Modifier.height(12.dp))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Fun",
-                    style = SubTitle1,
-                    color = TextWhite
-                )
-                Spacer(Modifier.width(12.dp))
 
                 DropDownMenuTypeSelector(
                     selectedType = selectedType,
@@ -90,20 +91,13 @@ class FunctionDeclarationBlockUI : BlockUI() {
                     text = ":",
                     style = SubTitle1
                 )
-
-                if (viewModel != null) {
-                    Spacer(Modifier.width(8.dp))
-                    DropZone(
-                        id = "function_params_dropzone_${ownerBlockId}",
-                        ownerBlockId = ownerBlockId,
-                        viewModel = viewModel,
-                        acceptedTypes = listOf(
-                            BlockType.Declaration
-                        ),
-                        placeholder = "parameters",
-                        modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 36.dp)
-                    )
-                }
+                Spacer(Modifier.width(8.dp))
+                ButtonTextField(
+                    value = value,
+                    onValueChange = {value = it},
+                    textStyle = SubTitle1,
+                    placeholder = "parameters"
+                )
             }
             Spacer(Modifier.height(12.dp))
             if (viewModel != null) {
@@ -128,7 +122,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
                             BlockType.While
                         ),
                         placeholder = "body",
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = 270.dp, minHeight = 40.dp)
                     )
                 }
             }

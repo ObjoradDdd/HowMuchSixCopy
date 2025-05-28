@@ -3,8 +3,7 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.SleepBlock
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -26,25 +25,16 @@ class SleepBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
 
-    fun initializeFromBD(value: String){
-        this.value = value
-    }
-
-
-    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return SleepBlock(value)
-    }
-
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(8.dp))
+                .background(BlockRed, RoundedCornerShape(8.dp))
                 .padding(8.dp)
         ){
             Spacer(Modifier.width(8.dp))
 
-            Text(text = "Print",
+            Text(text = "Sleep",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -57,5 +47,14 @@ class SleepBlockUI : BlockUI() {
                 placeholder = "value"
             )
         }
+    }
+
+    fun initializeFromBD(value: String){
+        this.value = value
+    }
+
+
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+        return SleepBlock(value)
     }
 }

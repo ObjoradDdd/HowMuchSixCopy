@@ -3,6 +3,7 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
 import App.howmuchsix.ui.DropZone
+import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
@@ -31,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 class WhileBlockUI : BlockUI() {
+
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     fun setOwnerId(id: String){
         ownerBlockId = id
@@ -54,20 +57,13 @@ class WhileBlockUI : BlockUI() {
                     color = TextWhite
                 )
                 Spacer(Modifier.width(12.dp))
-
-                if (viewModel != null) {
-                    DropZone(
-                        id = "whule_condition_dropzone_${ownerBlockId}",
-                        ownerBlockId = ownerBlockId,
-                        viewModel = viewModel,
-                        acceptedTypes = listOf(
-                            BlockType.Declaration,
-                            BlockType.Assignment
-                        ),
-                        placeholder = "condition",
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
-                    )
-                }
+                ButtonTextField(
+                    value = value,
+                    onValueChange = {value = it},
+                    textStyle = SubTitle1,
+                    placeholder = "condition",
+                    modifier = Modifier.defaultMinSize(minWidth = 170.dp)
+                )
             }
             Spacer(Modifier.height(8.dp))
             Text(

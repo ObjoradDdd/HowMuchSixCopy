@@ -31,11 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 class FunctionBlockUI : BlockUI() {
-
-    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO()
-    }
-
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var selectedFun by mutableStateOf("")
 
@@ -45,50 +41,50 @@ class FunctionBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Row (
-            modifier = Modifier
+        Column (
+            modifier = modifier
                 .background(BlockPink, RoundedCornerShape(8.dp))
                 .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 60.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+                .defaultMinSize(minWidth = 220.dp, minHeight = 60.dp)
+        ){
             Text(
                 text = "Call fun",
                 style = SubTitle1,
                 color = TextWhite
             )
-            Spacer(Modifier.width(12.dp))
-
-            DropdownMenuFunSelector(
-                selectedFun = selectedFun,
-                onFunctionSelected = { functionName ->
-                    selectedFun = functionName
-                },
-                viewModel = viewModel,
-                placeholderText = "select",
-                buttonBackgroundColor = BlockRed,
-                textColor = TextWhite
-            )
-
-            Spacer(Modifier.width(12.dp))
-            Text(
-                text = ":",
-                style = SubTitle1
-            )
-
-            if (viewModel != null) {
-                Spacer(Modifier.width(8.dp))
-                DropZone(
-                    id = "function_params_dropzone_${ownerBlockId}",
-                    ownerBlockId = ownerBlockId,
+            Spacer(Modifier.height(12.dp))
+            Row (
+                modifier = Modifier.wrapContentSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                DropdownMenuFunSelector(
+                    selectedFun = selectedFun,
+                    onFunctionSelected = { functionName ->
+                        selectedFun = functionName
+                    },
                     viewModel = viewModel,
-                    acceptedTypes = listOf(
-                        BlockType.Declaration
-                    ),
-                    placeholder = "parameters",
-                    modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 36.dp)
+                    placeholderText = "name",
+                    buttonBackgroundColor = BlockRed
+                )
+
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    text = ":",
+                    style = SubTitle1
+                )
+                Spacer(Modifier.width(8.dp))
+                ButtonTextField(
+                    value = value,
+                    onValueChange = {value = it},
+                    textStyle = SubTitle1,
+                    placeholder = "parameters"
                 )
             }
         }
     }
+
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+        TODO()
+    }
+
 }

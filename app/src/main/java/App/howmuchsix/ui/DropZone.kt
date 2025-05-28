@@ -3,6 +3,8 @@ package App.howmuchsix.ui
 import App.howmuchsix.ui.theme.design_elements.DarkerBeige
 import App.howmuchsix.ui.theme.design_elements.InputText
 import App.howmuchsix.ui.theme.design_elements.LighterBeige
+import App.howmuchsix.ui.theme.design_elements.PlaceholderText
+import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.DropZoneTarget
@@ -63,7 +65,7 @@ fun DropZone(
                 color = when {
                     isHighlighted && isValidDrop -> Color.Green
                     isHighlighted && !isValidDrop -> Color.Red
-                    else -> DarkerBeige
+                    else -> TextWhite
                 },
                 shape = RoundedCornerShape(4.dp)
             )
@@ -99,7 +101,7 @@ fun DropZone(
         } else {
             Text(
                 text = placeholder,
-                style = InputText
+                style = PlaceholderText
             )
         }
     }
