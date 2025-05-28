@@ -7,6 +7,6 @@ import App.howmuchsix.hms.Library.Variables;
 public class BreakBlock extends Block {
     @Override
     public void Action(List<String> scopes, Variables lib) {
-        throw new BreakException("break");
+        throw new BreakException();
     }
 }
