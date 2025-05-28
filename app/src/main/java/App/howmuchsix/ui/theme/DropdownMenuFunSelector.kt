@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.Placeholder
 import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,8 +29,7 @@ fun DropdownMenuFunSelector(
     viewModel: BlockEditorViewModel?,
     modifier: Modifier = Modifier,
     placeholderText: String = "select",
-    buttonBackgroundColor: Color = BlockRed,
-    textColor: Color = TextWhite
+    buttonBackgroundColor: Color = BlockRed
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -36,12 +37,14 @@ fun DropdownMenuFunSelector(
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
             onClick = { expanded = true },
-            shape = RoundedCornerShape(4.dp)
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier
+                .defaultMinSize(minWidth = 90.dp, minHeight = 40.dp)
         ) {
             Text(
                 text = if (selectedFun.isNotBlank()) selectedFun
                 else placeholderText,
-                style = SubTitle1
+                style = PlaceholderText
             )
 
         }

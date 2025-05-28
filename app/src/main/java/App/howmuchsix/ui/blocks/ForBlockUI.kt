@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 class ForBlockUI : BlockUI() {
+
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     fun setOwnerId(id: String){
         ownerBlockId = id
@@ -74,15 +76,12 @@ class ForBlockUI : BlockUI() {
                         modifier = Modifier.defaultMinSize(minWidth = 73.dp, minHeight = 40.dp)
                     )
                     Spacer(Modifier.width(4.dp))
-                    DropZone(
-                        id = "for_condition_dropzone_${ownerBlockId}",
-                        ownerBlockId = ownerBlockId,
-                        viewModel = viewModel,
-                        acceptedTypes = listOf(
-                            BlockType.Assignment
-                        ),
+                    ButtonTextField(
+                        value = value,
+                        onValueChange = {value = it},
+                        textStyle = SubTitle1,
                         placeholder = "condition",
-                        modifier = Modifier.defaultMinSize(minWidth = 73.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = 60.dp)
                     )
                     Spacer(Modifier.width(4.dp))
                     DropZone(
@@ -123,7 +122,7 @@ class ForBlockUI : BlockUI() {
                             BlockType.Break
                         ),
                         placeholder = "do statements",
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = 270.dp, minHeight = 40.dp)
                     )
                 }
             }

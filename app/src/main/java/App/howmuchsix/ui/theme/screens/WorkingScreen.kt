@@ -87,6 +87,17 @@ fun WorkingScreen(
 
     val blockCategories = listOf(
         BlockCategory(
+            name = "Events",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.StartProgram,
+                    label = "Start program",
+                    color = BlockPeach
+                )
+            ),
+            blockColor = BlockPeach
+        ),
+        BlockCategory(
             name = "Functions",
             blocks = listOf(
                 BlockItemData(
@@ -100,8 +111,8 @@ fun WorkingScreen(
                     color = BlockPink
                 ),
                 BlockItemData(
-                    type = BlockType.Break,
-                    label = "Break",
+                    type = BlockType.Return,
+                    label = "Return",
                     color = BlockPink
                 )
             ),
@@ -129,37 +140,6 @@ fun WorkingScreen(
             blockColor = BlockYellow
         ),
         BlockCategory(
-            name = "Math",
-            blocks = listOf(
-                BlockItemData(
-                    type = BlockType.And,
-                    label = "And",
-                    color = BlockPeach
-                ),
-                BlockItemData(
-                    type = BlockType.Or,
-                    label = "Or",
-                    color = BlockPeach
-                ),
-                BlockItemData(
-                    type = BlockType.Operator,
-                    label = "Operator",
-                    color = BlockPeach
-                ),
-                BlockItemData(
-                    type = BlockType.Type,
-                    label = "Type input",
-                    color = BlockPeach
-                ),
-                BlockItemData(
-                    type = BlockType.Logic,
-                    label = "Logic",
-                    color = BlockPeach
-                ),
-            ),
-            blockColor = BlockPeach
-        ),
-        BlockCategory(
             name = "Logic",
             blocks = listOf(
                 BlockItemData(
@@ -178,8 +158,13 @@ fun WorkingScreen(
                     color = BlockOrange
                 ),
                 BlockItemData(
-                    type = BlockType.Return,
-                    label = "Return",
+                    type = BlockType.Break,
+                    label = "Break",
+                    color = BlockOrange
+                ),
+                BlockItemData(
+                    type = BlockType.Continue,
+                    label = "Continue",
                     color = BlockOrange
                 )
             ),
@@ -191,6 +176,11 @@ fun WorkingScreen(
                 BlockItemData(
                     type = BlockType.Print,
                     label = "Print",
+                    color = BlockRed
+                ),
+                BlockItemData(
+                    type = BlockType.Sleep,
+                    label = "Sleep",
                     color = BlockRed
                 )
             ),
