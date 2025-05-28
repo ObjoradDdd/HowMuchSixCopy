@@ -1,14 +1,10 @@
 package App.howmuchsix.ui.theme
 
-import App.howmuchsix.ui.blocks.AndBlockUI
 import App.howmuchsix.ui.blocks.DeclarationArrayBlockUI
 import App.howmuchsix.ui.blocks.ForBlockUI
 import App.howmuchsix.ui.blocks.FunctionBlockUI
 import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
-import App.howmuchsix.ui.blocks.LogicBlockUI
-import App.howmuchsix.ui.blocks.OperatorBlockUI
-import App.howmuchsix.ui.blocks.OrBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
@@ -88,10 +84,6 @@ fun ZoomableField(
                     is FunctionDeclarationBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is FunctionBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is DeclarationArrayBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is AndBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is OrBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is OperatorBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is LogicBlockUI -> block.uiBlock.setOwnerId(block.id)
                 }
                 block.uiBlock.Render(modifier, viewModel)
             }
