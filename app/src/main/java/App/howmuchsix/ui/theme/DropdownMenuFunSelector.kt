@@ -71,7 +71,8 @@ fun DropdownMenuFunSelector(
                             text = {
                                 Text(
                                     text = functionName,
-                                    style = SubTitle2
+                                    style = SubTitle1,
+                                    color = BlockRed
                                 )
                             },
                             onClick = {
