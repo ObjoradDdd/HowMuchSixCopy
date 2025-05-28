@@ -48,11 +48,11 @@ public final class FunctionExpression<T> implements Expression<T> {
                 block.Action(nameScope, lib);
             }
 
-            if (returnType != Types.VOID){
+            if (returnType != Types.VOID) {
                 throw new RuntimeException("No return in " + returnType + " function");
             }
         } catch (ReturnException exception) {
-            if (returnType == Types.VOID){
+            if (returnType == Types.VOID) {
                 return new NullExpression<>(returnType);
             }
 
@@ -62,7 +62,7 @@ public final class FunctionExpression<T> implements Expression<T> {
             } else {
                 throw new RuntimeException("Invalid return expression type. " + returnType + " was expected");
             }
-        }finally {
+        } finally {
             lib.deleteScope(name);
         }
         return null;

@@ -253,6 +253,7 @@ fun WorkingScreen(
             onItemClick = { item ->
                 when (item.title) {
                     "Blocks" -> {
+
                         isBlockPanelVisible = !isBlockPanelVisible
                         isConsoleVisible = false
                     }

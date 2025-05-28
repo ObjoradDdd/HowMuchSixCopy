@@ -37,8 +37,8 @@ class PrintBlockUI : BlockUI() {
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return PrintBlock(value, consoleViewModel)
-
+        return PrintBlock(textValue, consoleViewModel)
+    }
         
     fun setOwnerId(id: String){
         ownerBlockId = id

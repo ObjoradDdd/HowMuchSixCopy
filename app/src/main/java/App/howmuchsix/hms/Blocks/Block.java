@@ -10,7 +10,7 @@ public class Block {
 
     List<String> scopeNames = List.of("MainScope");
 
-    public void Action(List<String> scopes, Variables lib) throws ReturnException, BreakException{
+    public void Action(List<String> scopes, Variables lib) throws ReturnException, BreakException {
     }
 
     public void setScopes(List<String> scopes) {

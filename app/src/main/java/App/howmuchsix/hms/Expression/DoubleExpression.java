@@ -8,6 +8,7 @@ public final class DoubleExpression implements Expression<Double> {
 
     private final Double value;
     private static final Types type = Types.DOUBLE;
+
     public DoubleExpression(Double value) {
         this.value = value;
     }
@@ -24,7 +25,7 @@ public final class DoubleExpression implements Expression<Double> {
 
     @NonNull
     @Override
-    public String toString(){
+    public String toString() {
         return Double.toString(value);
     }
 }

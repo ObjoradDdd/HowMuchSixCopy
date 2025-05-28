@@ -9,7 +9,8 @@ import App.howmuchsix.hms.Library.Variables;
 
 public final class FunctionBlock extends Block {
     String functionName;
-    public FunctionBlock(String functionName){
+
+    public FunctionBlock(String functionName) {
         this.blockID = "function_block";
         this.functionName = functionName;
     }

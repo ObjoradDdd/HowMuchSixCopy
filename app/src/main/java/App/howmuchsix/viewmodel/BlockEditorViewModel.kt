@@ -92,7 +92,11 @@ data class PlacedBlockUI(
     val isConnected: Boolean = false,
     val parentConnection: BlockConnection? = null,
     val dropZones: List<DropZoneData> = emptyList()
-)
+) {
+    override fun toString(): String {
+        return this.type.toString()
+    }
+}
 
 class BlockEditorViewModel : ViewModel() {
     private val snapThreshold = 50f

@@ -22,10 +22,10 @@ public final class DeclarationBlock extends Block {
 
     public void Action(List<String> scopes, Variables lib) {
         for (int i = 0; i < this.variables.size(); i++) {
-            if (lib.isExistsVariable(this.variables.get(i))){
+            if (lib.isExistsVariable(this.variables.get(i))) {
                 throw new RuntimeException(this.variables.get(i) + " is already declared");
             }
-            if (Objects.equals(this.variables.get(i), "true") || Objects.equals(this.variables.get(i), "false")){
+            if (Objects.equals(this.variables.get(i), "true") || Objects.equals(this.variables.get(i), "false")) {
                 throw new RuntimeException("Variable cannot be named true or false");
             }
             if (i < this.values.size()) {

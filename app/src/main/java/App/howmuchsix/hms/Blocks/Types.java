@@ -13,13 +13,13 @@ import App.howmuchsix.hms.Library.Variables;
 public enum Types {
     INT(Integer.class) {
         @Override
-        public  Expression<Number> getValue(String input, List<String> scopeNames, Variables lib) {
+        public Expression<Number> getValue(String input, List<String> scopeNames, Variables lib) {
             return new ArithmeticBlock(input).eval(scopeNames, lib);
         }
     },
     DOUBLE(Double.class) {
         @Override
-        public  Expression<Number> getValue(String input, List<String> scopeNames, Variables lib) {
+        public Expression<Number> getValue(String input, List<String> scopeNames, Variables lib) {
             return new ArithmeticBlock(input, true).eval(scopeNames, lib);
         }
     },
@@ -31,7 +31,7 @@ public enum Types {
     },
     BOOLEAN(Boolean.class) {
         @Override
-        public  Expression<Boolean> getValue(String input, List<String> scopeNames, Variables lib) {
+        public Expression<Boolean> getValue(String input, List<String> scopeNames, Variables lib) {
             return new LogicalBlock(input).eval(scopeNames, lib);
         }
     },
@@ -56,19 +56,19 @@ public enum Types {
         }
     },
 
-    ARRAY(Arrays.class){
+    ARRAY(Arrays.class) {
         @Override
         public ArrayExpression getValue(String input, List<String> scopeNames, Variables lib) {
             List<Token> tokens = new Lexer(input).tokenize();
             Expression<?> expression = new Parser(tokens, scopeNames, lib).parseCollection();
-            if (expression.getType() == Types.ARRAY){
+            if (expression.getType() == Types.ARRAY) {
                 return (ArrayExpression) expression;
             }
             throw new UnsupportedOperationException(input + " is not ARRAY");
         }
     },
 
-    OBJECT(Object.class){
+    OBJECT(Object.class) {
         @Override
         public Expression<Object> getValue(String input, List<String> scopeNames, Variables lib) {
             throw new UnsupportedOperationException("Cannot get value for OBJECT type");
@@ -85,6 +85,6 @@ public enum Types {
         return typeClass;
     }
 
-    public abstract  Expression<?> getValue(String input, List<String> scopeNames, Variables lib);
+    public abstract Expression<?> getValue(String input, List<String> scopeNames, Variables lib);
 
 }

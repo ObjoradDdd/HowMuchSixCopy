@@ -1,4 +1,5 @@
 package App.howmuchsix.hms.Expression;
+
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class LogicalBinaryExpression implements Expression<Boolean> {
@@ -10,14 +11,14 @@ public final class LogicalBinaryExpression implements Expression<Boolean> {
         this.operator = operator;
         this.left = left;
         this.right = right;
-        if (left.eval() == null || right.eval() == null){
+        if (left.eval() == null || right.eval() == null) {
             throw new RuntimeException("You can't use operator " + operator + " with null");
         }
     }
 
     @Override
     public Boolean eval() {
-        if (operator.isEmpty()){
+        if (operator.isEmpty()) {
             return toBoolean(left.eval());
         }
 
@@ -41,6 +42,7 @@ public final class LogicalBinaryExpression implements Expression<Boolean> {
     public Types getType() {
         return null;
     }
+
     private boolean equals(Object left, Object right) {
         if (left == null) return right == null;
         if (right == null) return false;
