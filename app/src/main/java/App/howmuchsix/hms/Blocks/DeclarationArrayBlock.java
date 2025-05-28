@@ -13,20 +13,20 @@ public final class DeclarationArrayBlock extends Block {
     Types type;
     List<String> values = null;
 
-    public DeclarationArrayBlock(Types type, String name, int length){
+    public DeclarationArrayBlock(Types type, String name, int length) {
         this.type = type;
         this.name = name;
         this.length = length;
     }
 
-    public DeclarationArrayBlock(Types type, String name, List<String> values){
+    public DeclarationArrayBlock(Types type, String name, List<String> values) {
         this.type = type;
         this.name = name;
         this.length = values.size();
         this.values = values;
     }
 
-    public DeclarationArrayBlock(Types type, String name, int length, List<String> values){
+    public DeclarationArrayBlock(Types type, String name, int length, List<String> values) {
         this.type = type;
         this.name = name;
         this.length = length;
@@ -34,25 +34,22 @@ public final class DeclarationArrayBlock extends Block {
     }
 
 
-
     @Override
-    public void Action(List<String> scopes) {
-        if (values == null){
-            Variables.set(name, new ArrayExpression(type, length), scopes.get(scopes.size() - 1));
-        }
-        else if(values.size() != length){
+    public void Action(List<String> scopes, Variables lib) {
+        if (values == null) {
+            lib.set(name, new ArrayExpression(type, length), scopes.get(scopes.size() - 1));
+        } else if (values.size() != length) {
             List<Expression<?>> valueExpressions = new ArrayList<>();
-            for(String input : values){
-                valueExpressions.add(type.getValue(input, scopes));
+            for (String input : values) {
+                valueExpressions.add(type.getValue(input, scopes, lib));
             }
-            Variables.set(name, new ArrayExpression(type, length, valueExpressions), scopes.get(scopes.size() - 1));
-        }
-        else {
+            lib.set(name, new ArrayExpression(type, length, valueExpressions), scopes.get(scopes.size() - 1));
+        } else {
             List<Expression<?>> valueExpressions = new ArrayList<>();
-            for(String input : values){
-                valueExpressions.add(type.getValue(input, scopes));
+            for (String input : values) {
+                valueExpressions.add(type.getValue(input, scopes, lib));
             }
-            Variables.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
+            lib.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
         }
     }
 }

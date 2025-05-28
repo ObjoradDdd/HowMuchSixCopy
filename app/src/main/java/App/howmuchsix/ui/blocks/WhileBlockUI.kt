@@ -7,6 +7,7 @@ import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -109,7 +110,7 @@ class WhileBlockUI : BlockUI() {
         body = bodyUI
     }
 
-    override fun metamorphosis(): Block {
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (condition.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
@@ -117,7 +118,7 @@ class WhileBlockUI : BlockUI() {
             throw IllegalArgumentException("Body is required")
         }
 
-        val bodyBlocks = body.map { it.metamorphosis() }
+        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
         return WhileBlock(condition, bodyBlocks)
     }
 

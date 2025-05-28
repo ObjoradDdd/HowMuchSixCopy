@@ -9,14 +9,15 @@ import App.howmuchsix.hms.Library.Variables;
 
 public final class FunctionBlock extends Block {
     String functionName;
-    public FunctionBlock(String functionName){
+
+    public FunctionBlock(String functionName) {
         this.blockID = "function_block";
         this.functionName = functionName;
     }
 
-    public void Action(List<String> scopes) {
+    public void Action(List<String> scopes, Variables lib) {
         Token functionToken = new Lexer(functionName).tokenizeFunction();
-        FunctionExpression<?> functionExpression = Variables.getFunction(functionToken.getText());
+        FunctionExpression<?> functionExpression = lib.getFunction(functionToken.getText());
         functionExpression.functionReturn(functionToken.getArguments(), scopes);
     }
 }

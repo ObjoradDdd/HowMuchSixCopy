@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public final class StringExpression implements Expression<String>{
+public final class StringExpression implements Expression<String> {
     private final String value;
     private static final Types type = Types.STRING;
 
@@ -24,7 +24,7 @@ public final class StringExpression implements Expression<String>{
 
     @NonNull
     @Override
-    public String toString(){
+    public String toString() {
         return value;
     }
 }

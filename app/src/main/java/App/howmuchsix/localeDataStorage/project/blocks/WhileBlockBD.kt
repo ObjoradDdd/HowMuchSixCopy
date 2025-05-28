@@ -1,8 +1,8 @@
 package App.howmuchsix.localeDataStorage.project.blocks
 
 import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.ui.blocks.BlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
+import App.howmuchsix.ui.blocks.BlockUI
 import kotlinx.serialization.Serializable
 
 @Serializable

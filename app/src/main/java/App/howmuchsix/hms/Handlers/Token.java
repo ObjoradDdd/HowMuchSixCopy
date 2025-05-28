@@ -17,6 +17,7 @@ public final class Token {
         this.text = text;
         this.body = body;
     }
+
     public Token(TokenType type, String text) {
         this.type = type;
         this.text = text;
@@ -36,7 +37,7 @@ public final class Token {
         return arguments;
     }
 
-    public String getBody(){
+    public String getBody() {
         return body;
     }
 

@@ -35,29 +35,29 @@ public final class IfBlock extends Block {
     }
 
     @Override
-    public void Action(List<String> scopeNames) throws ReturnException {
-        String name = "Scope - " + Variables.getNumberOfScopes();
+    public void Action(List<String> scopeNames, Variables lib) throws ReturnException {
+        String name = "Scope - " + lib.getNumberOfScopes();
         List<String> newScopes = new ArrayList<>(scopeNames);
         newScopes.add(name);
-        Variables.newScope(name);
+        lib.newScope(name);
         try {
             if (elifActions == null && falseAction == null) {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
                     for (Block block : trueAction) {
-                        block.Action(newScopes);
+                        block.Action(newScopes, lib);
                     }
                 }
             } else if (elifActions != null && falseAction == null) {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
                     for (Block block : trueAction) {
-                        block.Action(newScopes);
+                        block.Action(newScopes, lib);
                     }
                     return;
                 }
                 for (int i = 0; i < elifActions.size(); i++) {
-                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
+                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames, lib).eval())) {
                         for (Block block : elifActions.get(i)) {
-                            block.Action(newScopes);
+                            block.Action(newScopes, lib);
                         }
                         return;
                     }
@@ -65,40 +65,39 @@ public final class IfBlock extends Block {
 
             } else if (elifActions != null) {
 
-                if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
                     for (Block block : trueAction) {
-                        block.Action(newScopes);
+                        block.Action(newScopes, lib);
                     }
                     return;
                 }
 
                 for (int i = 0; i < elifActions.size(); i++) {
-                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames).eval())) {
+                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames, lib).eval())) {
                         for (Block block : elifActions.get(i)) {
-                            block.Action(newScopes);
+                            block.Action(newScopes, lib);
                         }
                         return;
                     }
                 }
 
                 for (Block block : falseAction) {
-                    block.Action(newScopes);
+                    block.Action(newScopes, lib);
                 }
 
             } else {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames).eval())) {
+                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
                     for (Block block : trueAction) {
-                        block.Action(newScopes);
+                        block.Action(newScopes, lib);
                     }
                 } else {
                     for (Block block : falseAction) {
-                        block.Action(newScopes);
+                        block.Action(newScopes, lib);
                     }
                 }
             }
-        }
-        finally {
-            Variables.deleteScope(name);
+        } finally {
+            lib.deleteScope(name);
         }
     }
 }

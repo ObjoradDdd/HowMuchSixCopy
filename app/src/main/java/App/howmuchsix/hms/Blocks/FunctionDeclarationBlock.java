@@ -5,7 +5,7 @@ import java.util.List;
 import App.howmuchsix.hms.Expression.FunctionExpression;
 import App.howmuchsix.hms.Library.Variables;
 
-public final class FunctionDeclarationBlock extends Block{
+public final class FunctionDeclarationBlock extends Block {
     final List<Types> argumentsTypes;
     final List<String> argumentNames;
     final String name;
@@ -23,9 +23,9 @@ public final class FunctionDeclarationBlock extends Block{
     }
 
     @Override
-    public void Action(List<String> scopes) {
-        if (Variables.isExistsFunction(name)) {
-            Variables.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body), "MainScope");
+    public void Action(List<String> scopes, Variables lib) {
+        if (lib.isExistsFunction(name)) {
+            lib.set(name, new FunctionExpression<>(returnType, name, argumentsTypes, argumentNames, body, lib), "MainScope");
 
         }
     }

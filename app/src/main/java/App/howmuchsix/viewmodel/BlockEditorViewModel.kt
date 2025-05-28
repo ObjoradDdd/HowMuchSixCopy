@@ -21,9 +21,6 @@ import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.TypeBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import android.util.Log
-import android.util.Size
-import androidx.compose.material3.FabPosition
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.geometry.Offset
@@ -103,7 +100,11 @@ data class PlacedBlockUI(
     val isConnected: Boolean = false,
     val parentConnection: BlockConnection? = null,
     val dropZones: List<DropZoneData> = emptyList()
-)
+) {
+    override fun toString(): String {
+        return this.type.toString()
+    }
+}
 
 class BlockEditorViewModel : ViewModel() {
     private val snapThreshold = 50f

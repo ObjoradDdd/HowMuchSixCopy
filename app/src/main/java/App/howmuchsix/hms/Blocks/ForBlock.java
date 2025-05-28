@@ -29,27 +29,33 @@ public final class ForBlock extends Block {
     }
 
     @Override
-    public void Action(List<String> scopes) throws ReturnException {
-        String name = "Scope - " + Variables.getNumberOfScopes();
-        String iteratorScope = "Scope - " + (Variables.getNumberOfScopes() + 1);
+    public void Action(List<String> scopes, Variables lib) throws ReturnException {
+        String name = "Scope - " + lib.getNumberOfScopes();
+        String iteratorScope = "Scope - " + (lib.getNumberOfScopes() + 1);
         List<String> newScopes = new ArrayList<>(scopes);
-        List<Token> tokens = new Lexer(logicalExpressionString).tokenizeComplex();
-        Parser logicalExpression = new Parser(tokens, newScopes);
-        Variables.newScope(iteratorScope);
+        List<Token> tokens = new Lexer(logicalExpressionString).tokenize();
+        Parser logicalExpression = new Parser(tokens, newScopes, lib);
+        lib.newScope(iteratorScope);
         try {
-            iterator.Action(newScopes);
+            iterator.Action(newScopes, lib);
             newScopes.add(name);
             while (logicalExpression.parseLogical().eval()) {
-                Variables.newScope(name);
+                lib.newScope(name);
                 for (Block block : body) {
-                    block.Action(newScopes);
+                    try {
+                        block.Action(newScopes, lib);
+                    }
+                    catch (ContinueException ignored){
+                        break;
+                    }
+
                 }
-                action.Action(newScopes);
-                Variables.deleteScope(name);
+                action.Action(newScopes, lib);
+                lib.deleteScope(name);
             }
         } catch (BreakException ignored) {
         } finally {
-            Variables.deleteScope(name);
+            lib.deleteScope(name);
         }
     }
 

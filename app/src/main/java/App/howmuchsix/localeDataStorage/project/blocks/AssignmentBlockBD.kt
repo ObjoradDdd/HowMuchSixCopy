@@ -11,6 +11,8 @@ data class AssignmentBlockBD(
     val value: String
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
-        return AssignmentBlockUI()
+        val assignmentUI = AssignmentBlockUI()
+        assignmentUI.initializeFromBD(variable, value)
+        return assignmentUI
     }
 }
