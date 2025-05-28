@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.theme
 
 import App.howmuchsix.ui.blocks._types
+import App.howmuchsix.ui.blocks.operators
 import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,9 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DropDownMenuTypeSelector(
-    selectedType: _types?,
-    onTypeSelected: (_types) -> Unit
+fun OperatorSelectorDropdownMenu(
+    selectedOperator: operators?,
+    onSelected: (operators) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -31,7 +32,7 @@ fun DropDownMenuTypeSelector(
             shape = RoundedCornerShape(4.dp)
         ) {
             Text(
-                text = selectedType?.name ?: "Select",
+                text = selectedOperator?.symbol ?: "select",
                 style = SubTitle1
             )
 
@@ -41,15 +42,15 @@ fun DropDownMenuTypeSelector(
             expanded = expanded,
             onDismissRequest = {expanded = false}
         ) {
-            _types.values().forEach{ type ->
+            operators.values().forEach{operator ->
                 DropdownMenuItem(
                     text = { Text(
-                        text = type.name,
+                        text = operator.symbol,
                         style = SubTitle1,
                         color = BlockRed
                     ) },
                     onClick = {
-                        onTypeSelected(type)
+                        onSelected(operator)
                         expanded = false
                     }
                 )

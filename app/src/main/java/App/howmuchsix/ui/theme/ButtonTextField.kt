@@ -9,7 +9,9 @@ import App.howmuchsix.ui.theme.design_elements.inter
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -74,8 +76,9 @@ fun ButtonTextField(
             singleLine = isSingleLine,
             textStyle = textStyle,
             modifier = Modifier
-                .widthIn(min = 65.dp, max = 90.dp)
+                .widthIn(min = 65.dp, max = 80.dp)
                 .width(measuredWith)
+                .height(40.dp)
                 .clip(RoundedCornerShape(cornerRadius.dp))
                 .border(
                     width = 2.dp,
@@ -91,7 +94,7 @@ fun ButtonTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp),
-                    contentAlignment = Alignment.CenterStart
+                    contentAlignment = Alignment.Center
                 ){
                     if (value.isEmpty()){
                         Text(text = placeholder,

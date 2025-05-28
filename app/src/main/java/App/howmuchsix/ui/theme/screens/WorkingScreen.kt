@@ -115,6 +115,37 @@ fun WorkingScreen(
             blockColor = BlockYellow
         ),
         BlockCategory(
+            name = "Math",
+            blocks = listOf(
+                BlockItemData(
+                    type = BlockType.And,
+                    label = "And",
+                    color = BlockPeach
+                ),
+                BlockItemData(
+                    type = BlockType.Or,
+                    label = "Or",
+                    color = BlockPeach
+                ),
+                BlockItemData(
+                    type = BlockType.Operator,
+                    label = "Operator",
+                    color = BlockPeach
+                ),
+                BlockItemData(
+                    type = BlockType.Type,
+                    label = "Type input",
+                    color = BlockPeach
+                ),
+                BlockItemData(
+                    type = BlockType.Logic,
+                    label = "Logic",
+                    color = BlockPeach
+                ),
+            ),
+            blockColor = BlockPeach
+        ),
+        BlockCategory(
             name = "Logic",
             blocks = listOf(
                 BlockItemData(

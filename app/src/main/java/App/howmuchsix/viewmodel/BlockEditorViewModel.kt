@@ -3,6 +3,7 @@ package App.howmuchsix.viewmodel
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.BreakBlock
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
+import App.howmuchsix.ui.blocks.AndBlockUI
 import App.howmuchsix.ui.blocks.AssignmentBlockUI
 import App.howmuchsix.ui.blocks.BlockUI
 import App.howmuchsix.ui.blocks.BreakBlockUI
@@ -12,8 +13,12 @@ import App.howmuchsix.ui.blocks.ForBlockUI
 import App.howmuchsix.ui.blocks.FunctionBlockUI
 import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
+import App.howmuchsix.ui.blocks.LogicBlockUI
+import App.howmuchsix.ui.blocks.OperatorBlockUI
+import App.howmuchsix.ui.blocks.OrBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
+import App.howmuchsix.ui.blocks.TypeBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import android.util.Log
@@ -32,7 +37,8 @@ enum class BlockType{
     Declaration, Assignment, Break,
     DeclarationArray, For, Function,
     If, Print, Return, While,
-    FunctionDeclaration
+    FunctionDeclaration, And, Or,
+    Operator, Type, Logic
 }
 
 enum class ConnectionType{
@@ -292,6 +298,12 @@ class BlockEditorViewModel : ViewModel() {
             BlockType.Print -> PrintBlockUI()
             BlockType.Return -> ReturnBlockUI()
             BlockType.While -> WhileBlockUI()
+            BlockType.And -> AndBlockUI()
+            BlockType.Or -> OrBlockUI()
+            BlockType.Operator -> OperatorBlockUI()
+            BlockType.Type -> TypeBlockUI()
+            BlockType.Logic -> LogicBlockUI()
+            else -> AndBlockUI()
         }
     }
     private fun findNearbyConnectionPoint(dragPosition: Offset, excludeBlockId: String?) {
