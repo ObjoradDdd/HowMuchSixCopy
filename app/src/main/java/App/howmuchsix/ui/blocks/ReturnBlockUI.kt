@@ -39,7 +39,7 @@ class ReturnBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(8.dp))
+                .background(BlockPink, RoundedCornerShape(8.dp))
                 .padding(8.dp)
         ){
             Spacer(Modifier.width(8.dp))

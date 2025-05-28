@@ -3,6 +3,7 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.IfBlock
 import App.howmuchsix.ui.DropZone
+import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
@@ -39,6 +40,7 @@ import kotlin.math.round
 
 class IfBlockUI : BlockUI() {
 
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var showElse by mutableStateOf(false)
 
@@ -63,21 +65,14 @@ class IfBlockUI : BlockUI() {
                     style = SubTitle1,
                     color = TextWhite
                 )
-                Spacer(Modifier.width(12.dp))
-
-                if (viewModel != null) {
-                    DropZone(
-                        id = "if_condition_dropzone_${ownerBlockId}",
-                        ownerBlockId = ownerBlockId,
-                        viewModel = viewModel,
-                        acceptedTypes = listOf(
-                            BlockType.Declaration,
-                            BlockType.Assignment
-                        ),
-                        placeholder = "condition",
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
-                    )
-                }
+                Spacer(Modifier.width(15.dp))
+                ButtonTextField(
+                    value = value,
+                    onValueChange = {value = it},
+                    textStyle = SubTitle1,
+                    placeholder = "conditions",
+                    modifier = Modifier.defaultMinSize(minWidth = 200.dp)
+                )
             }
             Spacer(Modifier.height(8.dp))
             Text(

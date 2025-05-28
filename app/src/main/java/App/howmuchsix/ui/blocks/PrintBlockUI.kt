@@ -27,31 +27,12 @@ import androidx.compose.ui.unit.dp
 
 class PrintBlockUI : BlockUI() {
     private var textValue by mutableStateOf("")
-    private var droppedBlock by mutableStateOf<PlacedBlockUI?>(null)
-    private var useDropZone by mutableStateOf(true)
-    private var ownerBlockId by mutableStateOf("")
-
-    fun initializeFromBD(value: String){
-        this.textValue = value
-    }
-
-
-    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return PrintBlock(textValue, consoleViewModel)
-    }
-        
-    fun setOwnerId(id: String){
-        ownerBlockId = id
-
-    }
-
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
                 .background(BlockRed, RoundedCornerShape(8.dp))
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(8.dp)
         ){
             Spacer(Modifier.width(8.dp))
 
@@ -60,19 +41,23 @@ class PrintBlockUI : BlockUI() {
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
             Spacer(Modifier.width(8.dp))
-
-            if (viewModel != null) {
-                DropZone(
-                    id = "return_dropzone_${ownerBlockId}",
-                    ownerBlockId = ownerBlockId,
-                    viewModel = viewModel,
-                    acceptedTypes = listOf(
-                        BlockType.Declaration,
-                        BlockType.Assignment
-                    ),
-                    placeholder = "value"
-                )
-            }
+            ButtonTextField(
+                value = textValue,
+                onValueChange = {textValue = it},
+                textStyle = SubTitle1,
+                placeholder = "value"
+            )
         }
     }
+
+
+
+    fun initializeFromBD(value: String){
+        this.textValue = value
+    }
+
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+        return PrintBlock(textValue, consoleViewModel)
+    }
+
 }

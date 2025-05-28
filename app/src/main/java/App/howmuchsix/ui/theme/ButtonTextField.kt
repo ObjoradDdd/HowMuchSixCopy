@@ -1,9 +1,7 @@
 package App.howmuchsix.ui.theme
 
 import App.howmuchsix.ui.theme.design_elements.ButtonText
-import App.howmuchsix.ui.theme.design_elements.DarkerBeige
-import App.howmuchsix.ui.theme.design_elements.InputText
-import App.howmuchsix.ui.theme.design_elements.PlaceholderText
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.ui.theme.design_elements.TextOrange
 import App.howmuchsix.ui.theme.design_elements.inter
 import androidx.compose.foundation.border
@@ -49,8 +47,8 @@ fun ButtonTextField(
     placeholder: String,
     isSingleLine: Boolean = true,
     textStyle: TextStyle = InputText,
-    borderColor: Color = DarkerBeige,
-    focusedBorderColor: Color = TextOrange,
+    borderColor: Color = TextWhite,
+    focusedBorderColor: Color = BlockRed,
     cornerRadius: Int = 4,
 ) {
     var isFocused by remember { mutableStateOf(false) }
@@ -75,25 +73,23 @@ fun ButtonTextField(
             onValueChange = onValueChange,
             singleLine = isSingleLine,
             textStyle = textStyle,
-            modifier = Modifier
-                .widthIn(min = 65.dp, max = 80.dp)
+            modifier = modifier
+                .defaultMinSize(minWidth = 60.dp, minHeight = 40.dp)
                 .width(measuredWith)
                 .height(40.dp)
                 .clip(RoundedCornerShape(cornerRadius.dp))
                 .border(
-                    width = 2.dp,
+                    width = 1.dp,
                     color = if (isFocused) focusedBorderColor else borderColor,
                     shape = RoundedCornerShape(cornerRadius.dp)
                 )
-                .padding(10.dp)
+                .padding(horizontal = 10.dp, vertical = 4.dp)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 },
             decorationBox = {innerTextField ->
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
                     if (value.isEmpty()){

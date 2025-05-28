@@ -1,16 +1,13 @@
 package App.howmuchsix.ui.theme
 
-import App.howmuchsix.ui.blocks.AndBlockUI
 import App.howmuchsix.ui.blocks.DeclarationArrayBlockUI
 import App.howmuchsix.ui.blocks.ForBlockUI
 import App.howmuchsix.ui.blocks.FunctionBlockUI
 import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
-import App.howmuchsix.ui.blocks.LogicBlockUI
-import App.howmuchsix.ui.blocks.OperatorBlockUI
-import App.howmuchsix.ui.blocks.OrBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
+import App.howmuchsix.ui.blocks.SleepBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.FieldBG
@@ -81,17 +78,12 @@ fun ZoomableField(
                     }
             ) {
                 when (block.uiBlock) {
-                    is PrintBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is IfBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is ForBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is WhileBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is FunctionDeclarationBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is FunctionBlockUI -> block.uiBlock.setOwnerId(block.id)
                     is DeclarationArrayBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is AndBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is OrBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is OperatorBlockUI -> block.uiBlock.setOwnerId(block.id)
-                    is LogicBlockUI -> block.uiBlock.setOwnerId(block.id)
                 }
                 block.uiBlock.Render(modifier, viewModel)
             }
