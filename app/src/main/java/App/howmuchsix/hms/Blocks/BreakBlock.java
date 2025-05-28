@@ -4,9 +4,9 @@ import java.util.List;
 
 import App.howmuchsix.hms.Library.Variables;
 
-public class BreakBlock extends Block{
+public class BreakBlock extends Block {
     @Override
-    public void Action(List<String> scopes, Variables lib){
+    public void Action(List<String> scopes, Variables lib) {
         throw new BreakException("break");
     }
 }

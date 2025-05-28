@@ -39,6 +39,7 @@ public final class Lexer {
             if (Character.isDigit(current)) tokenizeNumber();
             else if (current == '\"' || current == '\'') tokenizeString();
             else if (Character.isLetter(current)) tokenizeWord();
+
             else if (OPERATOR_CHARS.indexOf(current) != -1) {
                 tokenizeOperator();
             } else {
@@ -47,14 +48,21 @@ public final class Lexer {
         }
 
         for (int i = 0; i < tokens.size() - 1; i++) {
+            Token current = tokens.get(i);
+            Token next = tokens.get(i + 1);
+
+            if (isInterpolationToken(current) || isInterpolationToken(next)) {
+                continue;
+            }
+
             if (
-                    (SINGLE_OPERATOR.contains(tokens.get(i).getText()) && SINGLE_OPERATOR.contains(tokens.get(i + 1).getText())) ||
-                            (!OPERATOR_CHARS.contains(tokens.get(i + 1).getText()) && !OPERATOR_CHARS.contains(tokens.get(i).getText()))
+                    (SINGLE_OPERATOR.contains(current.getText()) && SINGLE_OPERATOR.contains(next.getText())) ||
+                            (!OPERATOR_CHARS.contains(current.getText()) && !OPERATOR_CHARS.contains(next.getText()) &&
+                                    isSpecialToken(current) && isSpecialToken(next))
             ) {
                 throw new RuntimeException("Wrong input");
             }
         }
-
 
         return tokens;
     }
@@ -62,7 +70,7 @@ public final class Lexer {
     private void tokenizeWord() {
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
-        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '$')) {
+        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '#') || (current == '$')) {
             buffer.append(current);
             current = next();
         }
@@ -87,8 +95,7 @@ public final class Lexer {
         if (peek(0) == '(') {
             List<String> args = parseFunctionArguments();
             tokens.add(new Token(TokenType.FUNCTION, word, args));
-        }
-        else if (peek(0) == '[') {
+        } else if (peek(0) == '[') {
             String arrayIndex = parseArrayIndex();
             tokens.add(new Token(TokenType.ARRAY, word, arrayIndex));
         } else {
@@ -210,79 +217,6 @@ public final class Lexer {
         tokens.add(new Token(type, text));
     }
 
-    public List<Token> tokenizeComplex() {
-        while (pos < length) {
-            char current = peek(0);
-
-            if (current == '(') {
-                addToken(TokenType.OPEN_PAREN, "(");
-                next();
-            } else if (current == ')') {
-                addToken(TokenType.CLOSE_PAREN, ")");
-                next();
-            } else if (lookAhead("number(")) {
-                tokenizeNumberExpression();
-            } else if (lookAhead("str(")) {
-                tokenizeStrExpression();
-            } else if (Character.isLetter(current)) tokenizeWord();
-
-            else if (OPERATOR_CHARS.indexOf(current) != -1) {
-                tokenizeOperator();
-            } else {
-                next();
-            }
-        }
-
-        if (input.contains(")(")) {
-            throw new RuntimeException("Wrong input");
-        }
-
-        return tokens;
-    }
-
-    private boolean lookAhead(String prefix) {
-        if (pos + prefix.length() > length) return false;
-        return input.startsWith(prefix, pos);
-    }
-
-    private void tokenizeNumberExpression() {
-        pos += "number(".length();
-        StringBuilder buffer = new StringBuilder();
-
-
-        int bracketsCount = 1;
-        while (pos < length && bracketsCount > 0) {
-            char current = peek(0);
-            if (current == '(') bracketsCount++;
-            if (current == ')') bracketsCount--;
-
-            if (bracketsCount > 0) {
-                buffer.append(current);
-            }
-            next();
-        }
-
-        addToken(TokenType.MATH, buffer.toString().trim());
-    }
-
-    private void tokenizeStrExpression() {
-        pos += "str(".length();
-        StringBuilder buffer = new StringBuilder();
-
-        int bracketsCount = 1;
-        while (pos < length && bracketsCount > 0) {
-            char current = peek(0);
-            if (current == '(') bracketsCount++;
-            if (current == ')') bracketsCount--;
-
-            if (bracketsCount > 0) {
-                buffer.append(current);
-            }
-            next();
-        }
-        addToken(TokenType.STR, buffer.toString().trim());
-    }
-
     private List<String> parseFunctionArguments() {
         next();
 
@@ -371,10 +305,10 @@ public final class Lexer {
         throw new RuntimeException("Unclosed array brackets");
     }
 
-    public Token tokenizeForAssignment(){
+    public Token tokenizeForAssignment() {
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
-        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '$')) {
+        while (Character.isLetterOrDigit(current) || (current == '_') || (current == '#') || (current == '$')) {
             buffer.append(current);
             current = next();
         }
@@ -385,11 +319,11 @@ public final class Lexer {
             String arrayIndex = parseArrayIndex();
             return new Token(TokenType.ARRAY, word, arrayIndex);
         } else {
-            return  new Token(TokenType.WORD, word);
+            return new Token(TokenType.WORD, word);
         }
     }
 
-    public Token tokenizeFunction(){
+    public Token tokenizeFunction() {
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
         while (Character.isLetterOrDigit(current) || (current == '_') || (current == '$')) {
@@ -404,5 +338,139 @@ public final class Lexer {
             return new Token(TokenType.FUNCTION, word, args);
         }
         throw new RuntimeException("Invalid function expression");
+    }
+
+
+    private boolean isInterpolationToken(Token token) {
+        return token.getType() == TokenType.TAG ||
+                token.getType() == TokenType.INTERPOLATION_START ||
+                token.getType() == TokenType.INTERPOLATION_END;
+    }
+
+    private boolean isSpecialToken(Token token) {
+        return token.getType() != TokenType.WORD &&
+                token.getType() != TokenType.STRING &&
+                token.getType() != TokenType.INT &&
+                token.getType() != TokenType.DOUBLE &&
+                token.getType() != TokenType.TRUE &&
+                token.getType() != TokenType.FALSE &&
+                token.getType() != TokenType.NULL &&
+                token.getType() != TokenType.FUNCTION &&
+                token.getType() != TokenType.ARRAY &&
+                token.getType() != TokenType.TAG &&
+                token.getType() != TokenType.INTERPOLATION_START &&
+                token.getType() != TokenType.INTERPOLATION_END;
+    }
+
+
+    public List<Token> tokenizeInterpolation() {
+        tokens.clear();
+        pos = 0;
+
+        while (pos < length) {
+            final char current = peek(0);
+
+
+            if (current == '#' && pos + 1 < length && peek(1) == '{') {
+                addToken(TokenType.INTERPOLATION_START, "#{");
+                pos += 2;
+                tokenizeExpressionInBraces();
+            } else if (current == '#' && pos + 1 < length &&
+                    (Character.isLetter(peek(1)) || peek(1) == '_')) {
+                addToken(TokenType.TAG, "#");
+                next();
+                tokenizeIdentifierAfterTag();
+            } else {
+                tokenizeTextUntilTag();
+            }
+        }
+
+        return tokens;
+    }
+
+
+    private void tokenizeExpressionInBraces() {
+        int braceCount = 1;
+        StringBuilder buffer = new StringBuilder();
+
+        while (pos < length && braceCount > 0) {
+            char current = peek(0);
+
+            if (current == '{') {
+                braceCount++;
+            } else if (current == '}') {
+                braceCount--;
+                if (braceCount == 0) {
+
+                    if (buffer.length() > 0) {
+                        Lexer innerLexer = new Lexer(buffer.toString());
+                        List<Token> innerTokens = innerLexer.tokenize();
+                        tokens.addAll(innerTokens);
+                    }
+                    addToken(TokenType.INTERPOLATION_END, "}");
+                    next();
+                    return;
+                }
+            }
+
+            buffer.append(current);
+            next();
+        }
+
+        throw new RuntimeException("Unclosed interpolation expression");
+    }
+
+
+    private void tokenizeIdentifierAfterTag() {
+        final StringBuilder buffer = new StringBuilder();
+        char current = peek(0);
+
+
+        while (Character.isLetterOrDigit(current) || current == '_') {
+            buffer.append(current);
+            current = next();
+        }
+
+        String name = buffer.toString();
+        if (name.isEmpty()) {
+            throw new RuntimeException("Expected identifier after #");
+        }
+
+
+        current = peek(0);
+
+        if (current == '(') {
+
+            List<String> args = parseFunctionArguments();
+            tokens.add(new Token(TokenType.FUNCTION, name, args));
+        } else if (current == '[') {
+
+            String arrayIndex = parseArrayIndex();
+            tokens.add(new Token(TokenType.ARRAY, name, arrayIndex));
+        } else {
+
+            addToken(TokenType.WORD, name);
+        }
+    }
+
+
+    private void tokenizeTextUntilTag() {
+        final StringBuilder buffer = new StringBuilder();
+
+        while (pos < length) {
+            char current = peek(0);
+
+
+            if (current == '#') {
+                break;
+            }
+
+            buffer.append(current);
+            next();
+        }
+
+        if (buffer.length() > 0) {
+            addToken(TokenType.TEXT, buffer.toString());
+        }
     }
 }

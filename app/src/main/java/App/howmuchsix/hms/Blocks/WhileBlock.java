@@ -22,7 +22,7 @@ public final class WhileBlock extends Block {
     public void Action(List<String> scopes, Variables lib) throws ReturnException {
         String name = "Scope - " + lib.getNumberOfScopes();
         List<String> newScopes = new ArrayList<>(scopes);
-        List<Token> tokens = new Lexer(logicalExpressionString).tokenizeComplex();
+        List<Token> tokens = new Lexer(logicalExpressionString).tokenize();
         Parser logicalExpression = new Parser(tokens, newScopes, lib);
         newScopes.add(name);
         try {

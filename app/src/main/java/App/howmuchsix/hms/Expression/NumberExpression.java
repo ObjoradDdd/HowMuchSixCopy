@@ -25,7 +25,7 @@ public final class NumberExpression implements Expression<Number> {
 
     @NonNull
     @Override
-    public String toString(){
+    public String toString() {
         return expression.toString();
     }
 }

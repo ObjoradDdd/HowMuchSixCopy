@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 class FunctionBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-       TODO()
-
+        TODO()
+    }
 
     private var ownerBlockId by mutableStateOf("")
     private var selectedFun by mutableStateOf("")

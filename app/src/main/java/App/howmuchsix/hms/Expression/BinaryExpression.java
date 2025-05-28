@@ -13,7 +13,7 @@ public final class BinaryExpression<T> implements Expression<T> {
         this.operation = operation;
         this.ex1 = ex1;
         this.ex2 = ex2;
-        if (ex1.eval() == null || ex2.eval() == null){
+        if (ex1.eval() == null || ex2.eval() == null) {
             throw new RuntimeException("You can't use operator " + operation + " with null");
         }
     }
@@ -42,8 +42,7 @@ public final class BinaryExpression<T> implements Expression<T> {
     private String evaluateString(Object val1, Object val2) {
         if (Objects.equals(operation, "+")) {
             return String.valueOf(val1) + String.valueOf(val2);
-        }
-        else {
+        } else {
             throw new UnsupportedOperationException(
                     "Operation " + operation + " is not supported for Strings"
             );

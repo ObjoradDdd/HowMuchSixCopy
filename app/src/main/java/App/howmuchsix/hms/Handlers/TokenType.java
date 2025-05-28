@@ -29,6 +29,9 @@ public enum TokenType {
     FALSE,
     NULL,
     ARRAY,
-    EOF
-
+    EOF,
+    INTERPOLATION_START,
+    INTERPOLATION_END,
+    TAG,
+    TEXT
 }

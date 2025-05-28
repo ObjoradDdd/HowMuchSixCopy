@@ -96,8 +96,7 @@ public final class IfBlock extends Block {
                     }
                 }
             }
-        }
-        finally {
+        } finally {
             lib.deleteScope(name);
         }
     }

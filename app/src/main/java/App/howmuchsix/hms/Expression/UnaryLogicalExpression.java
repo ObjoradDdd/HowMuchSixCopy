@@ -2,14 +2,14 @@ package App.howmuchsix.hms.Expression;
 
 import App.howmuchsix.hms.Blocks.Types;
 
-public final class UnaryLogicalExpression implements Expression<Boolean>{
+public final class UnaryLogicalExpression implements Expression<Boolean> {
     private final String operator;
     private final Expression<?> left;
 
     public UnaryLogicalExpression(String operator, Expression<?> left) {
         this.operator = operator;
         this.left = left;
-        if (left.eval() == null){
+        if (left.eval() == null) {
             throw new RuntimeException("You can't use operator " + operator + " with null");
         }
     }
