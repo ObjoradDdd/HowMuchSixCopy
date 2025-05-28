@@ -32,12 +32,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -66,6 +69,11 @@ fun ZoomableField(
                 modifier = Modifier
                     .offset{IntOffset(block.position.x.roundToInt(), block.position.y.roundToInt())}
                     .wrapContentSize()
+                    .onGloballyPositioned { coordinates ->
+                        val size = coordinates.size
+                        viewModel.updateBlockSize(block.id,
+                            Size(size.width.toFloat(), size.height.toFloat()))
+                    }
                     .pointerInput(block.id){
                         detectDragGestures(
                             onDragStart = {offset ->
@@ -92,12 +100,11 @@ fun ZoomableField(
         Canvas(modifier = Modifier.fillMaxSize()) {
             nearbyConnectionPoint?.let { nearbyConn ->
                 val targetBlock = placedBlocks.find{ it.id == nearbyConn.ownerBlockId }
-
                 targetBlock?.let { block ->
                     val absolutePosition = block.position + nearbyConn.connectionPoint.position
                     drawCircle(
                         color = Color.Magenta,
-                        radius = 10f,
+                        radius = 12f,
                         center = absolutePosition
                     )
                 }

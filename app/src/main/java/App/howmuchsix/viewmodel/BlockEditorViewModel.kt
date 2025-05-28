@@ -19,10 +19,12 @@ import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.blocks.ContinueBlockUI
 import App.howmuchsix.ui.blocks.StartProgramBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import java.util.UUID
 import kotlin.coroutines.Continuation
@@ -39,9 +41,7 @@ enum class BlockType{
 
 enum class ConnectionType{
     Top,
-    Bottom,
-    Input,
-    Output
+    Bottom
 }
 
 data class BlockItemData(
@@ -98,7 +98,8 @@ data class PlacedBlockUI(
     val connectionPoints: List<ConnectionPoint> = emptyList(),
     val isConnected: Boolean = false,
     val parentConnection: BlockConnection? = null,
-    val dropZones: List<DropZoneData> = emptyList()
+    val dropZones: List<DropZoneData> = emptyList(),
+    val size: Size = Size(80f, 100f)
 ) {
     override fun toString(): String {
         return this.type.toString()
@@ -138,7 +139,13 @@ class BlockEditorViewModel : ViewModel() {
     private val _dropZoneContents = mutableStateMapOf<String, PlacedBlockUI>()
     val dropZoneContents: Map<String, PlacedBlockUI> = _dropZoneContents
 
-    private val _functionNames = mutableStateMapOf<String, String>()
+    private val _functionNames = mutableStateMapOf<String, String>().apply {
+        put("intToString", "intToString")
+        put("BooleanToString", "BooleanToString")
+        put("stringToInt", "stringToInt")
+        put("doubleToString", "doubleToString")
+        put("stringToDouble", "stringToDouble")
+    }
     val functionNames: Map<String, String> = _functionNames
 
     fun updateFunctionName(blockId: String, functionName: String) {
@@ -246,11 +253,11 @@ class BlockEditorViewModel : ViewModel() {
                         finalPosition = calculateSnapPosition(target, nearbyConn.connectionPoint, currentBlock.type)
                     }
                 }
-                if(placedBlockId != null){
+                if (placedBlockId != null){
                     val index = _placedBlocks.indexOfFirst { it.id == placedBlockId }
                     if (index >= 0){
                         _placedBlocks[index] = _placedBlocks[index].copy(
-                            position = currentPosition,
+                            position = finalPosition,
                             isConnected = nearbyConnection != null
                         )
                     }
@@ -283,6 +290,53 @@ class BlockEditorViewModel : ViewModel() {
         _draggedPlacedBlockId.value = null
         _nearbyConnectionPoint.value = null
         _dropZoneHighlight.value = null
+    }
+
+    fun updateBlockSize(blockId: String, size: Size) {
+        val index = _placedBlocks.indexOfFirst { it.id == blockId }
+        if (index != -1) {
+            val currentBlock = _placedBlocks[index]
+            val updatedConnectionPoints = createConnectionPointsForBlock(currentBlock.type, size).map {
+                it.copy(blockId = blockId)
+            }
+            _placedBlocks[index] = currentBlock.copy(
+                size = size,
+                connectionPoints = updatedConnectionPoints
+            )
+        }
+    }
+    fun createConnectionPointsForBlock(blockType: BlockType, size: Size? = null): List<ConnectionPoint> {
+        val blockWidth = size?.width ?: 80f
+        val blockHeight = size?.height ?: 100f
+
+        return when (blockType) {
+            BlockType.StartProgram -> {
+                listOf(
+                    ConnectionPoint(
+                        id = UUID.randomUUID().toString(),
+                        type = ConnectionType.Bottom,
+                        position = Offset(blockWidth / 2, blockHeight),
+                        blockId = ""
+                    )
+                )
+            }
+            else -> {
+                listOf(
+                    ConnectionPoint(
+                        id = UUID.randomUUID().toString(),
+                        type = ConnectionType.Top,
+                        position = Offset(blockWidth / 2, 0f),
+                        blockId = ""
+                    ),
+                    ConnectionPoint(
+                        id = UUID.randomUUID().toString(),
+                        type = ConnectionType.Bottom,
+                        position = Offset(blockWidth / 2, blockHeight),
+                        blockId = ""
+                    )
+                )
+            }
+        }
     }
 
     private fun createUIBlockByType(type: BlockType): BlockUI{
@@ -337,33 +391,28 @@ class BlockEditorViewModel : ViewModel() {
         connectionPoint: ConnectionPoint,
         draggingBlockType: BlockType
     ): Offset {
-        val targetConnectionPosition = targetBlock.position + connectionPoint.position
+        val targetSize = targetBlock.size
+        val draggedBlockId = _draggedPlacedBlockId.value
+        val draggingSize = if (draggedBlockId != null) {
+            val existingBlock = _placedBlocks.find { it.id == draggedBlockId }
+            existingBlock?.size ?: Size(getBlockWidth(draggingBlockType), getBlockHeight(draggingBlockType))
+        } else {
+            Size(getBlockWidth(draggingBlockType), getBlockHeight(draggingBlockType))
+        }
 
         return when (connectionPoint.type) {
             ConnectionType.Top -> {
                 Offset(
-                    targetConnectionPosition.x - getBlockWidth(draggingBlockType) / 2,
-                    targetConnectionPosition.y - getBlockHeight(draggingBlockType) - 10f
+                    targetBlock.position.x,
+                    targetBlock.position.y - draggingSize.height
                 )
             }
             ConnectionType.Bottom -> {
                 Offset(
-                    targetConnectionPosition.x - getBlockWidth(draggingBlockType) / 2,
-                    targetConnectionPosition.y + 10f
+                    targetBlock.position.x,
+                    targetBlock.position.y + targetSize.height
                 )
             }
-            ConnectionType.Input -> {
-                Offset(
-                    targetConnectionPosition.x + 10f,
-                    targetConnectionPosition.y - getBlockHeight(draggingBlockType) / 2
-                )
-            }
-            ConnectionType.Output -> {
-                Offset(
-                    targetConnectionPosition.x - getBlockWidth(draggingBlockType) - 10f,
-                    targetConnectionPosition.y - getBlockHeight(draggingBlockType) / 2
-                )
-            }//лучше через таргет дроп поле хз??
         }
     }
     private fun createConnection(parentId: String, childId: String, connectionPointId: String){
@@ -374,65 +423,6 @@ class BlockEditorViewModel : ViewModel() {
             childConnectionPoint = ""
         )
         _connections.add(connection)
-    }
-    private fun createConnectionPointsForBlock(blockType: BlockType): List<ConnectionPoint> {
-
-        return when(blockType) {
-            BlockType.Declaration, BlockType.Assignment -> {
-                listOf(
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Top,
-                        position = Offset(0f, 0f),
-                        blockId = ""
-                    ),
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Bottom,
-                        position = Offset(50f, 150f),
-                        blockId = ""
-                    )
-                )
-            }
-            BlockType.For, BlockType.If, BlockType.While -> {
-                listOf(
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Top,
-                        position = Offset(0f, 0f),
-                        blockId = ""
-                    ),
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Bottom,
-                        position = Offset(50f, 150f),
-                        blockId = ""
-                    ),
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Input,
-                        position = Offset(50f, 80f),
-                        blockId = ""
-                    )
-                )
-            }
-            else -> {
-                listOf(
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Top,
-                        position = Offset(0f, 0f),
-                        blockId = ""
-                    ),
-                    ConnectionPoint(
-                        id = UUID.randomUUID().toString(),
-                        type = ConnectionType.Bottom,
-                        position = Offset(50f, 150f),
-                        blockId = ""
-                    )
-                )
-            }
-        }
     }
     private fun getBlockHeight(blockType: BlockType): Float {
         return when (blockType) {

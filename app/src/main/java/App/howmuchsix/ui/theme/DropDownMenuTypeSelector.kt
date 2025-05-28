@@ -3,6 +3,7 @@ package App.howmuchsix.ui.theme
 import App.howmuchsix.ui.blocks._types
 import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -32,7 +33,7 @@ fun DropDownMenuTypeSelector(
             colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
             onClick = { expanded = true },
             shape = RoundedCornerShape(4.dp),
-            modifier = Modifier.size(80.dp, 40.dp)
+            modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 40.dp)
         ) {
             Text(
                 text = selectedType?.name ?: "type",
@@ -49,7 +50,7 @@ fun DropDownMenuTypeSelector(
                 DropdownMenuItem(
                     text = { Text(
                         text = type.name,
-                        style = PlaceholderText,
+                        style = SubTitle1,
                         color = BlockRed
                     ) },
                     onClick = {
