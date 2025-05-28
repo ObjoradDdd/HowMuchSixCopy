@@ -83,7 +83,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
                         viewModel?.updateFunctionName(ownerBlockId, newName)
                     },
                     textStyle = SubTitle1,
-                    placeholder = "fun name"
+                    placeholder = "name"
                 )
                 Spacer(Modifier.width(12.dp))
                 Text(
