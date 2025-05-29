@@ -2,6 +2,8 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.DeclarationBlockBD
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -65,10 +67,14 @@ class DeclarationBlockUI : BlockUI() {
         }
     }
 
+    override fun toDBBlock(): BlockDB {
+        return DeclarationBlockBD(variables = name ,values = value, dataType = selectedType.toString())
+    }
 
-    fun initializeFromBD(variables: List<String>, valuesList: List<String>, dataType: String) {
-        name = variables.joinToString(", ")
-        value = valuesList.joinToString(", ")
+
+    fun initializeFromBD(variables: String, valuesList: String, dataType: String) {
+        name = variables
+        value = valuesList
         selectedType = try {
             _types.fromString(dataType)
         } catch (e: IllegalArgumentException) {

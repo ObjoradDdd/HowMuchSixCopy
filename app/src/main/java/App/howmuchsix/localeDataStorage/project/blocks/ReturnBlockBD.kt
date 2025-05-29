@@ -13,7 +13,7 @@ data class ReturnBlockBD(
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val returnUI = ReturnBlockUI()
-        //returnUI.initializeFromBD(value)
+        returnUI.initializeFromBD(value)
         return returnUI
     }
 }

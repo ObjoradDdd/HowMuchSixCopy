@@ -3,6 +3,8 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
 import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.DeclarationBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
@@ -90,42 +92,42 @@ class DeclarationArrayBlockUI : BlockUI() {
         }
     }
 
-
-    private var arrayName by mutableStateOf("")
-    private var dataType by mutableStateOf<_types?>(null)
-    private var length by mutableStateOf(0)
-    private var values by mutableStateOf<List<String>?>(null)
+    override fun toDBBlock(): BlockDB {
+        return DeclarationBlockBD(variables = arrName ,values = value, dataType = selectedType.toString())
+    }
 
 
-    fun initializeFromBD(name: String, type: String, arrayLength: Int, valuesList: List<String>?) {
-        arrayName = name
-        dataType = try {
+    fun initializeFromBD(name: String, type: String, arrayLength: Int, valuesList: String?) {
+        arrName = name
+        selectedType = try {
             _types.fromString(type)
         } catch (e: IllegalArgumentException) {
             _types.Int
         }
-        length = arrayLength
-        values = valuesList
+        //length = arrayLength
+        value = valuesList?:""
     }
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        if (dataType == null) {
+        if (selectedType == null) {
             throw IllegalArgumentException("Type is required")
         }
-        if (arrayName.isEmpty()) {
+        if (arrName.isEmpty()) {
             throw IllegalArgumentException("Array name is required")
         }
 
-        val types = dataType!!.toTypes()
+        val types = selectedType!!.toTypes()
 
         return when {
-            values != null && length > 0 && values!!.size != length ->
+            /*value != "" && length > 0 && values!!.size != length ->
                 DeclarationArrayBlock(types, arrayName, length, values!!)
-            values != null ->
-                DeclarationArrayBlock(types, arrayName, values!!)
+             */
+
+            value != "" ->
+                DeclarationArrayBlock(types, arrName, value.split(","))
             else ->
-                DeclarationArrayBlock(types, arrayName, length)
+                DeclarationArrayBlock(types, arrName, 0)
         }
     }
 

@@ -2,6 +2,9 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.BreakBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.BreakBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.ContinueBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
@@ -38,5 +41,9 @@ class BreakBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         return BreakBlock()
+    }
+
+    override fun toDBBlock(): BlockDB {
+        return BreakBlockBD()
     }
 }

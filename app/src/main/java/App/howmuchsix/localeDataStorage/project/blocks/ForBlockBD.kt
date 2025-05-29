@@ -9,19 +9,27 @@ import kotlinx.serialization.Serializable
 data class ForBlockBD(
     override val name: String = "for_block",
     override val type: BlockType = BlockType.FOR,
-    val iterator: BlockDB,
+    val iterator: BlockDB?,
     val condition: String,
-    val action: AssignmentBlockBD,
+    val action: BlockDB?,
     val body: List<BlockDB>
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val forUI = ForBlockUI()
+        var iteratorUI : BlockUI? = null
+        var actionUI : BlockUI? = null
 
-        val iteratorUI = iterator.fromBDBlocToUI()
-        val actionUI = action.fromBDBlocToUI()
+        if (iterator !=null){
+            iteratorUI = iterator.fromBDBlocToUI()
+        }
+
+        if (action !=null){
+            actionUI = action.fromBDBlocToUI()
+        }
+
         val bodyUI = body.map { it.fromBDBlocToUI() }
 
-        forUI.initializeFromBD(iteratorUI, condition, actionUI, bodyUI)
+        //forUI.initializeFromBD(iteratorUI, condition, actionUI, bodyUI)
         return forUI
     }
 }
