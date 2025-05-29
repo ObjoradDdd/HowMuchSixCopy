@@ -19,7 +19,9 @@ import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.blocks.ContinueBlockUI
 import App.howmuchsix.ui.blocks.StartProgramBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.BlockPeach
 import android.util.Log
+import androidx.compose.animation.core.snap
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.geometry.Offset
@@ -96,13 +98,13 @@ data class PlacedBlockUI(
     val position: Offset,
     val parentId: String? = null,
     val parentDropZoneId: String? = null,
-    val children: Map<String, List<String>> = emptyMap(),
-
+    val dropZoneChildren: Map<String, List<String>> = emptyMap(),
+    val nextBlockId: String? = null,
+    val previousBlockId: String? =  null,
     val uiBlock: BlockUI,
     val originalBlockData: BlockItemData,
     val connectionPoints: List<ConnectionPoint> = emptyList(),
     val isConnected: Boolean = false,
-    val parentConnection: BlockConnection? = null,
     val dropZones: List<DropZoneData> = emptyList(),
     val size: Size = Size(80f, 100f)
 ) {
@@ -129,6 +131,9 @@ class BlockEditorViewModel : ViewModel() {
     private val _draggedPlacedBlockId = mutableStateOf<String?>(null)
     val draggedPlacedBlockId: String? get() = _draggedPlacedBlockId.value
 
+    private val _connections = mutableStateListOf<BlockConnection>()
+    val connections: List<BlockConnection> = _connections
+
     private val _nearbyConnectionPoint = mutableStateOf<NearbyConnection?>(null)
     val nearbyConnectionPoint: NearbyConnection? get() = _nearbyConnectionPoint.value
 
@@ -140,6 +145,9 @@ class BlockEditorViewModel : ViewModel() {
 
     private val _dropZoneContents = mutableStateMapOf<String, MutableList<PlacedBlockUI>>()
     val dropZoneContents: Map<String, List<PlacedBlockUI>> = _dropZoneContents
+
+    private val _originalChainPositions = mutableMapOf<String, Offset>()
+    private val _dragStartPosition = mutableStateOf(Offset.Zero)
 
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")
@@ -175,92 +183,51 @@ class BlockEditorViewModel : ViewModel() {
             .minByOrNull { it.size.width * it.size.height }
     }
     fun addBlockToDropZone(blockId: String, dropZoneTarget: DropZoneTarget): Boolean {
-        val blockIndex = _placedBlocks.indexOfFirst { it.id == blockId }
-        if (blockIndex == -1) return false
-        val block = _placedBlocks[blockIndex]
+        val block = _placedBlocks.find { it.id == blockId } ?: return false
+        disconnectBlock(blockId)
+        _placedBlocks.removeIf{ it.id == blockId}
 
-        val updatedBlock = block.copy(
-            parentId = dropZoneTarget.ownerBlockId,
-            parentDropZoneId = dropZoneTarget.id
-        )
-        _placedBlocks[blockIndex] = updatedBlock
-
-        val parentIdx = _placedBlocks.indexOfFirst { it.id == dropZoneTarget.ownerBlockId }
-        if (parentIdx != -1) {
-            val parentBlock = _placedBlocks[parentIdx]
-            val updatedChildren = parentBlock.children.toMutableMap()
-            val zoneChildren = updatedChildren[dropZoneTarget.id]?.toMutableList() ?:
-            mutableListOf()
-            zoneChildren.add(blockId)
-            updatedChildren[dropZoneTarget.id] = zoneChildren
-            _placedBlocks[parentIdx] = parentBlock.copy(children = updatedChildren)
+        val chain = getChain(blockId)
+        chain.forEach { chainBlock ->
+            _placedBlocks.removeIf { it.id == chainBlock.id }
+        }
+        chain.filter { it.id != blockId }.forEach { chainBlock ->
+            _placedBlocks.add(
+                chainBlock.copy(
+                    isConnected = false,
+                    previousBlockId = null
+                )
+            )
         }
 
-        val zoneBlocks = _dropZoneContents.getOrPut(dropZoneTarget.id) {
-            mutableListOf() }
-        zoneBlocks.removeAll {it.id == blockId}
-        zoneBlocks.add(updatedBlock)
-        _dropZoneContents[dropZoneTarget.id] = zoneBlocks
-
+        if(block.type == BlockType.FunctionDeclaration){
+            removeFunctionName(blockId)
+        }
+        if (dropZoneTarget.multipleBlocks) {
+            _dropZoneContents.getOrPut(dropZoneTarget.id) { mutableListOf() }.add(block)
+        } else {
+            _dropZoneContents[dropZoneTarget.id] = mutableListOf(block)
+        }
         return true
     }
     fun addToFieldFromDropZone(block: PlacedBlockUI, dropZoneId: String) {
         val zone = _dropZoneTargets.find { it.id ==dropZoneId }
         val fieldPosition = zone?.position ?: Offset.Zero
 
-        val idx = _placedBlocks.indexOfFirst { it.id == block.id }
-        if (idx != -1){
-            _placedBlocks[idx] = block.copy(
-                    position = fieldPosition,
-                    isConnected = false,
-                    parentConnection = null,
-                    parentId = null,
-                    parentDropZoneId = null
-                )
-        } else {
-            _placedBlocks.add(
-                block.copy(
-                    position = fieldPosition,
-                    isConnected = false,
-                    parentConnection = null,
-                    parentId = null,
-                    parentDropZoneId = null
-                )
+        _placedBlocks.add(
+            block.copy(
+                position = fieldPosition,
+                isConnected = false,
+                nextBlockId = null,
+                previousBlockId = null
             )
-        }
+        )
     }
     fun removeBlockFromDropZone(dropZoneId: String, blockId: String? = null) {
         val blocks = _dropZoneContents[dropZoneId] ?: return
 
         if (blockId != null) {
             blocks.removeIf{ it.id == blockId}
-
-            val blockIdx = _placedBlocks.indexOfFirst { it.id == blockId }
-            if (blockIdx != -1){
-                val updatedBlock = _placedBlocks[blockIdx].copy(
-                    parentId = null,
-                    parentDropZoneId = null
-                )
-                _placedBlocks[blockIdx] = updatedBlock
-            }
-
-            val parentBlock = _placedBlocks.find { block ->
-                block.children.any { (zone, ids) -> zone == dropZoneId &&
-                ids.contains(blockId)}
-            }
-            if (parentBlock != null) {
-                val updatedChildren = parentBlock.children.toMutableMap()
-                updatedChildren[dropZoneId] = updatedChildren[dropZoneId]?.filter {
-                    it != blockId
-                }.orEmpty()
-
-                val parentIdx = _placedBlocks.indexOfFirst { it.id ==
-                parentBlock.id}
-                if (parentIdx != -1){
-                    _placedBlocks[parentIdx] = parentBlock.copy(children = updatedChildren)
-                }
-            }
-
             if (blocks.isEmpty()) {
                 _dropZoneContents.remove(dropZoneId)
             }
@@ -286,25 +253,33 @@ class BlockEditorViewModel : ViewModel() {
         _draggedPlacedBlockId.value = null
     }
     fun startDraggingPlacedBlock(blockId :String, initialOffset: Offset){
-        val block = _placedBlocks.find {it.id == blockId} ?: return
+        val block = _placedBlocks.find { it.id == blockId } ?: return
+
+        _originalChainPositions.clear()
+        val chain = getChain(blockId)
+        chain.forEach { chainBlock ->
+            _originalChainPositions[chainBlock.id] = chainBlock.position
+        }
 
         _draggedBlock.value = BlockItemData(
             type = block.type,
             label = block.type.name,
-            color = BlockOrange
+            color = BlockPeach
         )
         _dragPosition.value = initialOffset
+        _dragStartPosition.value = block.position
         _isDragging.value = true
         _draggedPlacedBlockId.value = blockId
     }
     fun updatePosition(newPosition: Offset){
-        if (_isDragging.value){
+        if (_isDragging.value) {
             _dragPosition.value = newPosition
 
             val draggedBlock = _draggedBlock.value
             val draggedBlockId = _draggedPlacedBlockId.value
 
-            if (draggedBlock != null){
+            if (draggedBlock != null && draggedBlockId != null) {
+                moveChain(draggedBlockId, newPosition)
                 findNearbyConnectionPoint(newPosition, draggedBlockId)
 
                 val dropZone = findDropZoneAtPosition(newPosition)
@@ -318,7 +293,7 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
     }
-    fun stopDragging(placeOnField: Boolean){
+    fun stopDragging(placeOnField: Boolean) {
         val currentBlock = _draggedBlock.value
         val currentPosition = _dragPosition.value
         val placedBlockId = _draggedPlacedBlockId.value
@@ -332,23 +307,66 @@ class BlockEditorViewModel : ViewModel() {
             if (dropZoneTarget != null && isValid && placedBlockId != null) {
                 addBlockToDropZone(placedBlockId, dropZoneTarget)
             } else if (placeOnField) {
-                var finalPosition = currentPosition
-                nearbyConnection?.let { nearbyConn ->
-                    val targetBlock = _placedBlocks.find { it.id == nearbyConn.ownerBlockId }
-                    targetBlock?.let { target ->
-                        finalPosition = calculateSnapPosition(target, nearbyConn.connectionPoint, currentBlock.type)
-                    }
-                }
-                if (placedBlockId != null){
+                if (placedBlockId != null) {
                     val index = _placedBlocks.indexOfFirst { it.id == placedBlockId }
-                    if (index >= 0){
-                        _placedBlocks[index] = _placedBlocks[index].copy(
-                            position = finalPosition,
-                            isConnected = nearbyConnection != null
-                        )
+                    if (index >= 0) {
+                        var finalPosition = currentPosition
+                        var shouldConnect = false
+                        var connectionTargetId: String? = null
+
+                        nearbyConnection?.let { nearbyConn ->
+                            val targetBlock = _placedBlocks.find { it.id == nearbyConn.ownerBlockId }
+                            targetBlock?.let { target ->
+                                finalPosition = calculateSnapPosition(target, nearbyConn.connectionPoint, currentBlock.type)
+                                shouldConnect = true
+                                connectionTargetId = target.id
+                            }
+                        }
+
+                        if (shouldConnect && connectionTargetId != null) {
+                            val draggedBlock = _placedBlocks[index]
+                            draggedBlock.previousBlockId?.let { prevId ->
+                                val prevIndex = _placedBlocks.indexOfFirst { it.id == prevId }
+                                if (prevIndex >= 0) {
+                                    _placedBlocks[prevIndex] = _placedBlocks[prevIndex].copy(
+                                        nextBlockId = null
+                                    )
+                                }
+                            }
+                            moveChain(placedBlockId, finalPosition)
+                            _placedBlocks[index] = _placedBlocks[index].copy(
+                                isConnected = true,
+                                previousBlockId = null
+                            )
+
+                            nearbyConnection?.let { nearbyConn ->
+                                if (nearbyConn.connectionPoint.type == ConnectionType.Bottom) {
+                                    connectBlocks(connectionTargetId!!, placedBlockId)
+                                } else if (nearbyConn.connectionPoint.type == ConnectionType.Top) {
+                                    connectBlocks(placedBlockId, connectionTargetId!!)
+                                }
+                            }
+                        } else {
+                            moveChain(placedBlockId, currentPosition)
+                            _placedBlocks[index] = _placedBlocks[index].copy(
+                                isConnected = false
+                            )
+                        }
                     }
-                }
-                else {
+                } else {
+                    var finalPosition = currentPosition
+                    var shouldConnect = false
+                    var connectionTargetId: String? = null
+
+                    nearbyConnection?.let { nearbyConn ->
+                        val targetBlock = _placedBlocks.find { it.id == nearbyConn.ownerBlockId }
+                        targetBlock?.let { target ->
+                            finalPosition = calculateSnapPosition(target, nearbyConn.connectionPoint, currentBlock.type)
+                            shouldConnect = true
+                            connectionTargetId = target.id
+                        }
+                    }
+
                     val uiBlock = createUIBlockByType(currentBlock.type)
                     val newBlockId = UUID.randomUUID().toString()
                     val connectionPoints = createConnectionPointsForBlock(currentBlock.type).map {
@@ -362,16 +380,27 @@ class BlockEditorViewModel : ViewModel() {
                         position = finalPosition,
                         originalBlockData = currentBlock,
                         connectionPoints = connectionPoints,
-                        isConnected = nearbyConnection != null
+                        isConnected = shouldConnect,
+                        nextBlockId = null,
+                        previousBlockId = null
                     )
                     _placedBlocks.add(newBlock)
-
+                    if (shouldConnect && connectionTargetId != null) {
+                        nearbyConnection?.let { nearbyConn ->
+                            if (nearbyConn.connectionPoint.type == ConnectionType.Bottom) {
+                                connectBlocks(connectionTargetId!!, newBlockId)
+                            } else if (nearbyConn.connectionPoint.type == ConnectionType.Top) {
+                                connectBlocks(newBlockId, connectionTargetId!!)
+                            }
+                        }
+                    }
                 }
             }
         }
-
         _draggedBlock.value = null
         _dragPosition.value = Offset.Zero
+        _dragStartPosition.value = Offset.Zero
+        _originalChainPositions.clear()
         _isDragging.value = false
         _draggedPlacedBlockId.value = null
         _nearbyConnectionPoint.value = null
@@ -444,6 +473,106 @@ class BlockEditorViewModel : ViewModel() {
             else -> DeclarationBlockUI()
         }
     }
+    private fun connectBlocks(parentBlockId: String, childBlockId: String) {
+        disconnectBlock(childBlockId)
+        val parentIdx = _placedBlocks.indexOfFirst { it.id == parentBlockId }
+        if (parentIdx >= 0){
+            _placedBlocks[parentIdx] = _placedBlocks[parentIdx].copy(
+                nextBlockId = childBlockId
+            )
+        }
+
+        val childIdx = _placedBlocks.indexOfFirst { it.id == childBlockId }
+        if (childIdx >= 0){
+            _placedBlocks[childIdx] = _placedBlocks[childIdx].copy(
+                previousBlockId = parentBlockId,
+                isConnected = true
+            )
+        }
+    }
+    private fun disconnectBlock(blockId: String) {
+        val blockIndex = _placedBlocks.indexOfFirst { it.id == blockId }
+        if (blockIndex >= 0) {
+            val block = _placedBlocks[blockIndex]
+
+            block.previousBlockId?.let { prevId ->
+                val prevIndex = _placedBlocks.indexOfFirst { it.id == prevId }
+                if (prevIndex >= 0) {
+                    _placedBlocks[prevIndex] = _placedBlocks[prevIndex].copy(
+                        nextBlockId = null
+                    )
+                }
+            }
+            block.nextBlockId?.let { nextId ->
+                val nextIndex = _placedBlocks.indexOfFirst { it.id == nextId }
+                if (nextIndex >= 0) {
+                    _placedBlocks[nextIndex] = _placedBlocks[nextIndex].copy(
+                        previousBlockId = null,
+                        isConnected = false
+                    )
+                }
+            }
+            _placedBlocks[blockIndex] = block.copy(
+                nextBlockId = null,
+                previousBlockId = null,
+                isConnected = false
+            )
+        }
+    }
+
+    private fun getChain(blockId: String): List<PlacedBlockUI> {
+        val chain = mutableListOf<PlacedBlockUI>()
+        var currentId: String? = blockId
+
+        while (currentId != null) {
+            val block = _placedBlocks.find { it.id == currentId }
+            if (block != null) {
+                chain.add(block)
+                currentId = block.nextBlockId
+            } else {
+                break
+            }
+        }
+
+        return chain
+    }
+    private fun moveChain(draggedBlockId: String, delta: Offset){
+        val chain = getChain(draggedBlockId)
+        if (chain.isEmpty()) return
+
+        val draggedIndex = _placedBlocks.indexOfFirst { it.id == draggedBlockId }
+        if (draggedIndex >= 0) {
+            _placedBlocks[draggedIndex] = _placedBlocks[draggedIndex].copy(
+                position = delta
+            )
+        }
+
+        for (i in 1 until chain.size) {
+            val currentBlock = chain[i]
+            val previousBlock = chain[i - 1]
+
+            val currentIndex = _placedBlocks.indexOfFirst { it.id == currentBlock.id }
+            val previousIndex = _placedBlocks.indexOfFirst { it.id == previousBlock.id }
+
+            if (currentIndex >= 0 && previousIndex >= 0) {
+                val previousBlockPosition = _placedBlocks[previousIndex].position
+                val previousBlockSize = _placedBlocks[previousIndex].size
+                val newPosition = Offset(
+                    x = previousBlockPosition.x,
+                    y = previousBlockPosition.y + previousBlockSize.height
+                )
+                _placedBlocks[currentIndex] = _placedBlocks[currentIndex].copy(
+                    position = newPosition
+                )
+            }
+        }
+    }
+
+    fun hasBottomChain(blockId: String): Boolean {
+        val block = _placedBlocks.find { it.id == blockId }
+        return block?.nextBlockId != null
+    }
+
     private fun findNearbyConnectionPoint(dragPosition: Offset, excludeBlockId: String?) {
         var closestPoint: ConnectionPoint? = null
         var closestDistance = Float.MAX_VALUE
@@ -501,6 +630,15 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
     }
+    private fun createConnection(parentId: String, childId: String, connectionPointId: String){
+        val connection = BlockConnection(
+            parentBlockId = parentId,
+            childBlockId = childId,
+            parentConnectionPoint = connectionPointId,
+            childConnectionPoint = ""
+        )
+        _connections.add(connection)
+    }
     private fun getBlockHeight(blockType: BlockType): Float {
         return when (blockType) {
             BlockType.Declaration, BlockType.Assignment -> 100f
@@ -513,4 +651,5 @@ class BlockEditorViewModel : ViewModel() {
             else -> 80f
         }
     }
+
 }
