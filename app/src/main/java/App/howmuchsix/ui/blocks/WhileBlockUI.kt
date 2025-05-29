@@ -10,8 +10,8 @@ import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
-import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -37,19 +37,22 @@ class WhileBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
-    fun setOwnerId(id: String){
+
+    var doBlocks = mutableListOf<BlockUI>()
+
+    fun setOwnerId(id: String) {
         ownerBlockId = id
     }
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Column (
+        Column(
             modifier = modifier
                 .background(BlockOrange, RoundedCornerShape(8.dp))
                 .padding(12.dp)
                 .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
-        ){
-            Row (
+        ) {
+            Row(
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -58,13 +61,13 @@ class WhileBlockUI : BlockUI() {
                     style = SubTitle1,
                     color = TextWhite
                 )
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(15.dp))
                 ButtonTextField(
                     value = value,
-                    onValueChange = {value = it},
+                    onValueChange = { value = it },
                     textStyle = SubTitle1,
                     placeholder = "condition",
-                    modifier = Modifier.defaultMinSize(minWidth = 170.dp)
+                    modifier = Modifier.defaultMinSize(minWidth = 200.dp)
                 )
             }
             Spacer(Modifier.height(8.dp))
@@ -108,34 +111,29 @@ class WhileBlockUI : BlockUI() {
         }
     }
 
-
-    private var condition by mutableStateOf("")
-    private var body by mutableStateOf<List<BlockUI>>(emptyList())
-
-
     override fun toDBBlock(): BlockDB {
-        val whileBlock = WhileBlockBD(condition = value, body = body.map { it.toDBBlock() })
-        return whileBlock
+        val whileBlockDB = WhileBlockBD(
+            condition = value,
+            body = doBlocks.map { it.toDBBlock() }
+        )
+        return whileBlockDB
     }
 
-
-    fun initializeFromBD(conditionString: String, bodyUI: List<BlockUI>) {
-        condition = conditionString
-        body = bodyUI
+    fun initializeFromBD(
+        conditionString: String,
+        bodyUI: List<BlockUI>
+    ) {
+        value = conditionString
+        doBlocks.clear()
+        doBlocks.addAll(bodyUI)
     }
-
-
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        if (condition.isEmpty()) {
+        if (value.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
-        if (body.isEmpty()) {
-            throw IllegalArgumentException("Body is required")
-        }
 
-        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
-        return WhileBlock(condition, bodyBlocks)
+        val bodyBlocks = doBlocks.map { it.metamorphosis(consoleViewModel) }
+        return WhileBlock(value, bodyBlocks)
     }
-
 }

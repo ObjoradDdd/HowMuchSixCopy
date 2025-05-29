@@ -97,7 +97,7 @@ class DeclarationArrayBlockUI : BlockUI() {
     }
 
 
-    fun initializeFromBD(name: String, type: String, arrayLength: Int, valuesList: String?) {
+    fun initializeFromBD(name: String, type: String, /*arrayLength: Int,*/ valuesList: String?) {
         arrName = name
         selectedType = try {
             _types.fromString(type)

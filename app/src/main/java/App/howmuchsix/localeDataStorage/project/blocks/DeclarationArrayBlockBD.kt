@@ -12,11 +12,11 @@ data class DeclarationArrayBlockBD(
     val arrayName: String,
     val dataType: String,
     val length: Int,
-    val values: List<String>? = null
+    val values: String? = null
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val declarationArrayUI = DeclarationArrayBlockUI()
-        declarationArrayUI.initializeFromBD(arrayName, dataType, length, values)
+        declarationArrayUI.initializeFromBD(arrayName, dataType, values)
         return declarationArrayUI
     }
 }

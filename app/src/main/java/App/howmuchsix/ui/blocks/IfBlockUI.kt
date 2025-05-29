@@ -4,16 +4,14 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.IfBlock
 import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.IfBlockBD
-import App.howmuchsix.localeDataStorage.project.blocks.PrintBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
-import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
-import android.widget.Space
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -21,8 +19,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -36,10 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import kotlin.math.round
 
 class IfBlockUI : BlockUI() {
 
@@ -47,19 +40,22 @@ class IfBlockUI : BlockUI() {
     private var ownerBlockId by mutableStateOf("")
     private var showElse by mutableStateOf(false)
 
-    fun setOwnerId(id: String){
+    var thenBlocks = mutableListOf<BlockUI>()
+    var elseBlocks = mutableListOf<BlockUI>()
+
+    fun setOwnerId(id: String) {
         ownerBlockId = id
     }
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Column (
+        Column(
             modifier = modifier
                 .background(BlockOrange, RoundedCornerShape(8.dp))
                 .padding(12.dp)
                 .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
-        ){
-            Row (
+        ) {
+            Row(
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -71,7 +67,7 @@ class IfBlockUI : BlockUI() {
                 Spacer(Modifier.width(15.dp))
                 ButtonTextField(
                     value = value,
-                    onValueChange = {value = it},
+                    onValueChange = { value = it },
                     textStyle = SubTitle1,
                     placeholder = "conditions",
                     modifier = Modifier.defaultMinSize(minWidth = 200.dp)
@@ -124,7 +120,6 @@ class IfBlockUI : BlockUI() {
                 Spacer(Modifier.height(4.dp))
                 Box(
                     modifier = Modifier
-                        //.fillMaxWidth()
                         .defaultMinSize(minHeight = 50.dp)
                         .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
                         .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
@@ -166,17 +161,14 @@ class IfBlockUI : BlockUI() {
         }
     }
 
-
     private var condition by mutableStateOf("")
-    private var trueAction by mutableStateOf<List<BlockUI>>(emptyList())
-    private var elifConditions by mutableStateOf<List<String>?>(null)
-    private var elifActions by mutableStateOf<List<List<BlockUI>>?>(null)
-    private var falseAction by mutableStateOf<List<BlockUI>?>(null)
-
-
 
     override fun toDBBlock(): BlockDB {
-        val ifBlock = IfBlockBD(condition = condition, trueAction = trueAction.map { it.toDBBlock() }, falseAction = falseAction?.map { it.toDBBlock() })
+        val ifBlock = IfBlockBD(
+            condition = if (value != "") value else condition,
+            trueAction = thenBlocks.map { it.toDBBlock() },
+            falseAction = if (elseBlocks.isNotEmpty()) elseBlocks.map { it.toDBBlock() } else null
+        )
         return ifBlock
     }
 
@@ -188,34 +180,33 @@ class IfBlockUI : BlockUI() {
         falseActionUI: List<BlockUI>?
     ) {
         condition = conditionString
-        trueAction = trueActionUI
-        elifConditions = elifConditionsList
-        elifActions = elifActionsUI
-        falseAction = falseActionUI
+        value = conditionString
+        thenBlocks.clear()
+        elseBlocks.clear()
+        thenBlocks.addAll(trueActionUI)
+        falseActionUI?.let { elseBlocks.addAll(it) }
+        showElse = elseBlocks.isNotEmpty()
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        if (condition.isEmpty()) {
+        if (value.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
-        if (trueAction.isEmpty()) {
+        if (thenBlocks.isEmpty()) {
             throw IllegalArgumentException("True action is required")
         }
 
-        val trueActionBlocks = trueAction.map { it.metamorphosis(consoleViewModel) }
-        val falseActionBlocks = falseAction?.map { it.metamorphosis(consoleViewModel) }
-        val elifActionsList = elifActions?.map { actionList ->
-            actionList.map { it.metamorphosis(consoleViewModel) }
-        }
+        val trueActionBlocks = thenBlocks.map { it.metamorphosis(consoleViewModel) }
+        val falseActionBlocks = if (elseBlocks.isNotEmpty()) {
+            elseBlocks.map { it.metamorphosis(consoleViewModel) }
+        } else null
 
         return when {
-            elifActionsList != null && elifConditions != null && falseActionBlocks != null ->
-                IfBlock(condition, trueActionBlocks, elifConditions!!, elifActionsList, falseActionBlocks)
             falseActionBlocks != null ->
-                IfBlock(condition, trueActionBlocks, falseActionBlocks)
+                IfBlock(value, trueActionBlocks, falseActionBlocks)
+
             else ->
-                IfBlock(condition, trueActionBlocks)
+                IfBlock(value, trueActionBlocks)
         }
     }
-
 }

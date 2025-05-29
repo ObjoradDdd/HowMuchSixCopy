@@ -1,10 +1,8 @@
 package App.howmuchsix.ui.blocks
 
-import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionBlock
 import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.AssignmentBlockBD
 import App.howmuchsix.localeDataStorage.project.blocks.FunctionBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropdownMenuFunSelector

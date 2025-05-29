@@ -75,7 +75,7 @@ fun WorkingScreen(
     var isConsoleVisible by remember { mutableStateOf(false) }
 
     val interpreterViewModel = remember {
-        InterpreterViewModel(consoleViewModel)
+        InterpreterViewModel(consoleViewModel, viewModel)
     }
 
     val placedBlocks = viewModel.placedBlocks
@@ -285,6 +285,11 @@ fun WorkingScreen(
                     "Console" -> {
                         isConsoleVisible = !isConsoleVisible
                         isBlockPanelVisible = false
+                    }
+
+                    "Save" -> {
+                        consoleViewModel.clearConsole()
+                        interpreterViewModel.runProgram()
                     }
 
                     "Home" -> {
