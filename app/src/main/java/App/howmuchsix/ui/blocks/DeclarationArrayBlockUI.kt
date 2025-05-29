@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 
 class DeclarationArrayBlockUI : BlockUI() {
 
+    private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var arrName by mutableStateOf("")
     private var selectedType by mutableStateOf<_types?>(null)
@@ -79,26 +80,13 @@ class DeclarationArrayBlockUI : BlockUI() {
                 )
             }
             Spacer(Modifier.height(12.dp))
-            if (viewModel != null) {
-                Box(
-                    modifier = Modifier
-                        .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
-                        .padding(6.dp)
-                ) {
-                    DropZone(
-                        id = "array_dropzone_${ownerBlockId}",
-                        ownerBlockId = ownerBlockId,
-                        viewModel = viewModel,
-                        acceptedTypes = listOf(
-                            BlockType.Assignment
-                        ),
-                        placeholder = "components",
-                        modifier = Modifier.defaultMinSize(minWidth = 170.dp, minHeight = 40.dp)
-                    )
-                }
-            }
+            ButtonTextField(
+                value = value,
+                onValueChange = {value = it},
+                textStyle = SubTitle1,
+                placeholder = "components",
+                modifier = Modifier.defaultMinSize(minWidth = 180.dp)
+            )
         }
     }
 

@@ -12,10 +12,15 @@ import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,13 +45,14 @@ fun DropZone(
     viewModel: BlockEditorViewModel,
     acceptedTypes: List<BlockType> = emptyList(),
     placeholder: String = "Drop here",
+    multipleBlocks: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val dropZoneHighlight = viewModel.dropZoneHighlight
     val isHighlighted = dropZoneHighlight?.targetId == id
     val isValidDrop = dropZoneHighlight?.isValid == true
 
-    val currBlock = viewModel.getDropZoneContent(id)
+    val currBlocks = viewModel.getDropZoneContents(id)
 
     Box(
         modifier = modifier
@@ -55,7 +61,7 @@ fun DropZone(
                 color = when {
                     isHighlighted && isValidDrop -> Color.Green.copy(alpha = 0.3f)
                     isHighlighted && !isValidDrop -> Color.Red.copy(alpha = 0.3f)
-                    currBlock != null -> Color.Transparent
+                    currBlocks.isNotEmpty() -> Color.Transparent
                     else -> DarkerBeige.copy(alpha = 0.3f)
                 },
                 shape = RoundedCornerShape(4.dp)
@@ -78,25 +84,65 @@ fun DropZone(
                         position = Offset(globalBounds.left, globalBounds.top),
                         size = Size(globalBounds.width, globalBounds.height),
                         acceptedTypes = acceptedTypes,
-                        ownerBlockId = ownerBlockId
+                        ownerBlockId = ownerBlockId,
+                        multipleBlocks = multipleBlocks
                     )
                 )
             },
         contentAlignment = Alignment.Center
     ) {
-        if (currBlock != null) {
-            Box(
-                modifier = Modifier
-                    .scale(1f)
-                    .pointerInput(currBlock.id) {
-                        detectTapGestures(
-                            onLongPress = {
-                                viewModel.removeBlockFropmDropZone(id)
+        if (currBlocks.isNotEmpty()) {
+            if (multipleBlocks) {
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 1000.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(
+                        items = currBlocks,
+                        key = {block -> block?.id!! }
+                    ) { block ->
+                        if (block != null) {
+                            Box(
+                                modifier = Modifier
+                                    //.scale(0.9f)
+                                    .pointerInput(block.id) {
+                                        detectTapGestures(
+                                            onLongPress = {
+                                                if (viewModel != null) {
+                                                    viewModel.removeBlockFromDropZone(id, block.id)
+                                                    viewModel.addToFieldFromDropZone(block, id)
+                                                    viewModel.startDraggingPlacedBlock(block.id, block.position)
+                                                }
+                                            }
+                                        )
+                                    }
+                            ) {
+                                block.uiBlock.Render(Modifier, viewModel)
                             }
-                        )
+                        }
                     }
-            ){
-                currBlock.uiBlock.Render(Modifier, viewModel)
+                }
+            } else {
+                val singleBlock = currBlocks.first()
+                if (singleBlock != null) {
+                    Box(
+                        modifier = Modifier
+                            .scale(1f)
+                            .pointerInput(singleBlock.id) {
+                                detectTapGestures(
+                                    onLongPress = {
+                                        if (viewModel != null) {
+                                            viewModel.removeBlockFromDropZone(id, singleBlock.id)
+                                            viewModel.addToFieldFromDropZone(singleBlock, id)
+                                            viewModel.startDraggingPlacedBlock(singleBlock.id, singleBlock.position)
+                                        }
+                                    }
+                                )
+                            }
+                    ){
+                        singleBlock.uiBlock.Render(Modifier, viewModel)
+                    }
+                }
             }
         } else {
             Text(

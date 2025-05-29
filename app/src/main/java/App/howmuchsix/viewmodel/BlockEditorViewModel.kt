@@ -81,7 +81,8 @@ data class DropZoneTarget(
     val position: Offset,
     val size: androidx.compose.ui.geometry.Size,
     val acceptedTypes: List<BlockType> = emptyList(),
-    val ownerBlockId: String
+    val ownerBlockId: String,
+    val multipleBlocks: Boolean = false
 )
 
 data class DropZoneHighlight(
@@ -136,8 +137,8 @@ class BlockEditorViewModel : ViewModel() {
     private val _dropZoneHighlight = mutableStateOf<DropZoneHighlight?>(null)
     val dropZoneHighlight: DropZoneHighlight? get() = _dropZoneHighlight.value
 
-    private val _dropZoneContents = mutableStateMapOf<String, PlacedBlockUI>()
-    val dropZoneContents: Map<String, PlacedBlockUI> = _dropZoneContents
+    private val _dropZoneContents = mutableStateMapOf<String, MutableList<PlacedBlockUI>>()
+    val dropZoneContents: Map<String, List<PlacedBlockUI>> = _dropZoneContents
 
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")
@@ -163,28 +164,58 @@ class BlockEditorViewModel : ViewModel() {
     }
 
     fun findDropZoneAtPosition(position: Offset) : DropZoneTarget? {
-        return _dropZoneTargets.find { target ->
+        return _dropZoneTargets.filter { target ->
             val dropZoneRect = Rect(
                 offset = target.position,
                 size = target.size
             )
             dropZoneRect.contains(position)
         }
+            .minByOrNull { it.size.width * it.size.height }
     }
-    fun addBlockToDropZone(blockId: String, dropZoneTarget: DropZoneTarget){
-        val block = _placedBlocks.find { it.id == blockId } ?: return
+    fun addBlockToDropZone(blockId: String, dropZoneTarget: DropZoneTarget): Boolean {
+        val block = _placedBlocks.find { it.id == blockId } ?: return false
         _placedBlocks.removeIf{ it.id == blockId}
 
         if(block.type == BlockType.FunctionDeclaration){
             removeFunctionName(blockId)
         }
-        _dropZoneContents[dropZoneTarget.id] = block
+        if (dropZoneTarget.multipleBlocks) {
+            _dropZoneContents.getOrPut(dropZoneTarget.id) { mutableListOf() }.add(block)
+        } else {
+            _dropZoneContents[dropZoneTarget.id] = mutableListOf(block)
+        }
+        return true
     }
-    fun removeBlockFropmDropZone(dropZoneId: String) {
-        val removedBlock = _dropZoneContents.remove(dropZoneId)
+    fun addToFieldFromDropZone(block: PlacedBlockUI, dropZoneId: String) {
+        val zone = _dropZoneTargets.find { it.id ==dropZoneId }
+        val fieldPosition = zone?.position ?: Offset.Zero
+
+        _placedBlocks.add(
+            block.copy(
+                position = fieldPosition,
+                isConnected = false,
+                parentConnection = null
+            )
+        )
+    }
+    fun removeBlockFromDropZone(dropZoneId: String, blockId: String? = null) {
+        val blocks = _dropZoneContents[dropZoneId] ?: return
+
+        if (blockId != null) {
+            blocks.removeIf{ it.id == blockId}
+            if (blocks.isEmpty()) {
+                _dropZoneContents.remove(dropZoneId)
+            }
+        } else {
+            _dropZoneContents.remove(dropZoneId)
+        }
+    }
+    fun getDropZoneContents(dropZoneId: String): List<PlacedBlockUI?> {
+        return _dropZoneContents[dropZoneId] ?: emptyList()
     }
     fun getDropZoneContent(dropZoneId: String): PlacedBlockUI? {
-        return _dropZoneContents[dropZoneId]
+        return _dropZoneContents[dropZoneId]?.firstOrNull()
     }
 
     fun registerDropZone(dropZone: DropZoneTarget){
@@ -243,7 +274,10 @@ class BlockEditorViewModel : ViewModel() {
 
         if (currentBlock != null) {
             val dropZoneTarget = findDropZoneAtPosition(currentPosition)
-            if (dropZoneTarget != null && placedBlockId != null) {
+            val isValid = dropZoneTarget != null && (dropZoneTarget.acceptedTypes.isEmpty() ||
+                    dropZoneTarget.acceptedTypes.contains(currentBlock.type))
+
+            if (dropZoneTarget != null && isValid && placedBlockId != null) {
                 addBlockToDropZone(placedBlockId, dropZoneTarget)
             } else if (placeOnField) {
                 var finalPosition = currentPosition
