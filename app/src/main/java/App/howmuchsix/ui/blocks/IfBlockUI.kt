@@ -2,6 +2,9 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.IfBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.IfBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.PrintBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
@@ -170,6 +173,13 @@ class IfBlockUI : BlockUI() {
     private var elifConditions by mutableStateOf<List<String>?>(null)
     private var elifActions by mutableStateOf<List<List<BlockUI>>?>(null)
     private var falseAction by mutableStateOf<List<BlockUI>?>(null)
+
+
+
+    override fun toDBBlock(): BlockDB {
+        val ifBlock = IfBlockBD(condition = condition, trueAction = trueAction.map { it.toDBBlock() }, falseAction = falseAction?.map { it.toDBBlock() })
+        return ifBlock
+    }
 
     fun initializeFromBD(
         conditionString: String,

@@ -9,8 +9,8 @@ import kotlinx.serialization.Serializable
 data class DeclarationBlockBD(
     override val name: String = "declaration_block",
     override val type: BlockType = BlockType.DECLARATION,
-    val variables: List<String>,
-    val values: List<String>,
+    val variables: String,
+    val values: String,
     val dataType: String
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {

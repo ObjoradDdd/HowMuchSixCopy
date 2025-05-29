@@ -3,6 +3,9 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.BreakBlock
 import App.howmuchsix.hms.Blocks.ContinueBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.ContinueBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.DeclarationBlockBD
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
@@ -38,5 +41,9 @@ class ContinueBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         return ContinueBlock()
+    }
+
+    override fun toDBBlock(): BlockDB {
+        return ContinueBlockBD()
     }
 }

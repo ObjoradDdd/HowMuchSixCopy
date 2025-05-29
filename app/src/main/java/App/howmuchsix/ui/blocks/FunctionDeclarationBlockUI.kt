@@ -3,6 +3,10 @@ package App.howmuchsix.ui.blocks
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.FunctionBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.FunctionDeclarationBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.IfBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.CustomTextField
@@ -141,6 +145,11 @@ class FunctionDeclarationBlockUI : BlockUI() {
     private var argumentsTypes by mutableStateOf<List<String>>(emptyList())
     private var argumentsNames by mutableStateOf<List<String>>(emptyList())
     private var body by mutableStateOf<List<BlockUI>>(emptyList())
+
+    override fun toDBBlock(): BlockDB {
+        val functionDeclarationBlock = FunctionDeclarationBlockBD(functionName = functionName, returnType = returnType, argumentsTypes = argumentsTypes, argumentsNames = argumentsNames, body = body.map { it.toDBBlock() } )
+        return functionDeclarationBlock
+    }
 
     fun initializeFromBD(
         name: String,

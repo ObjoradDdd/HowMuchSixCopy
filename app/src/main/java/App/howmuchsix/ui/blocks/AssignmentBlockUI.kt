@@ -2,6 +2,9 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.AssignmentBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.ContinueBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
@@ -29,6 +32,10 @@ class AssignmentBlockUI : BlockUI() {
     fun initializeFromBD(variable: String, assignedValue: String) {
         name = variable
         value = assignedValue
+    }
+
+    override fun toDBBlock(): BlockDB {
+        return AssignmentBlockBD(variable = name, value = value)
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {

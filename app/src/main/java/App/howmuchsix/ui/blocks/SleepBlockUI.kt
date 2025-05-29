@@ -2,6 +2,9 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.SleepBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.SleepBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.WhileBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
@@ -51,6 +54,12 @@ class SleepBlockUI : BlockUI() {
 
     fun initializeFromBD(value: String){
         this.value = value
+    }
+
+
+    override fun toDBBlock(): BlockDB {
+        val sleepBlock = SleepBlockBD(value = value)
+        return sleepBlock
     }
 
 

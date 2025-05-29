@@ -4,6 +4,9 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.BreakBlock
 import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.ReturnBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.SleepBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
@@ -35,6 +38,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 class ReturnBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
+
+
+
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
@@ -56,6 +62,15 @@ class ReturnBlockUI : BlockUI() {
                 placeholder = "value"
             )
         }
+    }
+
+    fun initializeFromBD(value: String){
+        this.value = value
+    }
+
+    override fun toDBBlock(): BlockDB {
+        val returnBlock = ReturnBlockBD(value = value)
+        return returnBlock
     }
 
 

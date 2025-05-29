@@ -2,6 +2,9 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.PrintBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.PrintBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.ReturnBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.*
@@ -54,6 +57,11 @@ class PrintBlockUI : BlockUI() {
 
     fun initializeFromBD(value: String){
         this.textValue = value
+    }
+
+    override fun toDBBlock(): BlockDB {
+        val printBlock = PrintBlockBD(value = textValue)
+        return printBlock
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {

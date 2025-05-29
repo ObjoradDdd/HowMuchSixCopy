@@ -2,6 +2,8 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.WhileBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
@@ -106,13 +108,23 @@ class WhileBlockUI : BlockUI() {
         }
     }
 
+
     private var condition by mutableStateOf("")
     private var body by mutableStateOf<List<BlockUI>>(emptyList())
+
+
+    override fun toDBBlock(): BlockDB {
+        val whileBlock = WhileBlockBD(condition = value, body = body.map { it.toDBBlock() })
+        return whileBlock
+    }
+
 
     fun initializeFromBD(conditionString: String, bodyUI: List<BlockUI>) {
         condition = conditionString
         body = bodyUI
     }
+
+
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (condition.isEmpty()) {

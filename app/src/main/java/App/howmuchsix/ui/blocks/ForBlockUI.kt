@@ -4,6 +4,8 @@ import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.ForBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
@@ -137,16 +139,34 @@ class ForBlockUI : BlockUI() {
         }
     }
 
+    override fun toDBBlock(): BlockDB {
+        TODO("Not yet implemented")
+    }
 
-    private var iterator by mutableStateOf<BlockUI?>(null)
-    private var condition by mutableStateOf("")
-    private var action by mutableStateOf<BlockUI?>(null)
-    private var body by mutableStateOf<List<BlockUI>>(emptyList())
+    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+        TODO("Not yet implemented")
+    }
+
+    /*
+    override fun toDBBlock(): BlockDB {
+        var iteratorDB : BlockDB? = null
+        var actionDB : BlockDB? = null
+        if(iterator != null){
+            iteratorDB = iterator!!.toDBBlock()
+        }
+        if(action != null){
+            actionDB = action!!.toDBBlock()
+        }
+
+        val forBlockDB = ForBlockBD(iterator = iteratorDB, condition = value, action = actionDB, body = body.map { it.toDBBlock() })
+
+        return forBlockDB
+    }
 
     fun initializeFromBD(
-        iteratorUI: BlockUI,
+        iteratorUI: BlockUI?,
         conditionString: String,
-        actionUI: BlockUI,
+        actionUI: BlockUI?,
         bodyUI: List<BlockUI>
     ) {
         iterator = iteratorUI
@@ -154,7 +174,11 @@ class ForBlockUI : BlockUI() {
         action = actionUI
         body = bodyUI
     }
+    */
 
+
+
+    /*
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (iterator == null) {
             throw IllegalArgumentException("Iterator is required")
@@ -176,5 +200,6 @@ class ForBlockUI : BlockUI() {
             else -> throw IllegalStateException("Iterator must be AssignmentBlock or DeclarationBlock")
         }
     }
+     */
 
 }

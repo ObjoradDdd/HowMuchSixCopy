@@ -1,17 +1,17 @@
 package App.howmuchsix.ui.blocks
 
+import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionBlock
-import App.howmuchsix.ui.DropZone
+import App.howmuchsix.localeDataStorage.project.BlockDB
+import App.howmuchsix.localeDataStorage.project.blocks.AssignmentBlockBD
+import App.howmuchsix.localeDataStorage.project.blocks.FunctionBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropdownMenuFunSelector
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
-import App.howmuchsix.viewmodel.BlockType
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -83,8 +83,17 @@ class FunctionBlockUI : BlockUI() {
         }
     }
 
+    fun initializeFromBD(name: String, arguments : String){
+        this.selectedFun = name
+        this.value = arguments
+    }
+
+    override fun toDBBlock(): BlockDB {
+        return FunctionBlockBD(functionName = selectedFun, arguments = value)
+    }
+
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO()
+        return FunctionBlock("$selectedFun($value)")
     }
 
 }

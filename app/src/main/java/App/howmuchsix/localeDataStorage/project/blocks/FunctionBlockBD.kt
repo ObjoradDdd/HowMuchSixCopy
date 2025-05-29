@@ -9,13 +9,12 @@ import kotlinx.serialization.Serializable
 data class FunctionBlockBD(
     override val name: String = "function_block",
     override val type: BlockType = BlockType.FUNCTION,
-    val functionName: String
+    val functionName: String,
+    val arguments: String
 ) : BlockDB {
     override fun fromBDBlocToUI(): BlockUI {
         val functionUI = FunctionBlockUI()
-        TODO("""
-            functionUI.initializeFromBD(functionName)
-            return functionUI      
-        """.trimIndent())
+        functionUI.initializeFromBD(functionName, arguments)
+        return functionUI
         }
 }

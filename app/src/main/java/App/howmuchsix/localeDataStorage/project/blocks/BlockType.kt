@@ -11,5 +11,7 @@ enum class BlockType {
     FUNCTION_DECLARATION,
     PRINT,
     RETURN,
-    BREAK
+    BREAK,
+    SLEEP,
+    CONTINUE
 }
