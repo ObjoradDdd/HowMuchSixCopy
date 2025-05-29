@@ -93,8 +93,12 @@ data class DropZoneHighlight(
 data class PlacedBlockUI(
     val id: String = UUID.randomUUID().toString(),
     val type: BlockType,
-    val uiBlock: BlockUI,
     val position: Offset,
+    val parentId: String? = null,
+    val parentDropZoneId: String? = null,
+    val children: Map<String, List<String>> = emptyMap(),
+
+    val uiBlock: BlockUI,
     val originalBlockData: BlockItemData,
     val connectionPoints: List<ConnectionPoint> = emptyList(),
     val isConnected: Boolean = false,
@@ -124,9 +128,6 @@ class BlockEditorViewModel : ViewModel() {
 
     private val _draggedPlacedBlockId = mutableStateOf<String?>(null)
     val draggedPlacedBlockId: String? get() = _draggedPlacedBlockId.value
-
-    private val _connections = mutableStateListOf<BlockConnection>()
-    val connections: List<BlockConnection> = _connections
 
     private val _nearbyConnectionPoint = mutableStateOf<NearbyConnection?>(null)
     val nearbyConnectionPoint: NearbyConnection? get() = _nearbyConnectionPoint.value
@@ -174,36 +175,92 @@ class BlockEditorViewModel : ViewModel() {
             .minByOrNull { it.size.width * it.size.height }
     }
     fun addBlockToDropZone(blockId: String, dropZoneTarget: DropZoneTarget): Boolean {
-        val block = _placedBlocks.find { it.id == blockId } ?: return false
-        _placedBlocks.removeIf{ it.id == blockId}
+        val blockIndex = _placedBlocks.indexOfFirst { it.id == blockId }
+        if (blockIndex == -1) return false
+        val block = _placedBlocks[blockIndex]
 
-        if(block.type == BlockType.FunctionDeclaration){
-            removeFunctionName(blockId)
+        val updatedBlock = block.copy(
+            parentId = dropZoneTarget.ownerBlockId,
+            parentDropZoneId = dropZoneTarget.id
+        )
+        _placedBlocks[blockIndex] = updatedBlock
+
+        val parentIdx = _placedBlocks.indexOfFirst { it.id == dropZoneTarget.ownerBlockId }
+        if (parentIdx != -1) {
+            val parentBlock = _placedBlocks[parentIdx]
+            val updatedChildren = parentBlock.children.toMutableMap()
+            val zoneChildren = updatedChildren[dropZoneTarget.id]?.toMutableList() ?:
+            mutableListOf()
+            zoneChildren.add(blockId)
+            updatedChildren[dropZoneTarget.id] = zoneChildren
+            _placedBlocks[parentIdx] = parentBlock.copy(children = updatedChildren)
         }
-        if (dropZoneTarget.multipleBlocks) {
-            _dropZoneContents.getOrPut(dropZoneTarget.id) { mutableListOf() }.add(block)
-        } else {
-            _dropZoneContents[dropZoneTarget.id] = mutableListOf(block)
-        }
+
+        val zoneBlocks = _dropZoneContents.getOrPut(dropZoneTarget.id) {
+            mutableListOf() }
+        zoneBlocks.removeAll {it.id == blockId}
+        zoneBlocks.add(updatedBlock)
+        _dropZoneContents[dropZoneTarget.id] = zoneBlocks
+
         return true
     }
     fun addToFieldFromDropZone(block: PlacedBlockUI, dropZoneId: String) {
         val zone = _dropZoneTargets.find { it.id ==dropZoneId }
         val fieldPosition = zone?.position ?: Offset.Zero
 
-        _placedBlocks.add(
-            block.copy(
-                position = fieldPosition,
-                isConnected = false,
-                parentConnection = null
+        val idx = _placedBlocks.indexOfFirst { it.id == block.id }
+        if (idx != -1){
+            _placedBlocks[idx] = block.copy(
+                    position = fieldPosition,
+                    isConnected = false,
+                    parentConnection = null,
+                    parentId = null,
+                    parentDropZoneId = null
+                )
+        } else {
+            _placedBlocks.add(
+                block.copy(
+                    position = fieldPosition,
+                    isConnected = false,
+                    parentConnection = null,
+                    parentId = null,
+                    parentDropZoneId = null
+                )
             )
-        )
+        }
     }
     fun removeBlockFromDropZone(dropZoneId: String, blockId: String? = null) {
         val blocks = _dropZoneContents[dropZoneId] ?: return
 
         if (blockId != null) {
             blocks.removeIf{ it.id == blockId}
+
+            val blockIdx = _placedBlocks.indexOfFirst { it.id == blockId }
+            if (blockIdx != -1){
+                val updatedBlock = _placedBlocks[blockIdx].copy(
+                    parentId = null,
+                    parentDropZoneId = null
+                )
+                _placedBlocks[blockIdx] = updatedBlock
+            }
+
+            val parentBlock = _placedBlocks.find { block ->
+                block.children.any { (zone, ids) -> zone == dropZoneId &&
+                ids.contains(blockId)}
+            }
+            if (parentBlock != null) {
+                val updatedChildren = parentBlock.children.toMutableMap()
+                updatedChildren[dropZoneId] = updatedChildren[dropZoneId]?.filter {
+                    it != blockId
+                }.orEmpty()
+
+                val parentIdx = _placedBlocks.indexOfFirst { it.id ==
+                parentBlock.id}
+                if (parentIdx != -1){
+                    _placedBlocks[parentIdx] = parentBlock.copy(children = updatedChildren)
+                }
+            }
+
             if (blocks.isEmpty()) {
                 _dropZoneContents.remove(dropZoneId)
             }
@@ -214,10 +271,6 @@ class BlockEditorViewModel : ViewModel() {
     fun getDropZoneContents(dropZoneId: String): List<PlacedBlockUI?> {
         return _dropZoneContents[dropZoneId] ?: emptyList()
     }
-    fun getDropZoneContent(dropZoneId: String): PlacedBlockUI? {
-        return _dropZoneContents[dropZoneId]?.firstOrNull()
-    }
-
     fun registerDropZone(dropZone: DropZoneTarget){
         _dropZoneTargets.removeIf { it.id == dropZone.id }
         _dropZoneTargets.add(dropZone)
@@ -244,7 +297,6 @@ class BlockEditorViewModel : ViewModel() {
         _isDragging.value = true
         _draggedPlacedBlockId.value = blockId
     }
-
     fun updatePosition(newPosition: Offset){
         if (_isDragging.value){
             _dragPosition.value = newPosition
@@ -449,15 +501,6 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
     }
-    private fun createConnection(parentId: String, childId: String, connectionPointId: String){
-        val connection = BlockConnection(
-            parentBlockId = parentId,
-            childBlockId = childId,
-            parentConnectionPoint = connectionPointId,
-            childConnectionPoint = ""
-        )
-        _connections.add(connection)
-    }
     private fun getBlockHeight(blockType: BlockType): Float {
         return when (blockType) {
             BlockType.Declaration, BlockType.Assignment -> 100f
@@ -470,5 +513,4 @@ class BlockEditorViewModel : ViewModel() {
             else -> 80f
         }
     }
-
 }

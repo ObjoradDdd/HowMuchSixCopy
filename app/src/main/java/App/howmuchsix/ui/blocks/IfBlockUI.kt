@@ -87,10 +87,9 @@ class IfBlockUI : BlockUI() {
             if (viewModel != null) {
                 Box(
                     modifier = Modifier
-                        //.fillMaxWidth()
                         .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
                         .padding(6.dp)
                 ) {
                     DropZone(
@@ -127,8 +126,8 @@ class IfBlockUI : BlockUI() {
                     modifier = Modifier
                         //.fillMaxWidth()
                         .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
                         .padding(6.dp)
                 ) {
                     DropZone(
