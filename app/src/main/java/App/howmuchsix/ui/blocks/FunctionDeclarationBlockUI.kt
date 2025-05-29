@@ -4,23 +4,16 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.FunctionBlockBD
 import App.howmuchsix.localeDataStorage.project.blocks.FunctionDeclarationBlockBD
-import App.howmuchsix.localeDataStorage.project.blocks.IfBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.CustomTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.InputText
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextOrange
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -33,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +33,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 class FunctionDeclarationBlockUI : BlockUI() {
@@ -139,12 +130,10 @@ class FunctionDeclarationBlockUI : BlockUI() {
         }
     }
 
-
     private var functionName by mutableStateOf("")
     private var returnType by mutableStateOf("")
     private var argumentsTypes by mutableStateOf<List<String>>(emptyList())
     private var argumentsNames by mutableStateOf<List<String>>(emptyList())
-    private var body by mutableStateOf<List<BlockUI>>(emptyList())
 
     override fun toDBBlock(): BlockDB {
         val functionDeclarationBlock = FunctionDeclarationBlockBD(functionName = functionName, returnType = returnType, argumentsTypes = argumentsTypes, argumentsNames = argumentsNames, body = body.map { it.toDBBlock() } )
@@ -162,7 +151,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         returnType = retType
         argumentsTypes = argTypes
         argumentsNames = argNames
-        body = bodyUI
+        body = mutableListOf()
     }
 
 

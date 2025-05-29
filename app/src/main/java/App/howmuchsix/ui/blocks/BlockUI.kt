@@ -9,12 +9,20 @@ import androidx.compose.ui.Modifier
 
 abstract class BlockUI {
 
-    abstract fun metamorphosis(consoleViewModel: ConsoleViewModel) : Block
+    var body: MutableList<BlockUI> = mutableListOf()
+
+    abstract fun metamorphosis(consoleViewModel: ConsoleViewModel): Block
 
     @Composable
     abstract fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?)
 
-    abstract fun toDBBlock() :BlockDB
+    abstract fun toDBBlock(): BlockDB
 
+    fun addToBody(blockUI: BlockUI){
+        this.body.add(blockUI)
+    }
+    fun deleteToBody(blockUI: BlockUI){
+        this.body.remove(blockUI)
+    }
 
 }

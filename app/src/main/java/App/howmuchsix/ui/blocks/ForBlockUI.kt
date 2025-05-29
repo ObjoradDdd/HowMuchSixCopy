@@ -8,9 +8,7 @@ import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.ForBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.BlockEditorViewModel
@@ -29,7 +27,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +39,11 @@ class ForBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
+
+    var declareBlock: BlockUI? = null
+    var assignBlock: BlockUI? = null
+    var doBlocks = mutableListOf<BlockUI>()
+
     fun setOwnerId(id: String){
         ownerBlockId = id
     }
@@ -140,26 +142,12 @@ class ForBlockUI : BlockUI() {
     }
 
     override fun toDBBlock(): BlockDB {
-        TODO("Not yet implemented")
-    }
-
-    override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO("Not yet implemented")
-    }
-
-    /*
-    override fun toDBBlock(): BlockDB {
-        var iteratorDB : BlockDB? = null
-        var actionDB : BlockDB? = null
-        if(iterator != null){
-            iteratorDB = iterator!!.toDBBlock()
-        }
-        if(action != null){
-            actionDB = action!!.toDBBlock()
-        }
-
-        val forBlockDB = ForBlockBD(iterator = iteratorDB, condition = value, action = actionDB, body = body.map { it.toDBBlock() })
-
+        val forBlockDB = ForBlockBD(
+            iterator = declareBlock?.toDBBlock(),
+            condition = value,
+            action = assignBlock?.toDBBlock(),
+            body = doBlocks.map { it.toDBBlock() }
+        )
         return forBlockDB
     }
 
@@ -169,37 +157,32 @@ class ForBlockUI : BlockUI() {
         actionUI: BlockUI?,
         bodyUI: List<BlockUI>
     ) {
-        iterator = iteratorUI
-        condition = conditionString
-        action = actionUI
-        body = bodyUI
+        declareBlock = iteratorUI
+        value = conditionString
+        assignBlock = actionUI
+        doBlocks.clear()
+        doBlocks.addAll(bodyUI)
     }
-    */
 
-
-
-    /*
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        if (iterator == null) {
+        if (declareBlock == null) {
             throw IllegalArgumentException("Iterator is required")
         }
-        if (condition.isEmpty()) {
+        if (value.isEmpty()) {
             throw IllegalArgumentException("Condition is required")
         }
-        if (action == null) {
+        if (assignBlock == null) {
             throw IllegalArgumentException("Action is required")
         }
 
-        val iteratorBlock = iterator!!.metamorphosis(consoleViewModel)
-        val actionBlock = action!!.metamorphosis(consoleViewModel) as AssignmentBlock
-        val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
+        val iteratorBlock = declareBlock!!.metamorphosis(consoleViewModel)
+        val actionBlock = assignBlock!!.metamorphosis(consoleViewModel) as AssignmentBlock
+        val bodyBlocks = doBlocks.map { it.metamorphosis(consoleViewModel) }
 
         return when (iteratorBlock) {
-            is AssignmentBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)
-            is DeclarationBlock -> ForBlock(iteratorBlock, condition, actionBlock, bodyBlocks)
+            is AssignmentBlock -> ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
+            is DeclarationBlock -> ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
             else -> throw IllegalStateException("Iterator must be AssignmentBlock or DeclarationBlock")
         }
     }
-     */
-
 }
