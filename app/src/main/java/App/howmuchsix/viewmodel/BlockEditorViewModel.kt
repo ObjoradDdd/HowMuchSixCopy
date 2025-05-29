@@ -93,8 +93,12 @@ data class DropZoneHighlight(
 data class PlacedBlockUI(
     val id: String = UUID.randomUUID().toString(),
     val type: BlockType,
-    val uiBlock: BlockUI,
     val position: Offset,
+    val parentId: String? = null,
+    val parentDropZoneId: String? = null,
+    val dropZoneChildren: Map<String, List<String>> = emptyMap(),
+
+    val uiBlock: BlockUI,
     val originalBlockData: BlockItemData,
     val connectionPoints: List<ConnectionPoint> = emptyList(),
     val isConnected: Boolean = false,
@@ -108,6 +112,8 @@ data class PlacedBlockUI(
 }
 
 class BlockEditorViewModel : ViewModel() {
+    var blockList = mutableStateListOf<PlacedBlockUI>()
+
     private val snapThreshold = 50f
 
     private val _placedBlocks = mutableStateListOf<PlacedBlockUI>()
@@ -214,10 +220,6 @@ class BlockEditorViewModel : ViewModel() {
     fun getDropZoneContents(dropZoneId: String): List<PlacedBlockUI?> {
         return _dropZoneContents[dropZoneId] ?: emptyList()
     }
-    fun getDropZoneContent(dropZoneId: String): PlacedBlockUI? {
-        return _dropZoneContents[dropZoneId]?.firstOrNull()
-    }
-
     fun registerDropZone(dropZone: DropZoneTarget){
         _dropZoneTargets.removeIf { it.id == dropZone.id }
         _dropZoneTargets.add(dropZone)
@@ -244,7 +246,6 @@ class BlockEditorViewModel : ViewModel() {
         _isDragging.value = true
         _draggedPlacedBlockId.value = blockId
     }
-
     fun updatePosition(newPosition: Offset){
         if (_isDragging.value){
             _dragPosition.value = newPosition

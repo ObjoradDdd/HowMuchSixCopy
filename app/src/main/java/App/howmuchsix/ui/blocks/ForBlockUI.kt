@@ -107,8 +107,8 @@ class ForBlockUI : BlockUI() {
                 Box(
                     modifier = Modifier
                         .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.3f), RoundedCornerShape(4.dp))
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
+                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
                         .padding(6.dp)
                 ) {
                     DropZone(
