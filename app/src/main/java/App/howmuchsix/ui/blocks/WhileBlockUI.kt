@@ -85,12 +85,20 @@ class WhileBlockUI : BlockUI() {
                         ownerBlockId = ownerBlockId,
                         viewModel = viewModel,
                         acceptedTypes = listOf(
+                            BlockType.Function,
                             BlockType.Declaration,
                             BlockType.Assignment,
+                            BlockType.DeclarationArray,
+                            BlockType.If,
+                            BlockType.For,
+                            BlockType.While,
+                            BlockType.Continue,
                             BlockType.Print,
+                            BlockType.Sleep,
                             BlockType.Break
                         ),
                         placeholder = "do statements",
+                        multipleBlocks = true,
                         modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
                     )
                 }

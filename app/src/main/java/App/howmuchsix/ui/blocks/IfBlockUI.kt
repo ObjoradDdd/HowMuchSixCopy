@@ -95,11 +95,19 @@ class IfBlockUI : BlockUI() {
                         ownerBlockId = ownerBlockId,
                         viewModel = viewModel,
                         acceptedTypes = listOf(
+                            BlockType.Function,
                             BlockType.Declaration,
                             BlockType.Assignment,
-                            BlockType.Print
+                            BlockType.DeclarationArray,
+                            BlockType.If,
+                            BlockType.For,
+                            BlockType.While,
+                            BlockType.Continue,
+                            BlockType.Print,
+                            BlockType.Sleep
                         ),
                         placeholder = "then statements",
+                        multipleBlocks = true,
                         modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
                     )
                 }
@@ -125,11 +133,19 @@ class IfBlockUI : BlockUI() {
                         ownerBlockId = ownerBlockId,
                         viewModel = viewModel,
                         acceptedTypes = listOf(
+                            BlockType.Function,
                             BlockType.Declaration,
                             BlockType.Assignment,
-                            BlockType.Print
+                            BlockType.DeclarationArray,
+                            BlockType.If,
+                            BlockType.For,
+                            BlockType.While,
+                            BlockType.Continue,
+                            BlockType.Print,
+                            BlockType.Sleep
                         ),
                         placeholder = "else statements",
+                        multipleBlocks = true,
                         modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
                     )
                 }

@@ -113,15 +113,21 @@ class FunctionDeclarationBlockUI : BlockUI() {
                         ownerBlockId = ownerBlockId,
                         viewModel = viewModel,
                         acceptedTypes = listOf(
+                            BlockType.Function,
+                            BlockType.Return,
                             BlockType.Declaration,
                             BlockType.Assignment,
-                            BlockType.Print,
-                            BlockType.Return,
-                            BlockType.For,
+                            BlockType.DeclarationArray,
                             BlockType.If,
-                            BlockType.While
+                            BlockType.For,
+                            BlockType.While,
+                            BlockType.Continue,
+                            BlockType.Print,
+                            BlockType.Sleep
                         ),
+
                         placeholder = "body",
+                        multipleBlocks = true,
                         modifier = Modifier.defaultMinSize(minWidth = 270.dp, minHeight = 40.dp)
                     )
                 }
