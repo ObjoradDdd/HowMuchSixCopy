@@ -64,7 +64,8 @@ fun ZoomableField(
             drawGrid(spacing = 50f, GridColor)
         }
 
-        placedBlocks.forEach { block->
+        val fieldBlocks = placedBlocks.filter { it.parentId == null }
+        fieldBlocks.forEach { block->
             Box(
                 modifier = Modifier
                     .offset{IntOffset(block.position.x.roundToInt(), block.position.y.roundToInt())}

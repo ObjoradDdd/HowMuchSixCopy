@@ -35,7 +35,8 @@ class DeclarationBlockUI : BlockUI() {
         Row (
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ){
             DropDownMenuTypeSelector(
                 selectedType = selectedType,
