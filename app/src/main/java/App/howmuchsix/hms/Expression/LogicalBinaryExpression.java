@@ -1,5 +1,6 @@
 package App.howmuchsix.hms.Expression;
 
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class LogicalBinaryExpression implements Expression<Boolean> {
@@ -7,10 +8,13 @@ public final class LogicalBinaryExpression implements Expression<Boolean> {
     private final Expression<?> left;
     private final Expression<?> right;
 
-    public LogicalBinaryExpression(String operator, Expression<?> left, Expression<?> right) {
+    private final String id;
+
+    public LogicalBinaryExpression(String operator, Expression<?> left, Expression<?> right, String id) {
         this.operator = operator;
         this.left = left;
         this.right = right;
+        this.id = id;
         if (left.eval() == null || right.eval() == null) {
             throw new RuntimeException("You can't use operator " + operator + " with null");
         }
@@ -34,7 +38,7 @@ public final class LogicalBinaryExpression implements Expression<Boolean> {
             case "<" -> compare(leftVal, rightVal) < 0;
             case ">=" -> compare(leftVal, rightVal) >= 0;
             case "<=" -> compare(leftVal, rightVal) <= 0;
-            default -> throw new RuntimeException("Unknown operator: " + operator);
+            default -> throw new ProgramRunException("Unknown operator: " + operator, id);
         };
     }
 
@@ -59,7 +63,7 @@ public final class LogicalBinaryExpression implements Expression<Boolean> {
         if (left instanceof String && right instanceof String) {
             return ((String) left).compareTo((String) right);
         }
-        throw new RuntimeException("Cannot compare " + left + " and " + right);
+        throw new ProgramRunException("Cannot compare " + left + " and " + right, id);
     }
 
     private boolean toBoolean(Object value) {

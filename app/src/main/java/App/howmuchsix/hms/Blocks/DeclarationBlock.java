@@ -21,15 +21,16 @@ public final class DeclarationBlock extends Block {
 
 
     public void Action(List<String> scopes, Variables lib) {
+
         for (int i = 0; i < this.variables.size(); i++) {
             if (lib.isExistsVariable(this.variables.get(i))) {
-                throw new RuntimeException(this.variables.get(i) + " is already declared");
+                throw new ProgramRunException(this.variables.get(i) + " is already declared", this.getUUID());
             }
             if (Objects.equals(this.variables.get(i), "true") || Objects.equals(this.variables.get(i), "false")) {
-                throw new RuntimeException("Variable cannot be named true or false");
+                throw new ProgramRunException("Variable cannot be named true or false", this.getUUID());
             }
             if (i < this.values.size()) {
-                lib.set(this.variables.get(i), type.getValue(values.get(i), scopes, lib), scopes.get(scopes.size() - 1));
+                lib.set(this.variables.get(i), type.getValue(values.get(i), scopes, lib, this.getUUID()), scopes.get(scopes.size() - 1));
             } else {
                 lib.set(this.variables.get(i), new NullExpression<>(type), scopes.get(scopes.size() - 1));
             }

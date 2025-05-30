@@ -1,8 +1,8 @@
 package App.howmuchsix.viewmodel
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.hms.Library.Variables
-import App.howmuchsix.ui.blocks.BlockUI
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +28,21 @@ class InterpreterViewModel(
             consoleViewModel.addToConsole("\nStarting program execution...")
 
             val blocks : List<Block>
+            val functions : List<Block>
+
+            try {
+                functions = withContext(Dispatchers.Default) {
+                    blockEditorViewModel.placedBlocks.filter{it.type == BlockType.FunctionDeclaration}.map{ it.uiBlock }
+                        .map { it.metamorphosis(consoleViewModel) }
+                }
+            }
+            catch (e : Exception){
+                withContext(Dispatchers.Main) {
+                    consoleViewModel.addToConsole("\n${e.message}")
+                    consoleViewModel.addToConsole("\nProgram failed")
+                }
+                return@launch
+            }
 
             try {
                 blocks = withContext(Dispatchers.Default) {
@@ -43,8 +58,10 @@ class InterpreterViewModel(
                 return@launch
             }
 
+            val program = functions + blocks
+
             withContext(Dispatchers.IO) {
-                executeProgram(blocks)
+                executeProgram(program)
             }
             _isRunning.value = false
         }
@@ -57,10 +74,11 @@ class InterpreterViewModel(
             for (block in blocks) {
                 try {
                     block.Action(listOf("MainScope"), localeLib)
-                } catch (e: Exception) {
+                } catch (e: ProgramRunException) {
                     isSuccess = false
                     withContext(Dispatchers.Main) {
                         consoleViewModel.addToConsole("\n${e.message}")
+                        consoleViewModel.addToConsole("\n${blockEditorViewModel.placedBlocks.find { it.id == e.id }}")
                     }
                     break
                 }

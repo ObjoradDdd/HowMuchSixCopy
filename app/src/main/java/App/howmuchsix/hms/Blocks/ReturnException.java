@@ -2,11 +2,11 @@ package App.howmuchsix.hms.Blocks;
 
 import App.howmuchsix.hms.Expression.Expression;
 
-public class ReturnException extends Exception {
+public class ReturnException extends ProgramRunException {
     private final Expression<?> value;
 
-    public ReturnException(Expression<?> value) {
-        super("Return block outside a function");
+    public ReturnException(Expression<?> value, String id) {
+        super("Return block outside a function", id);
         this.value = value;
     }
 

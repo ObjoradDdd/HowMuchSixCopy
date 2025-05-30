@@ -8,10 +8,11 @@ import App.howmuchsix.ui.blocks.IfBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.SleepBlockUI
-import App.howmuchsix.ui.blocks.Try_catchBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
-import App.howmuchsix.ui.theme.design_elements.*
-import App.howmuchsix.ui.theme.drawGrid
+import App.howmuchsix.ui.theme.design_elements.BlockPink
+import App.howmuchsix.ui.theme.design_elements.FieldBG
+import App.howmuchsix.ui.theme.design_elements.GridColor
+import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.viewmodel.*
 import App.howmuchsix.viewmodel.PlacedBlockUI
 import android.util.Log
@@ -21,6 +22,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -66,8 +68,11 @@ fun ZoomableField(
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
-    val minScale = 0.3f
-    val maxScale = 3f
+    val minScale = 0.1f
+    val maxScale = 5f
+
+
+    val virtualFieldSize = 10000f
 
     LaunchedEffect(scale, offset) {
         onTransformChange(scale, offset)
@@ -81,26 +86,34 @@ fun ZoomableField(
             .pointerInput(Unit) {
                 detectTransformGestures(
                     panZoomLock = false
-                ) { _, pan, zoom, _ ->
+                ) { centroid, pan, zoom, _ ->
                     val newScale = (scale * zoom).coerceIn(minScale, maxScale)
 
-                    val newOffsetX = offset.x + pan.x
-                    val newOffsetY = offset.y + pan.y
 
-                    val constrainedOffset = if (newScale > 1f) {
-                        val maxX = size.width * (newScale - 1) / 2
-                        val maxY = size.height * (newScale - 1) / 2
-                        Offset(
-                            x = newOffsetX.coerceIn(-maxX, maxX),
-                            y = newOffsetY.coerceIn(-maxY, maxY)
-                        )
+                    val newOffset = if (zoom != 1f) {
+                        val screenCenter = Offset(size.width / 2f, size.height / 2f)
+                        val zoomCenter = centroid
+                        val deltaScale = newScale / scale
+
+                        val offsetFromCenter = offset - screenCenter
+                        val newOffsetFromCenter = offsetFromCenter * deltaScale
+                        val deltaFromZoomCenter = (zoomCenter - screenCenter) * (1 - deltaScale)
+
+                        newOffsetFromCenter + screenCenter + deltaFromZoomCenter + pan
                     } else {
-                        val buffer = 50f
-                        Offset(
-                            x = newOffsetX.coerceIn(-buffer, buffer),
-                            y = newOffsetY.coerceIn(-buffer, buffer)
-                        )
+                        offset + pan
                     }
+
+
+                    val maxOffsetX = virtualFieldSize * newScale
+                    val maxOffsetY = virtualFieldSize * newScale
+                    val minOffsetX = -virtualFieldSize * newScale
+                    val minOffsetY = -virtualFieldSize * newScale
+
+                    val constrainedOffset = Offset(
+                        x = newOffset.x.coerceIn(minOffsetX, maxOffsetX),
+                        y = newOffset.y.coerceIn(minOffsetY, maxOffsetY)
+                    )
 
                     scale = newScale
                     offset = constrainedOffset
@@ -117,25 +130,45 @@ fun ZoomableField(
                     translationY = offset.y
                 )
         ) {
+
             Canvas(modifier = Modifier.fillMaxSize()) {
-                drawGrid(spacing = 50f, GridColor)
+                drawExtendedGrid(
+                    spacing = 50f,
+                    color = GridColor,
+                    offset = offset,
+                    scale = scale,
+                    virtualSize = virtualFieldSize
+                )
             }
 
-            placedBlocks.forEach { block->
+
+            placedBlocks.forEach { block ->
                 Box(
                     modifier = Modifier
-                        .offset{IntOffset(block.position.x.roundToInt(), block.position.y.roundToInt())}
+                        .offset {
+                            IntOffset(
+                                block.position.x.roundToInt(),
+                                block.position.y.roundToInt()
+                            )
+                        }
                         .wrapContentSize()
                         .onGloballyPositioned { coordinates ->
                             val size = coordinates.size
                             viewModel.updateBlockSize(
                                 block.id,
-                                Size(size.width.toFloat(), size.height.toFloat()))
+                                Size(size.width.toFloat(), size.height.toFloat())
+                            )
                         }
-                        .pointerInput(block.id){
+                        .pointerInput(block.id) {
                             detectDragGestures(
-                                onDragStart = { offset ->
-                                    onStartDragPlacedBlock(block.id, offset + block.position)
+                                onDragStart = { dragOffset ->
+
+                                    val fieldPosition = screenToFieldCoords(
+                                        dragOffset + block.position,
+                                        offset,
+                                        scale
+                                    )
+                                    onStartDragPlacedBlock(block.id, fieldPosition)
                                 },
                                 onDrag = { change, _ ->
                                     change.consume()
@@ -143,6 +176,7 @@ fun ZoomableField(
                             )
                         }
                 ) {
+
                     when (block.uiBlock) {
                         is IfBlockUI -> block.uiBlock.setOwnerId(block.id)
                         is ForBlockUI -> block.uiBlock.setOwnerId(block.id)
@@ -150,15 +184,15 @@ fun ZoomableField(
                         is FunctionDeclarationBlockUI -> block.uiBlock.setOwnerId(block.id)
                         is FunctionBlockUI -> block.uiBlock.setOwnerId(block.id)
                         is DeclarationArrayBlockUI -> block.uiBlock.setOwnerId(block.id)
-                        is Try_catchBlockUI -> block.uiBlock.setOwnerId(block.id)
                     }
-                    block.uiBlock.Render(modifier, viewModel)
+                    block.uiBlock.Render(Modifier.wrapContentSize(), viewModel)
                 }
             }
 
+
             Canvas(modifier = Modifier.fillMaxSize()) {
                 nearbyConnectionPoint?.let { nearbyConn ->
-                    val targetBlock = placedBlocks.find{ it.id == nearbyConn.ownerBlockId }
+                    val targetBlock = placedBlocks.find { it.id == nearbyConn.ownerBlockId }
                     targetBlock?.let { block ->
                         val absolutePosition = block.position + nearbyConn.connectionPoint.position
                         drawCircle(
@@ -173,26 +207,64 @@ fun ZoomableField(
     }
 }
 
-fun DrawScope.drawGrid(spacing: Float, color: Color){
+
+fun DrawScope.drawExtendedGrid(
+    spacing: Float,
+    color: Color,
+    offset: Offset,
+    scale: Float,
+    virtualSize: Float
+) {
     val step = spacing
     val width = size.width
     val height = size.height
 
-    for (x in 0..(width / step).toInt()) {
-        drawLine(
-            color = color,
-            start = Offset(x * step, 0f),
-            end = Offset(x * step, height),
-            strokeWidth = 1f
-        )
+
+    val visibleLeft = (-offset.x) / scale
+    val visibleTop = (-offset.y) / scale
+    val visibleRight = visibleLeft + width / scale
+    val visibleBottom = visibleTop + height / scale
+
+
+    val extendedLeft = visibleLeft - step * 2
+    val extendedTop = visibleTop - step * 2
+    val extendedRight = visibleRight + step * 2
+    val extendedBottom = visibleBottom + step * 2
+
+
+    val startX = (extendedLeft / step).toInt() * step
+    val endX = (extendedRight / step).toInt() * step
+    var x = startX
+    while (x <= endX) {
+        if (x >= -virtualSize && x <= virtualSize) {
+            drawLine(
+                color = color,
+                start = Offset(x, extendedTop.coerceAtLeast(-virtualSize)),
+                end = Offset(x, extendedBottom.coerceAtMost(virtualSize)),
+                strokeWidth = 1f
+            )
+        }
+        x += step
     }
 
-    for (y in 0..(height / step).toInt()) {
-        drawLine(
-            color = color,
-            start = Offset(0f,y * step),
-            end = Offset(width, y * step),
-            strokeWidth = 1f
-        )
+    val startY = (extendedTop / step).toInt() * step
+    val endY = (extendedBottom / step).toInt() * step
+    var y = startY
+    while (y <= endY) {
+        if (y >= -virtualSize && y <= virtualSize) {
+            drawLine(
+                color = color,
+                start = Offset(extendedLeft.coerceAtLeast(-virtualSize), y),
+                end = Offset(extendedRight.coerceAtMost(virtualSize), y),
+                strokeWidth = 1f
+            )
+        }
+        y += step
     }
 }
+
+
+fun screenToFieldCoords(screenPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
+    return (screenPosition - fieldOffset) / fieldScale
+}
+

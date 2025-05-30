@@ -20,6 +20,6 @@ public final class StringBlock extends Block {
     public Expression<String> eval(List<String> scopes, Variables lib) {
         this.scopeNames = scopes;
         List<Token> tokens = new Lexer(this.input).tokenize();
-        return new StringExpression(new Parser(tokens, scopeNames, lib).parseString().toString());
+        return new StringExpression(new Parser(tokens, scopeNames, lib, this.getUUID()).parseString().toString());
     }
 }

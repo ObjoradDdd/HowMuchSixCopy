@@ -42,20 +42,20 @@ public final class IfBlock extends Block {
         lib.newScope(name);
         try {
             if (elifActions == null && falseAction == null) {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
+                if ((boolean) (Types.BOOLEAN.getValue(trueCondition, scopeNames, lib, this.getUUID()).eval())) {
                     for (Block block : trueAction) {
                         block.Action(newScopes, lib);
                     }
                 }
             } else if (elifActions != null && falseAction == null) {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
+                if ((boolean) (Types.BOOLEAN.getValue(trueCondition, scopeNames, lib, this.getUUID()).eval())) {
                     for (Block block : trueAction) {
                         block.Action(newScopes, lib);
                     }
                     return;
                 }
                 for (int i = 0; i < elifActions.size(); i++) {
-                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames, lib).eval())) {
+                    if ((boolean) (Types.BOOLEAN.getValue(elifConditions.get(i), scopeNames, lib, this.getUUID()).eval())) {
                         for (Block block : elifActions.get(i)) {
                             block.Action(newScopes, lib);
                         }
@@ -65,7 +65,7 @@ public final class IfBlock extends Block {
 
             } else if (elifActions != null) {
 
-                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
+                if ((boolean) (Types.BOOLEAN.getValue(trueCondition, scopeNames, lib, this.getUUID()).eval())) {
                     for (Block block : trueAction) {
                         block.Action(newScopes, lib);
                     }
@@ -73,7 +73,7 @@ public final class IfBlock extends Block {
                 }
 
                 for (int i = 0; i < elifActions.size(); i++) {
-                    if ((new LogicalBlock(elifConditions.get(i)).eval(scopeNames, lib).eval())) {
+                    if ((boolean) (Types.BOOLEAN.getValue(elifConditions.get(i), scopeNames, lib, this.getUUID()).eval())) {
                         for (Block block : elifActions.get(i)) {
                             block.Action(newScopes, lib);
                         }
@@ -86,7 +86,7 @@ public final class IfBlock extends Block {
                 }
 
             } else {
-                if ((new LogicalBlock(trueCondition).eval(scopeNames, lib).eval())) {
+                if ((boolean) (Types.BOOLEAN.getValue(trueCondition, scopeNames, lib, this.getUUID()).eval())) {
                     for (Block block : trueAction) {
                         block.Action(newScopes, lib);
                     }

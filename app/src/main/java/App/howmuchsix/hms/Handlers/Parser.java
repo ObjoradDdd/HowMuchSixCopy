@@ -3,6 +3,7 @@ package App.howmuchsix.hms.Handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
 import App.howmuchsix.hms.Expression.BinaryExpression;
 import App.howmuchsix.hms.Expression.BooleanExpression;
@@ -21,6 +22,8 @@ import App.howmuchsix.hms.Library.Variables;
 public final class Parser {
     private final List<Token> tokens;
     private final int size;
+
+    private final String id;
     private static final Token EOF = new Token(TokenType.EOF, "");
 
     private final List<String> scopeNames;
@@ -28,7 +31,8 @@ public final class Parser {
 
     private final Variables lib;
 
-    public Parser(List<Token> tokens, List<String> scopeNames, Variables lib) {
+    public Parser(List<Token> tokens, List<String> scopeNames, Variables lib, String id) {
+        this.id = id;
         this.scopeNames = scopeNames;
         this.tokens = tokens;
         size = tokens.size();
@@ -49,11 +53,11 @@ public final class Parser {
 
         while (true) {
             if (match(TokenType.PLUS)) {
-                result = new StringExpression((new BinaryExpression<>("+", result, primaryString())).eval());
+                result = new StringExpression((new BinaryExpression<>("+", result, primaryString(), id)).eval());
                 continue;
             }
             if (matchWithoutMove(TokenType.MINUS) || matchWithoutMove(TokenType.STAR) || matchWithoutMove(TokenType.SLASH) || matchWithoutMove(TokenType.REMAINDER)) {
-                throw new RuntimeException("Incorrect operator for string type");
+                throw new ProgramRunException("Incorrect operator for string type", id);
             }
             break;
         }
@@ -69,20 +73,20 @@ public final class Parser {
             return new NullExpression<>(Types.STRING);
         }
         if (match(TokenType.WORD)) {
-            return lib.getExpression(current.getText(), Types.STRING.getTypeClass(), scopeNames);
+            return lib.getExpression(current.getText(), Types.STRING.getTypeClass(), scopeNames, id);
         }
         if (match(TokenType.FUNCTION)) {
-            return lib.getFunctionValue(current.getText(), scopeNames, current.getArguments(), Types.STRING.getTypeClass());
+            return lib.getFunctionValue(current.getText(), scopeNames, current.getArguments(), Types.STRING.getTypeClass(), id);
         }
         if (match(TokenType.ARRAY)) {
-            return lib.getFromArray(current.getText(), current.getBody(), Types.STRING.getTypeClass(), scopeNames);
+            return lib.getFromArray(current.getText(), current.getBody(), Types.STRING.getTypeClass(), scopeNames, id);
         }
         if (match(TokenType.OPEN_PAREN)) {
             Expression<String> result = stringExpression();
             match(TokenType.CLOSE_PAREN);
             return result;
         }
-        throw new RuntimeException("Invalid STRING expression");
+        throw new ProgramRunException("Invalid STRING expression", id);
     }
 
     public Expression<Number> parseArithmetic() {
@@ -99,11 +103,11 @@ public final class Parser {
 
         while (true) {
             if (match(TokenType.PLUS)) {
-                result = new BinaryExpression<>("+", result, multiply());
+                result = new BinaryExpression<>("+", result, multiply(), id);
                 continue;
             }
             if (match(TokenType.MINUS)) {
-                result = new BinaryExpression<>("-", result, multiply());
+                result = new BinaryExpression<>("-", result, multiply(), id);
                 continue;
             }
 
@@ -116,15 +120,15 @@ public final class Parser {
         Expression<Number> result = power();
         while (true) {
             if (match(TokenType.STAR)) {
-                result = new BinaryExpression<>("*", result, power());
+                result = new BinaryExpression<>("*", result, power(), id);
                 continue;
             }
             if (match(TokenType.SLASH)) {
-                result = new BinaryExpression<>("/", result, power());
+                result = new BinaryExpression<>("/", result, power(), id);
                 continue;
             }
             if (match(TokenType.REMAINDER)) {
-                result = new BinaryExpression<>("%", result, power());
+                result = new BinaryExpression<>("%", result, power(), id);
                 continue;
             }
             break;
@@ -136,7 +140,7 @@ public final class Parser {
         Expression<Number> result = unary();
         while (true) {
             if (match(TokenType.POWER)) {
-                result = new BinaryExpression<>("^", result, unary());
+                result = new BinaryExpression<>("^", result, unary(), id);
                 continue;
             }
             break;
@@ -146,7 +150,7 @@ public final class Parser {
 
     private Expression<Number> unary() {
         if (match(TokenType.MINUS)) {
-            return new UnaryExpression<>("-", primary());
+            return new UnaryExpression<>("-", primary(), id);
         }
         return primary();
     }
@@ -169,10 +173,10 @@ public final class Parser {
         }
 
         if (match(TokenType.WORD)) {
-            return lib.getExpression(current.getText(), Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getExpression(current.getText(), Types.NUMBER.getTypeClass(), scopeNames, id);
         }
         if (match(TokenType.FUNCTION)) {
-            Expression<? extends Number> value = lib.getFunctionValue(current.getText(), scopeNames, current.getArguments(), Types.NUMBER.getTypeClass());
+            Expression<? extends Number> value = lib.getFunctionValue(current.getText(), scopeNames, current.getArguments(), Types.NUMBER.getTypeClass(), id);
             if (value.eval() instanceof Double) {
                 return new NumberExpression(value);
             }
@@ -181,27 +185,27 @@ public final class Parser {
             }
         }
         if (match(TokenType.ARRAY)) {
-            return lib.getFromArray(current.getText(), current.getBody(), Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getFromArray(current.getText(), current.getBody(), Types.NUMBER.getTypeClass(), scopeNames, id);
         }
         if (match(TokenType.OPEN_PAREN)) {
             Expression<Number> result = numberExpression();
             match(TokenType.CLOSE_PAREN);
             return result;
         }
-        throw new RuntimeException("Invalid NUMBER expression");
+        throw new ProgramRunException("Invalid NUMBER expression", id);
     }
 
     public Expression<Expression<?>[]> parseCollection() {
         pos = 0;
 
         if (match(TokenType.WORD)) {
-            return lib.getExpression(previous().getText(), Types.ARRAY.getTypeClass(), scopeNames);
+            return lib.getExpression(previous().getText(), Types.ARRAY.getTypeClass(), scopeNames, id);
         }
         if (match(TokenType.FUNCTION)) {
-            return lib.getFunctionValue(previous().getText(), scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass());
+            return lib.getFunctionValue(previous().getText(), scopeNames, previous().getArguments(), Types.ARRAY.getTypeClass(), id);
         }
 
-        throw new RuntimeException("Parse collection error");
+        throw new ProgramRunException("Parse collection error", id);
 
     }
 
@@ -215,7 +219,7 @@ public final class Parser {
 
         while (match(TokenType.OR)) {
             Expression<Boolean> right = unifiedLogicalAnd();
-            left = new LogicalBinaryExpression("||", left, right);
+            left = new LogicalBinaryExpression("||", left, right, id);
         }
         return left;
     }
@@ -225,7 +229,7 @@ public final class Parser {
 
         while (match(TokenType.AND)) {
             Expression<Boolean> right = unifiedLogicalComparison();
-            left = new LogicalBinaryExpression("&&", left, right);
+            left = new LogicalBinaryExpression("&&", left, right, id);
         }
         return left;
     }
@@ -241,34 +245,34 @@ public final class Parser {
 
         if (match(TokenType.EQ)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression("==", left, right);
+            return new LogicalBinaryExpression("==", left, right, id);
         }
         if (match(TokenType.NOT_EQ)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression("!=", left, right);
+            return new LogicalBinaryExpression("!=", left, right, id);
         }
         if (match(TokenType.MORE)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression(">", left, right);
+            return new LogicalBinaryExpression(">", left, right, id);
         }
         if (match(TokenType.LESS)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression("<", left, right);
+            return new LogicalBinaryExpression("<", left, right, id);
         }
         if (match(TokenType.MORE_EQ)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression(">=", left, right);
+            return new LogicalBinaryExpression(">=", left, right, id);
         }
         if (match(TokenType.LESS_EQ)) {
             Expression<?> right = unifiedExpression();
-            return new LogicalBinaryExpression("<=", left, right);
+            return new LogicalBinaryExpression("<=", left, right, id);
         }
 
         if (left instanceof Expression && isBooleanType(left)) {
             return (Expression<Boolean>) left;
         }
 
-        throw new RuntimeException("Expected boolean expression or comparison");
+        throw new ProgramRunException("Expected boolean expression or comparison", id);
     }
 
     private Expression<Boolean> unifiedLogicalPrimary() {
@@ -297,7 +301,7 @@ public final class Parser {
             if (isBooleanType(expr)) {
                 return (Expression<Boolean>) expr;
             }
-            throw new RuntimeException("Variable '" + current.getText() + "' is not boolean type");
+            throw new ProgramRunException("Variable '" + current.getText() + "' is not boolean type", id);
         }
 
         if (match(TokenType.FUNCTION)) {
@@ -305,7 +309,7 @@ public final class Parser {
             if (isBooleanType(expr)) {
                 return (Expression<Boolean>) expr;
             }
-            throw new RuntimeException("Function '" + current.getText() + "' does not return boolean");
+            throw new ProgramRunException("Function '" + current.getText() + "' does not return boolean", id);
         }
 
         if (match(TokenType.ARRAY)) {
@@ -313,10 +317,10 @@ public final class Parser {
             if (isBooleanType(expr)) {
                 return (Expression<Boolean>) expr;
             }
-            throw new RuntimeException("Array element is not boolean type");
+            throw new ProgramRunException("Array element is not boolean type", id);
         }
 
-        throw new RuntimeException("Expected boolean expression");
+        throw new ProgramRunException("Expected boolean expression", id);
     }
 
     private Expression<?> unifiedExpression() {
@@ -331,14 +335,14 @@ public final class Parser {
                 Expression<?> right = unifiedMultiplicative();
                 if (isStringType(left) || isStringType(right)) {
                     left = new StringExpression(
-                            new BinaryExpression<>("+", convertToString(left), convertToString(right)).eval()
+                            new BinaryExpression<>("+", convertToString(left), convertToString(right), id).eval()
                     );
                 } else {
-                    left = new BinaryExpression<>("+", convertToNumber(left), convertToNumber(right));
+                    left = new BinaryExpression<>("+", convertToNumber(left), convertToNumber(right), id);
                 }
             } else if (match(TokenType.MINUS)) {
                 Expression<?> right = unifiedMultiplicative();
-                left = new BinaryExpression<>("-", convertToNumber(left), convertToNumber(right));
+                left = new BinaryExpression<>("-", convertToNumber(left), convertToNumber(right), id);
             } else {
                 break;
             }
@@ -352,13 +356,13 @@ public final class Parser {
         while (true) {
             if (match(TokenType.STAR)) {
                 Expression<?> right = unifiedPower();
-                left = new BinaryExpression<>("*", convertToNumber(left), convertToNumber(right));
+                left = new BinaryExpression<>("*", convertToNumber(left), convertToNumber(right), id);
             } else if (match(TokenType.SLASH)) {
                 Expression<?> right = unifiedPower();
-                left = new BinaryExpression<>("/", convertToNumber(left), convertToNumber(right));
+                left = new BinaryExpression<>("/", convertToNumber(left), convertToNumber(right), id);
             } else if (match(TokenType.REMAINDER)) {
                 Expression<?> right = unifiedPower();
-                left = new BinaryExpression<>("%", convertToNumber(left), convertToNumber(right));
+                left = new BinaryExpression<>("%", convertToNumber(left), convertToNumber(right), id);
             } else {
                 break;
             }
@@ -371,14 +375,14 @@ public final class Parser {
 
         while (match(TokenType.POWER)) {
             Expression<?> right = unifiedUnary();
-            left = new BinaryExpression<>("^", convertToNumber(left), convertToNumber(right));
+            left = new BinaryExpression<>("^", convertToNumber(left), convertToNumber(right), id);
         }
         return left;
     }
 
     private Expression<?> unifiedUnary() {
         if (match(TokenType.MINUS)) {
-            return new UnaryExpression<>("-", convertToNumber(unifiedPrimary()));
+            return new UnaryExpression<>("-", convertToNumber(unifiedPrimary()), id);
         }
         return unifiedPrimary();
     }
@@ -420,44 +424,44 @@ public final class Parser {
             return result;
         }
 
-        throw new RuntimeException("Unexpected token: " + current.getText());
+        throw new ProgramRunException("Unexpected token: " + current.getText(), id);
     }
 
     private Expression<?> getBooleanVariable(String name) {
         try {
-            return lib.getExpression(name, Types.BOOLEAN.getTypeClass(), scopeNames);
+            return lib.getExpression(name, Types.BOOLEAN.getTypeClass(), scopeNames, id);
         } catch (Exception e) {
-            throw new RuntimeException("Boolean variable '" + name + "' not found");
+            throw new ProgramRunException("Boolean variable '" + name + "' not found", id);
         }
     }
 
     private Expression<?> getBooleanFunction(String name, List<String> arguments) {
         try {
-            return lib.getFunctionValue(name, scopeNames, arguments, Types.BOOLEAN.getTypeClass());
+            return lib.getFunctionValue(name, scopeNames, arguments, Types.BOOLEAN.getTypeClass(), id);
         } catch (Exception e) {
-            throw new RuntimeException("Boolean function '" + name + "' not found");
+            throw new ProgramRunException("Boolean function '" + name + "' not found", id);
         }
     }
 
     private Expression<?> getBooleanArray(String name, String body) {
         try {
-            return lib.getFromArray(name, body, Types.BOOLEAN.getTypeClass(), scopeNames);
+            return lib.getFromArray(name, body, Types.BOOLEAN.getTypeClass(), scopeNames, id);
         } catch (Exception e) {
-            throw new RuntimeException("Boolean array element '" + name + "' not found");
+            throw new ProgramRunException("Boolean array element '" + name + "' not found", id);
         }
     }
 
     private Expression<?> getVariableAnyType(String name) {
         try {
-            return lib.getExpression(name, Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getExpression(name, Types.NUMBER.getTypeClass(), scopeNames, id);
         } catch (Exception e1) {
             try {
-                return lib.getExpression(name, Types.STRING.getTypeClass(), scopeNames);
+                return lib.getExpression(name, Types.STRING.getTypeClass(), scopeNames, id);
             } catch (Exception e2) {
                 try {
-                    return lib.getExpression(name, Types.BOOLEAN.getTypeClass(), scopeNames);
+                    return lib.getExpression(name, Types.BOOLEAN.getTypeClass(), scopeNames, id);
                 } catch (Exception e3) {
-                    return lib.getExpression(name, Types.OBJECT.getTypeClass(), scopeNames);
+                    return lib.getExpression(name, Types.OBJECT.getTypeClass(), scopeNames, id);
                 }
             }
         }
@@ -465,15 +469,15 @@ public final class Parser {
 
     private Expression<?> getFunctionAnyType(String name, List<String> arguments) {
         try {
-            return lib.getFunctionValue(name, scopeNames, arguments, Types.NUMBER.getTypeClass());
+            return lib.getFunctionValue(name, scopeNames, arguments, Types.NUMBER.getTypeClass(), id);
         } catch (Exception e1) {
             try {
-                return lib.getFunctionValue(name, scopeNames, arguments, Types.STRING.getTypeClass());
+                return lib.getFunctionValue(name, scopeNames, arguments, Types.STRING.getTypeClass(), id);
             } catch (Exception e2) {
                 try {
-                    return lib.getFunctionValue(name, scopeNames, arguments, Types.BOOLEAN.getTypeClass());
+                    return lib.getFunctionValue(name, scopeNames, arguments, Types.BOOLEAN.getTypeClass(), id);
                 } catch (Exception e3) {
-                    return lib.getFunctionValue(name, scopeNames, arguments, Types.OBJECT.getTypeClass());
+                    return lib.getFunctionValue(name, scopeNames, arguments, Types.OBJECT.getTypeClass(), id);
                 }
             }
         }
@@ -481,15 +485,15 @@ public final class Parser {
 
     private Expression<?> getArrayAnyType(String name, String body) {
         try {
-            return lib.getFromArray(name, body, Types.NUMBER.getTypeClass(), scopeNames);
+            return lib.getFromArray(name, body, Types.NUMBER.getTypeClass(), scopeNames, id);
         } catch (Exception e1) {
             try {
-                return lib.getFromArray(name, body, Types.STRING.getTypeClass(), scopeNames);
+                return lib.getFromArray(name, body, Types.STRING.getTypeClass(), scopeNames, id);
             } catch (Exception e2) {
                 try {
-                    return lib.getFromArray(name, body, Types.BOOLEAN.getTypeClass(), scopeNames);
+                    return lib.getFromArray(name, body, Types.BOOLEAN.getTypeClass(), scopeNames, id);
                 } catch (Exception e3) {
-                    return lib.getFromArray(name, body, Types.OBJECT.getTypeClass(), scopeNames);
+                    return lib.getFromArray(name, body, Types.OBJECT.getTypeClass(), scopeNames, id);
                 }
             }
         }
@@ -527,7 +531,7 @@ public final class Parser {
         if (expr.eval() instanceof Number) {
             return (Expression<Number>) expr;
         }
-        throw new RuntimeException("Cannot convert to number: " + expr.getClass());
+        throw new ProgramRunException("Cannot convert to number: " + expr.getClass(), id);
     }
 
     public Expression<String> parseStringInterpolation() {
@@ -569,7 +573,7 @@ public final class Parser {
         } else if (match(TokenType.ARRAY)) {
             return getArrayAnyType(current.getText(), current.getBody());
         } else {
-            throw new RuntimeException("Expected variable, function, or array after #");
+            throw new ProgramRunException("Expected variable, function, or array after #", id);
         }
     }
 
@@ -589,10 +593,10 @@ public final class Parser {
         }
 
         if (expressionTokens.isEmpty()) {
-            throw new RuntimeException("Empty interpolation expression");
+            throw new ProgramRunException("Empty interpolation expression", id);
         }
 
-        Parser subParser = new Parser(expressionTokens, scopeNames, lib);
+        Parser subParser = new Parser(expressionTokens, scopeNames, lib, id);
 
         try {
             subParser.pos = 0;
@@ -616,8 +620,8 @@ public final class Parser {
                             return getArrayAnyType(token.getText(), token.getBody());
                         }
                     }
-                    throw new RuntimeException("Cannot parse interpolation expression: " +
-                            expressionTokens.stream().map(Token::getText).reduce("", (a, b) -> a + b));
+                    throw new ProgramRunException("Cannot parse interpolation expression: " +
+                            expressionTokens.stream().map(Token::getText).reduce("", (a, b) -> a + b), id);
                 }
             }
         }

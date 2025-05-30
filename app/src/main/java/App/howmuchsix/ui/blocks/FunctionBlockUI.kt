@@ -91,7 +91,8 @@ class FunctionBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return FunctionBlock("$selectedFun($value)")
+        val block = FunctionBlock("$selectedFun($value)")
+        block.uuid = this.id
+        return block
     }
-
 }

@@ -64,6 +64,8 @@ class SleepBlockUI : BlockUI() {
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return SleepBlock(value)
+        val block = SleepBlock(value)
+        block.uuid = this.id
+        return block
     }
 }
