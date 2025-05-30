@@ -41,13 +41,13 @@ public final class DeclarationArrayBlock extends Block {
         } else if (values.size() != length) {
             List<Expression<?>> valueExpressions = new ArrayList<>();
             for (String input : values) {
-                valueExpressions.add(type.getValue(input, scopes, lib));
+                valueExpressions.add(type.getValue(input, scopes, lib, this.getUUID()));
             }
             lib.set(name, new ArrayExpression(type, length, valueExpressions), scopes.get(scopes.size() - 1));
         } else {
             List<Expression<?>> valueExpressions = new ArrayList<>();
             for (String input : values) {
-                valueExpressions.add(type.getValue(input, scopes, lib));
+                valueExpressions.add(type.getValue(input, scopes, lib,this.getUUID()));
             }
             lib.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
         }

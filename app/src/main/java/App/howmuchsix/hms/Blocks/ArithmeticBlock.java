@@ -31,7 +31,7 @@ public final class ArithmeticBlock extends Block {
     public Expression<Number> eval(List<String> scopes, Variables lib) {
         this.scopeNames = scopes;
         List<Token> tokens = new Lexer(this.input).tokenize();
-        Expression<Number> expression = new Parser(tokens, this.scopeNames, lib).parseArithmetic();
+        Expression<Number> expression = new Parser(tokens, this.scopeNames, lib, this.getUUID()).parseArithmetic();
         Expression<Number> value;
         if (expression.eval() instanceof Double || isDouble) {
             value = new NumberExpression(new DoubleExpression(expression.eval().doubleValue()));

@@ -7,6 +7,7 @@ import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.FunctionDeclarationBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
+import App.howmuchsix.ui.theme.DropDownFunctionMenuTypeSelector
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
@@ -40,7 +41,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
     private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var funName by mutableStateOf("")
-    private var selectedType by mutableStateOf<_types?>(null)
+    private var selectedType by mutableStateOf<FunctionTypes?>(null)
 
     fun setOwnerId(id: String) {
         ownerBlockId = id
@@ -66,7 +67,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                DropDownMenuTypeSelector(
+                DropDownFunctionMenuTypeSelector(
                     selectedType = selectedType,
                     onTypeSelected = { selectedType = it}
                 )
@@ -130,14 +131,9 @@ class FunctionDeclarationBlockUI : BlockUI() {
         }
     }
 
-    private var functionName by mutableStateOf("")
-    private var returnType by mutableStateOf("")
-    private var argumentsTypes by mutableStateOf<List<String>>(emptyList())
-    private var argumentsNames by mutableStateOf<List<String>>(emptyList())
 
     override fun toDBBlock(): BlockDB {
-        val functionDeclarationBlock = FunctionDeclarationBlockBD(functionName = functionName, returnType = returnType, argumentsTypes = argumentsTypes, argumentsNames = argumentsNames, body = body.map { it.toDBBlock() } )
-        return functionDeclarationBlock
+        TODO()
     }
 
     fun initializeFromBD(
@@ -147,11 +143,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         argNames: List<String>,
         bodyUI: List<BlockUI>
     ) {
-        functionName = name
-        returnType = retType
-        argumentsTypes = argTypes
-        argumentsNames = argNames
-        body = mutableListOf()
+        TODO()
     }
 
 
@@ -161,36 +153,68 @@ class FunctionDeclarationBlockUI : BlockUI() {
             "DOUBLE", "FLOAT" -> Types.DOUBLE
             "STRING", "STR" -> Types.STRING
             "BOOLEAN", "BOOL" -> Types.BOOLEAN
-            "VOID" -> Types.VOID
             "ARRAY" -> Types.ARRAY
-            else -> throw IllegalArgumentException("Unknown type string: $typeString")
+            else -> throw RuntimeException("Unknown type string: $typeString")
         }
     }
 
+    private fun parseArguments(value: String): Pair<List<String>, List<String>> {
+        if (value.isBlank()) {
+            return Pair(emptyList(), emptyList())
+        }
+
+        val argumentsTypes = mutableListOf<String>()
+        val argumentsNames = mutableListOf<String>()
+
+        val arguments = value.split(",")
+
+        for (argument in arguments) {
+            val trimmed = argument.trim()
+            if (trimmed.isNotEmpty()) {
+                val parts = trimmed.split("\\s+".toRegex())
+                if (parts.size >= 2) {
+                    argumentsTypes.add(parts[0])
+                    argumentsNames.add(parts[1])
+                }
+            }
+        }
+
+        return Pair(argumentsTypes, argumentsNames)
+    }
+
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        if (functionName.isEmpty()) {
-            throw IllegalArgumentException("Function name is required")
+        if (funName == "") {
+            throw RuntimeException("Function name is required")
         }
-        if (returnType.isEmpty()) {
-            throw IllegalArgumentException("Return type is required")
+        if (selectedType == null) {
+            throw RuntimeException("Return type is required")
         }
+        if (value == "") {
+            throw RuntimeException("Arguments are required")
+        }
+
+        val returnTypeEnum = selectedType!!.toTypes()
+
+        val (argumentsTypes, argumentsNames) = parseArguments(value)
+
         if (argumentsTypes.size != argumentsNames.size) {
-            throw IllegalArgumentException("Arguments types and names lists must have the same size")
+            throw RuntimeException("Arguments types and names lists must have the same size")
         }
 
-        val returnTypeEnum = stringToTypes(returnType)
         val argumentsTypesEnum = argumentsTypes.map { stringToTypes(it) }
-
 
         val bodyBlocks = body.map { it.metamorphosis(consoleViewModel) }
 
-        return FunctionDeclarationBlock(
+        val block = FunctionDeclarationBlock(
             returnTypeEnum,
-            functionName,
+            funName,
             argumentsTypesEnum,
             argumentsNames,
             bodyBlocks
         )
+        block.uuid = this.id
+
+        return block
     }
 
 }

@@ -1,5 +1,7 @@
 package App.howmuchsix.ui.theme
 
+import App.howmuchsix.hms.Blocks.Types
+import App.howmuchsix.ui.blocks.FunctionTypes
 import App.howmuchsix.ui.blocks._types
 import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.layout.Box
@@ -46,7 +48,49 @@ fun DropDownMenuTypeSelector(
             expanded = expanded,
             onDismissRequest = {expanded = false}
         ) {
-            _types.values().forEach{ type ->
+            _types.entries.forEach{ type ->
+                DropdownMenuItem(
+                    text = { Text(
+                        text = type.name,
+                        style = SubTitle1,
+                        color = BlockRed
+                    ) },
+                    onClick = {
+                        onTypeSelected(type)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DropDownFunctionMenuTypeSelector(
+    selectedType: FunctionTypes?,
+    onTypeSelected: (FunctionTypes) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        Button(
+            colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
+            onClick = { expanded = true },
+            shape = RoundedCornerShape(4.dp),
+            modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 40.dp)
+        ) {
+            Text(
+                text = selectedType?.name ?: "type",
+                style = PlaceholderText
+            )
+
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {expanded = false}
+        ) {
+            FunctionTypes.entries.forEach{ type ->
                 DropdownMenuItem(
                     text = { Text(
                         text = type.name,

@@ -134,6 +134,10 @@ class WhileBlockUI : BlockUI() {
         }
 
         val bodyBlocks = doBlocks.map { it.metamorphosis(consoleViewModel) }
-        return WhileBlock(value, bodyBlocks)
+
+        val block = WhileBlock(value, bodyBlocks)
+        block.uuid = this.id
+
+        return block
     }
 }

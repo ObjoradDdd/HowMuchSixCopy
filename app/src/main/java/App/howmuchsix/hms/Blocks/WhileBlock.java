@@ -23,7 +23,7 @@ public final class WhileBlock extends Block {
         String name = "Scope - " + lib.getNumberOfScopes();
         List<String> newScopes = new ArrayList<>(scopes);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenize();
-        Parser logicalExpression = new Parser(tokens, newScopes, lib);
+        Parser logicalExpression = new Parser(tokens, newScopes, lib, this.getUUID());
         newScopes.add(name);
         try {
             while (logicalExpression.parseLogical().eval()) {

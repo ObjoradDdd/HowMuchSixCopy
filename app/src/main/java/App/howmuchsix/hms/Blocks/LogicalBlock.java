@@ -20,6 +20,6 @@ public final class LogicalBlock extends Block {
     public Expression<Boolean> eval(List<String> scopes, Variables lib) {
         this.scopeNames = scopes;
         List<Token> tokens = new Lexer(this.input).tokenize();
-        return new BooleanExpression(new Parser(tokens, scopeNames, lib).parseLogical().eval());
+        return new BooleanExpression(new Parser(tokens, scopeNames, lib, this.getUUID()).parseLogical().eval());
     }
 }

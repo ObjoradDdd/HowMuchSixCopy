@@ -17,7 +17,7 @@ public final class FunctionBlock extends Block {
 
     public void Action(List<String> scopes, Variables lib) {
         Token functionToken = new Lexer(functionName).tokenizeFunction();
-        FunctionExpression<?> functionExpression = lib.getFunction(functionToken.getText());
-        functionExpression.functionReturn(functionToken.getArguments(), scopes);
+        FunctionExpression<?> functionExpression = lib.getFunction(functionToken.getText(), this.getUUID());
+        functionExpression.functionReturn(functionToken.getArguments(), scopes, this.getUUID());
     }
 }

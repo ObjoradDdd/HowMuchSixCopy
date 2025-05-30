@@ -7,8 +7,17 @@ import App.howmuchsix.hms.Library.Variables;
 
 public class Block {
     public String blockID;
+    private String id = "";
 
     List<String> scopeNames = List.of("MainScope");
+
+    public String getUUID(){
+        return id;
+    }
+
+    public void setUUID(String id){
+        this.id = id;
+    }
 
     public void Action(List<String> scopes, Variables lib) throws ReturnException, BreakException {
     }

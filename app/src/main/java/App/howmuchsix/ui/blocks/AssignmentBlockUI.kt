@@ -44,7 +44,10 @@ class AssignmentBlockUI : BlockUI() {
         if (value.isEmpty()) {
             throw IllegalArgumentException("Value is required")
         }
-        return AssignmentBlock(name, value)
+
+        val block = AssignmentBlock(name.trim(), value)
+        block.uuid = this.id
+        return block
     }
 
     @Composable
