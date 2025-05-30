@@ -236,7 +236,6 @@ fun WorkingScreen(
             Box(
                 modifier = Modifier
                     .offset {
-                        // Используйте экранные координаты напрямую
                         IntOffset(
                             viewModel.dragScreenPosition.x.roundToInt(),
                             viewModel.dragScreenPosition.y.roundToInt()
@@ -372,6 +371,4 @@ suspend fun PointerInputScope.detectPointerPositionChanges(onPositionChanged: (O
     }
 }
 
-fun fieldToScreenCoords(fieldPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
-    return fieldPosition * fieldScale + fieldOffset
-}
+

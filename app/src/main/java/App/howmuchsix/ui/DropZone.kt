@@ -105,13 +105,13 @@ fun DropZone(
                         if (block != null) {
                             Box(
                                 modifier = Modifier
-                                    .wrapContentSize() // Добавлено для ограничения размера
+                                    .wrapContentSize()
                                     .pointerInput(block.id) {
                                         detectTapGestures(
                                             onLongPress = {
                                                 viewModel.removeBlockFromDropZone(id, block.id)
-                                                // Просто используем текущую позицию блока
-                                                val fieldPosition = Offset(0f, 0f) // Позиция по умолчанию
+
+                                                val fieldPosition = Offset(0f, 0f)
                                                 viewModel.addToFieldFromDropZone(
                                                     block.copy(position = fieldPosition),
                                                     id
@@ -131,14 +131,14 @@ fun DropZone(
                 if (singleBlock != null) {
                     Box(
                         modifier = Modifier
-                            .wrapContentSize() // Добавлено для ограничения размера
+                            .wrapContentSize()
                             .scale(1f)
                             .pointerInput(singleBlock.id) {
                                 detectTapGestures(
                                     onLongPress = {
                                         viewModel.removeBlockFromDropZone(id, singleBlock.id)
-                                        // Просто используем текущую позицию блока
-                                        val fieldPosition = Offset(0f, 0f) // Позиция по умолчанию
+
+                                        val fieldPosition = Offset(0f, 0f)
                                         viewModel.addToFieldFromDropZone(
                                             singleBlock.copy(position = fieldPosition),
                                             id

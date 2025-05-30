@@ -55,7 +55,7 @@ fun ZoomableField(
 
     val fieldSizeDp = 2000.dp
     val fieldSizePx = with(density) { fieldSizeDp.toPx() }
-    // Убираем centerOffset полностью
+
 
     val scale = 1f
 
@@ -79,17 +79,17 @@ fun ZoomableField(
         Box(
             modifier = Modifier.size(fieldSizeDp, fieldSizeDp)
         ) {
-            // Рисование сетки
+
             Canvas(modifier = Modifier.size(fieldSizeDp, fieldSizeDp)) {
                 drawGrid(spacing = 50f, color = GridColor)
             }
 
-            // Отрисовка блоков - теперь просто используем position напрямую
+
             placedBlocks.forEach { block ->
                 Box(
                     modifier = Modifier
                         .offset {
-                            // Блоки размещаются по их прямым координатам
+
                             IntOffset(
                                 block.position.x.roundToInt(),
                                 block.position.y.roundToInt()
@@ -106,7 +106,6 @@ fun ZoomableField(
                         .pointerInput(block.id) {
                             detectDragGestures(
                                 onDragStart = { dragOffset ->
-                                    // Передаем текущую позицию блока
                                     onStartDragPlacedBlock(block.id, block.position)
                                 },
                                 onDrag = { change, _ ->
@@ -127,12 +126,12 @@ fun ZoomableField(
                 }
             }
 
-            // Отрисовка точек соединения
+
             Canvas(modifier = Modifier.size(fieldSizeDp, fieldSizeDp)) {
                 nearbyConnectionPoint?.let { nearbyConn ->
                     val targetBlock = placedBlocks.find { it.id == nearbyConn.ownerBlockId }
                     targetBlock?.let { block ->
-                        // Убираем centerOffset из расчета позиции точки соединения
+
                         val absolutePosition = Offset(
                             x = block.position.x + nearbyConn.connectionPoint.position.x,
                             y = block.position.y + nearbyConn.connectionPoint.position.y
@@ -153,7 +152,7 @@ fun DrawScope.drawGrid(spacing: Float, color: Color) {
     val width = size.width
     val height = size.height
 
-    // Вертикальные линии
+
     var x = 0f
     while (x <= width) {
         drawLine(
@@ -165,7 +164,7 @@ fun DrawScope.drawGrid(spacing: Float, color: Color) {
         x += spacing
     }
 
-    // Горизонтальные линии
+
     var y = 0f
     while (y <= height) {
         drawLine(
@@ -176,8 +175,4 @@ fun DrawScope.drawGrid(spacing: Float, color: Color) {
         )
         y += spacing
     }
-}
-
-fun screenToFieldCoords(screenPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
-    return (screenPosition - fieldOffset) / fieldScale
 }
