@@ -6,9 +6,7 @@ import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.WhileBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.ConsoleViewModel
@@ -48,9 +46,9 @@ class WhileBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Column(
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(8.dp))
-                .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
+                .background(BlockOrange, RoundedCornerShape(size8))
+                .padding(size12)
+                .defaultMinSize(minWidth = size220, minHeight = size140)
         ) {
             Row(
                 modifier = Modifier.wrapContentSize(),
@@ -61,29 +59,29 @@ class WhileBlockUI : BlockUI() {
                     style = SubTitle1,
                     color = TextWhite
                 )
-                Spacer(Modifier.width(15.dp))
+                Spacer(Modifier.width(size15))
                 ButtonTextField(
                     value = value,
                     onValueChange = { value = it },
                     textStyle = SubTitle1,
                     placeholder = "condition",
-                    modifier = Modifier.defaultMinSize(minWidth = 200.dp)
+                    modifier = Modifier.defaultMinSize(minWidth = size200)
                 )
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(size8))
             Text(
                 text = "Do:",
                 style = SubTitle1,
                 color = TextWhite
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(size4))
             if (viewModel != null) {
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .padding(6.dp)
+                        .defaultMinSize(minHeight = size50)
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(size4))
+                        .border(size1, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(size4))
+                        .padding(size6)
                 ) {
                     DropZone(
                         id = "while_do_dropzone_${ownerBlockId}",
@@ -104,7 +102,7 @@ class WhileBlockUI : BlockUI() {
                         ),
                         placeholder = "do statements",
                         multipleBlocks = true,
-                        modifier = Modifier.defaultMinSize(minWidth = 220.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size220, minHeight = size40)
                     )
                 }
             }

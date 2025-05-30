@@ -6,8 +6,7 @@ import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.ReturnBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -34,23 +33,23 @@ class ReturnBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row(
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(8.dp))
-                .padding(8.dp),
+                .background(BlockPink, RoundedCornerShape(size8))
+                .padding(size8),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
 
             Text(
                 text = "Return",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             DropDownMenuTypeSelector(
                 selectedType = selectedType,
                 onTypeSelected = { selectedType = it}
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             ButtonTextField(
                 value = value,
                 onValueChange = { value = it },

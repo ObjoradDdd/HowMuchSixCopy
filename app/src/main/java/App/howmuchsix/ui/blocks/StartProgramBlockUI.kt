@@ -4,8 +4,7 @@ import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.BreakBlock
 import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.BreakBlockBD
-import App.howmuchsix.ui.theme.design_elements.BlockPeach
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -27,17 +26,17 @@ class StartProgramBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row(
             modifier = modifier
-                .defaultMinSize(minHeight = 60.dp)
-                .background(BlockPeach, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .defaultMinSize(minHeight = size60)
+                .background(BlockPeach, RoundedCornerShape(size8))
+                .padding(size8)
         ) {
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             Text(
                 text = "Start program",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
         }
     }
 

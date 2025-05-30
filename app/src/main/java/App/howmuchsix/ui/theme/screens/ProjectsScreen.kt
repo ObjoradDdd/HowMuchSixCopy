@@ -5,16 +5,7 @@ import App.howmuchsix.localeDataStorage.project.Program
 import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
 import App.howmuchsix.ui.theme.CustomTextField
-import App.howmuchsix.ui.theme.design_elements.Beige
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
-import App.howmuchsix.ui.theme.design_elements.FunTitle
-import App.howmuchsix.ui.theme.design_elements.InputText
-import App.howmuchsix.ui.theme.design_elements.LighterBeige
-import App.howmuchsix.ui.theme.design_elements.ProjectTitle
-import App.howmuchsix.ui.theme.design_elements.SubTitle2
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.ProjectViewModel
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -75,7 +66,7 @@ fun ProjectsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    .padding(top = size40, start = size16, end = size16, bottom = size8),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -99,7 +90,7 @@ fun ProjectsScreen(
             exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = size16)
             //.padding(bottom = 88.dp)
         ) {
             AddPanel(
@@ -130,15 +121,15 @@ fun DisplayProjects(viewModel: ProjectViewModel = viewModel(), navController: Na
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 200.dp),
+                .padding(top = size200),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.emptyicon),
                 contentDescription = null,
-                modifier = Modifier.size(128.dp)
+                modifier = Modifier.size(size128)
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(size12))
             Text(
                 text = "Nothing here yet...",
                 style = SubTitle2
@@ -148,8 +139,8 @@ fun DisplayProjects(viewModel: ProjectViewModel = viewModel(), navController: Na
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(horizontal = size16, vertical = size8),
+            verticalArrangement = Arrangement.spacedBy(size12)
         ) {
             itemsIndexed(projects) { index, project ->
                 val cardColor = cardColors[index % cardColors.size]
@@ -165,7 +156,7 @@ fun AddButton(onClick: () -> Unit) {
         painter = painterResource(id = R.drawable.iconsix),
         contentDescription = "Add project",
         modifier = Modifier
-            .size(85.dp)
+            .size(size85)
             .clip(CircleShape)
             .clickable(onClick = onClick)
     )
@@ -181,14 +172,14 @@ fun AddPanel(
     var description by remember { mutableStateOf("") }
     Surface(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = size16, vertical = size12)
             .fillMaxWidth()
-            .height(290.dp),
+            .height(size290),
         color = LighterBeige,
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 4.dp
+        shape = RoundedCornerShape(size16),
+        shadowElevation = size4
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(size16)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -197,7 +188,7 @@ fun AddPanel(
                     painter = painterResource(id = R.drawable.ic_cross),
                     contentDescription = "Add project",
                     modifier = Modifier
-                        .size(20.dp)
+                        .size(size20)
                         .clickable(onClick = onDismiss)
                 )
             }
@@ -205,16 +196,16 @@ fun AddPanel(
                 value = title,
                 onValueChange = { title = it },
                 label = "Project name",
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(size8),
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size8))
             CustomTextField(
                 value = description,
                 onValueChange = { description = it },
                 label = "Description",
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(size8),
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size8))
             Button(
                 onClick = {
                     onAddProject(title, description)
@@ -234,21 +225,21 @@ fun ProjectCard(project: Project, cardColor: Color, navController: NavController
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 100.dp),
+            .heightIn(min = size100),
         color = cardColor,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(size20),
         onClick = {
             if (project.id != null) {
                 navController.navigate(Screens.createProjectRoute(project.id!!))
             }
         }
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(size16)) {
             Text(
                 text = project.title,
                 style = ProjectTitle,
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size8))
             Text(
                 text = project.description,
                 style = InputText,

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 
@@ -34,14 +35,14 @@ class DeclarationBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .background(BlockYellow, RoundedCornerShape(size8))
+                .padding(size8)
         ){
             DropDownMenuTypeSelector(
                 selectedType = selectedType,
                 onTypeSelected = { selectedType = it}
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             ButtonTextField(
                 value = name,
                 onValueChange = {name = it},
@@ -49,12 +50,12 @@ class DeclarationBlockUI : BlockUI() {
                 placeholder = "name"
             )
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             Text(text ="=",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
 
             ButtonTextField(
                 value = value,

@@ -51,10 +51,10 @@ class AssignmentBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .background(BlockYellow, RoundedCornerShape(size8))
+                .padding(size8)
         ){
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             ButtonTextField(
                 value = name,
                 onValueChange = {name = it},
@@ -62,12 +62,12 @@ class AssignmentBlockUI : BlockUI() {
                 placeholder = "name"
             )
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             Text(text ="=",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
 
             ButtonTextField(
                 value = value,
