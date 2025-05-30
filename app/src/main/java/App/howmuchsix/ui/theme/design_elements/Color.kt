@@ -19,5 +19,5 @@ val BlockYellow = Color(0xFFFFBE26)
 val BlockPink = Color(0xFFFA7070)
 val BlockRed = Color(0xFFF54242)
 val BlockPeach = Color(0xFFf26a52)
-val BlockGold = Color(0xFFFF8C42)
+val DarkRed = Color(0xFF781616)
 

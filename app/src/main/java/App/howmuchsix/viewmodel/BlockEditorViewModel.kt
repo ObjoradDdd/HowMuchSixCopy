@@ -14,7 +14,7 @@ import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.SleepBlockUI
 import App.howmuchsix.ui.blocks.StartProgramBlockUI
-import App.howmuchsix.ui.blocks.Try_catchBlockUI
+import App.howmuchsix.ui.blocks.TryCatchBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
 import androidx.compose.runtime.mutableStateListOf
@@ -590,7 +590,7 @@ class BlockEditorViewModel : ViewModel() {
             BlockType.Sleep -> SleepBlockUI()
             BlockType.Continue -> ContinueBlockUI()
             BlockType.StartProgram -> StartProgramBlockUI()
-            BlockType.Try_catch -> Try_catchBlockUI()
+            BlockType.Try_catch -> TryCatchBlockUI()
         }
 
         setOwnerIdForNestedBlocks(uiBlock, blockId)

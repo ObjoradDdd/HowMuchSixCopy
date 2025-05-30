@@ -70,3 +70,11 @@ val PlaceholderText = TextStyle(
     color = LighterBeige
 )
 
+val consoleOutput = TextStyle(
+    fontFamily = inter,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 18.sp,
+    lineHeight = 18.sp,
+    color = TextOrange
+)
+
