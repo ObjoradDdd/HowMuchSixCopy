@@ -38,7 +38,6 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 
-
 @Composable
 fun ButtonTextField(
     value: String,
@@ -63,7 +62,7 @@ fun ButtonTextField(
             style = textStyle
         )
         measuredWith = with(density){
-            layoutResult.size.width.toDp() + 10.dp
+            layoutResult.size.width.toDp() + size10
         }
     }
 
@@ -74,16 +73,16 @@ fun ButtonTextField(
             singleLine = isSingleLine,
             textStyle = textStyle,
             modifier = modifier
-                .defaultMinSize(minWidth = 60.dp, minHeight = 40.dp)
+                .defaultMinSize(minWidth = size60, minHeight = size40)
                 .width(measuredWith)
-                .height(40.dp)
+                .height(size40)
                 .clip(RoundedCornerShape(cornerRadius.dp))
                 .border(
-                    width = 1.dp,
+                    width = size1,
                     color = if (isFocused) focusedBorderColor else borderColor,
                     shape = RoundedCornerShape(cornerRadius.dp)
                 )
-                .padding(horizontal = 10.dp, vertical = 4.dp)
+                .padding(horizontal = size10, vertical = size4)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 },

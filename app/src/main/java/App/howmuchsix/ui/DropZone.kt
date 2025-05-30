@@ -1,10 +1,6 @@
 package App.howmuchsix.ui
 
-import App.howmuchsix.ui.theme.design_elements.DarkerBeige
-import App.howmuchsix.ui.theme.design_elements.InputText
-import App.howmuchsix.ui.theme.design_elements.LighterBeige
-import App.howmuchsix.ui.theme.design_elements.PlaceholderText
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.DropZoneTarget
@@ -56,7 +52,7 @@ fun DropZone(
 
     Box(
         modifier = modifier
-            .defaultMinSize(minHeight = 60.dp)
+            .defaultMinSize(minHeight = size60)
             .background(
                 color = when {
                     isHighlighted && isValidDrop -> Color.Green.copy(alpha = 0.3f)
@@ -64,18 +60,18 @@ fun DropZone(
                     currBlocks.isNotEmpty() -> Color.Transparent
                     else -> DarkerBeige.copy(alpha = 0.3f)
                 },
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(size4)
             )
             .border(
-                width = 1.dp,
+                width = size1,
                 color = when {
                     isHighlighted && isValidDrop -> Color.Green
                     isHighlighted && !isValidDrop -> Color.Red
                     else -> TextWhite
                 },
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(size4)
             )
-            .padding(4.dp)
+            .padding(size4)
             .onGloballyPositioned { coordinates ->
                 val globalBounds = coordinates.boundsInRoot()
                 viewModel.registerDropZone(
@@ -94,8 +90,8 @@ fun DropZone(
         if (currBlocks.isNotEmpty()) {
             if (multipleBlocks) {
                 LazyColumn(
-                    modifier = Modifier.heightIn(max = 1000.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    modifier = Modifier.heightIn(max = size5000),
+                    verticalArrangement = Arrangement.spacedBy(size4)
                 ) {
                     items(
                         items = currBlocks,

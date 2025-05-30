@@ -32,8 +32,8 @@ fun DropDownMenuTypeSelector(
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
             onClick = { expanded = true },
-            shape = RoundedCornerShape(4.dp),
-            modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 40.dp)
+            shape = RoundedCornerShape(size4),
+            modifier = Modifier.defaultMinSize(minWidth = size80, minHeight = size40)
         ) {
             Text(
                 text = selectedType?.name ?: "type",

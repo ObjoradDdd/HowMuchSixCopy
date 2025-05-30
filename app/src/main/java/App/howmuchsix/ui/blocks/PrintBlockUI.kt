@@ -45,7 +45,8 @@ class PrintBlockUI : BlockUI() {
                 value = textValue,
                 onValueChange = { textValue = it },
                 textStyle = SubTitle1,
-                placeholder = "value"
+                placeholder = "value",
+                focusedBorderColor = TextWhite
             )
         }
     }

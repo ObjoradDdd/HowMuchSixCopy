@@ -8,11 +8,9 @@ import App.howmuchsix.ui.blocks.IfBlockUI
 import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.SleepBlockUI
+import App.howmuchsix.ui.blocks.Try_catchBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.FieldBG
-import App.howmuchsix.ui.theme.design_elements.GridColor
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.ui.theme.drawGrid
 import App.howmuchsix.viewmodel.*
 import App.howmuchsix.viewmodel.PlacedBlockUI
@@ -152,6 +150,7 @@ fun ZoomableField(
                         is FunctionDeclarationBlockUI -> block.uiBlock.setOwnerId(block.id)
                         is FunctionBlockUI -> block.uiBlock.setOwnerId(block.id)
                         is DeclarationArrayBlockUI -> block.uiBlock.setOwnerId(block.id)
+                        is Try_catchBlockUI -> block.uiBlock.setOwnerId(block.id)
                     }
                     block.uiBlock.Render(modifier, viewModel)
                 }

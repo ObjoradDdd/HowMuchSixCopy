@@ -14,9 +14,9 @@ import App.howmuchsix.ui.blocks.PrintBlockUI
 import App.howmuchsix.ui.blocks.ReturnBlockUI
 import App.howmuchsix.ui.blocks.SleepBlockUI
 import App.howmuchsix.ui.blocks.StartProgramBlockUI
+import App.howmuchsix.ui.blocks.Try_catchBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +51,7 @@ enum class BlockType {
     DeclarationArray, For, Function,
     If, Print, Return, While,
     FunctionDeclaration, Sleep,
-    Continue, StartProgram
+    Continue, StartProgram, Try_catch
 }
 
 enum class ConnectionType {
@@ -590,6 +590,7 @@ class BlockEditorViewModel : ViewModel() {
             BlockType.Sleep -> SleepBlockUI()
             BlockType.Continue -> ContinueBlockUI()
             BlockType.StartProgram -> StartProgramBlockUI()
+            BlockType.Try_catch -> Try_catchBlockUI()
         }
 
         setOwnerIdForNestedBlocks(uiBlock, blockId)
