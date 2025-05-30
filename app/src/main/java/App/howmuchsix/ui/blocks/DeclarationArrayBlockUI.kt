@@ -2,13 +2,8 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
-import App.howmuchsix.hms.Blocks.Types
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.DeclarationBlockBD
-import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
@@ -20,10 +15,7 @@ import App.howmuchsix.ui.theme.design_elements.size45
 import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
-import App.howmuchsix.viewmodel.BlockType
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,9 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class DeclarationArrayBlockUI : BlockUI() {
 
@@ -57,13 +47,13 @@ class DeclarationArrayBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Column (
+        Column(
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size190, minHeight = size140)
         ) {
-            Row (verticalAlignment = Alignment.CenterVertically){
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Array",
                     style = SubTitle1,
@@ -72,11 +62,11 @@ class DeclarationArrayBlockUI : BlockUI() {
                 Spacer(Modifier.width(size45))
                 DropDownMenuTypeSelector(
                     selectedType = selectedType,
-                    onTypeSelected = { selectedType = it}
+                    onTypeSelected = { selectedType = it }
                 )
             }
             Spacer(Modifier.height(size12))
-            Row (
+            Row(
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -104,7 +94,7 @@ class DeclarationArrayBlockUI : BlockUI() {
             Spacer(Modifier.height(size12))
             ButtonTextField(
                 value = value,
-                onValueChange = {value = it},
+                onValueChange = { value = it },
                 textStyle = SubTitle1,
                 placeholder = "components",
                 modifier = Modifier.defaultMinSize(minWidth = size170)
@@ -112,45 +102,32 @@ class DeclarationArrayBlockUI : BlockUI() {
         }
     }
 
-    override fun toDBBlock(): BlockDB {
-        return DeclarationBlockBD(variables = arrName ,values = value, dataType = selectedType.toString())
-    }
-
-
-    fun initializeFromBD(name: String, type: String, /*arrayLength: Int,*/ valuesList: String?) {
-        arrName = name
-        selectedType = try {
-            _types.fromString(type)
-        } catch (e: IllegalArgumentException) {
-            _types.Int
-        }
-        //length = arrayLength
-        value = valuesList?:""
-    }
-
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (selectedType == null) {
-            throw IllegalArgumentException("Type is required")
+            throw RuntimeException("Type is required")
         }
         if (arrName.isEmpty()) {
-            throw IllegalArgumentException("Array name is required")
+            throw RuntimeException("Array name is required")
         }
 
         val types = selectedType!!.toTypes()
 
         return when {
-            /*value != "" && length > 0 && values!!.size != length ->
-                DeclarationArrayBlock(types, arrayName, length, values!!)
-             */
+            value != "" && arrSize != ""->
+                DeclarationArrayBlock(types, arrName, arrSize, value.split(","))
+
+            value == "" && arrSize != ""->
+                DeclarationArrayBlock(types, arrName, arrSize)
 
             value != "" -> {
-                val block =  DeclarationArrayBlock(types, arrName, value.split(","))
+                val block = DeclarationArrayBlock(types, arrName, value.split(","))
                 block.uuid = id
                 block
-                }
+            }
+
             else ->
-                DeclarationArrayBlock(types, arrName, 0)
+                throw RuntimeException("Wrong array declaration")
         }
     }
 

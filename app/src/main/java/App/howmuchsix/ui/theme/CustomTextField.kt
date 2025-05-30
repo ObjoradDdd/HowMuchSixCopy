@@ -41,7 +41,7 @@ fun CustomTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    Column (modifier = modifier.fillMaxWidth()){
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = label,
             style = ButtonText,

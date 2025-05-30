@@ -7,7 +7,6 @@ import java.util.UUID
 data class Project(
     val title: String,
     val description: String,
-    val program: Program,
     var id: String? = null,
 ) {
 

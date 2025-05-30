@@ -2,11 +2,22 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.WhileBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.WhileBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size1
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size140
+import App.howmuchsix.ui.theme.design_elements.size15
+import App.howmuchsix.ui.theme.design_elements.size200
+import App.howmuchsix.ui.theme.design_elements.size220
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size50
+import App.howmuchsix.ui.theme.design_elements.size6
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.ConsoleViewModel
@@ -29,7 +40,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class WhileBlockUI : BlockUI() {
 
@@ -107,23 +117,6 @@ class WhileBlockUI : BlockUI() {
                 }
             }
         }
-    }
-
-    override fun toDBBlock(): BlockDB {
-        val whileBlockDB = WhileBlockBD(
-            condition = value,
-            body = doBlocks.map { it.toDBBlock() }
-        )
-        return whileBlockDB
-    }
-
-    fun initializeFromBD(
-        conditionString: String,
-        bodyUI: List<BlockUI>
-    ) {
-        value = conditionString
-        doBlocks.clear()
-        doBlocks.addAll(bodyUI)
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {

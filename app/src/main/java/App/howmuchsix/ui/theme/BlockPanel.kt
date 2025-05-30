@@ -1,5 +1,10 @@
 package App.howmuchsix.ui.theme
 
+import App.howmuchsix.ui.theme.design_elements.LighterBeige
+import App.howmuchsix.ui.theme.design_elements.SubTitle2
+import App.howmuchsix.ui.theme.design_elements.size16
+import App.howmuchsix.ui.theme.design_elements.size500
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockItemData
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.unit.dp
-import App.howmuchsix.ui.theme.design_elements.*
-import App.howmuchsix.viewmodel.ConsoleViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 
 
 @Composable

@@ -2,29 +2,26 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.DeclarationBlockBD
+import App.howmuchsix.ui.theme.ButtonTextField
+import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.size8
+import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import App.howmuchsix.ui.theme.ButtonTextField
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.size8
-import App.howmuchsix.viewmodel.BlockEditorViewModel
-import App.howmuchsix.viewmodel.ConsoleViewModel
+import androidx.compose.ui.Modifier
 
 class DeclarationBlockUI : BlockUI() {
     private var name by mutableStateOf("")
@@ -33,25 +30,26 @@ class DeclarationBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Row (
+        Row(
             modifier = modifier
                 .background(BlockYellow, RoundedCornerShape(size8))
                 .padding(size8)
-        ){
+        ) {
             DropDownMenuTypeSelector(
                 selectedType = selectedType,
-                onTypeSelected = { selectedType = it}
+                onTypeSelected = { selectedType = it }
             )
             Spacer(Modifier.width(size8))
             ButtonTextField(
                 value = name,
-                onValueChange = {name = it},
+                onValueChange = { name = it },
                 textStyle = SubTitle1,
                 placeholder = "name"
             )
 
             Spacer(Modifier.width(size8))
-            Text(text ="=",
+            Text(
+                text = "=",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -59,39 +57,25 @@ class DeclarationBlockUI : BlockUI() {
 
             ButtonTextField(
                 value = value,
-                onValueChange = {value = it},
+                onValueChange = { value = it },
                 textStyle = SubTitle1,
                 placeholder = "value"
             )
         }
     }
 
-    override fun toDBBlock(): BlockDB {
-        return DeclarationBlockBD(variables = name ,values = value, dataType = selectedType.toString())
-    }
-
-
-    fun initializeFromBD(variables: String, valuesList: String, dataType: String) {
-        name = variables
-        value = valuesList
-        selectedType = try {
-            _types.fromString(dataType)
-        } catch (e: IllegalArgumentException) {
-            _types.Int
-        }
-    }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
 
         if (selectedType == null) {
-            throw IllegalArgumentException("Type must be selected")
+            throw RuntimeException("Type must be selected")
         }
 
         val variablesList = name.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         val valuesList = value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
         if (variablesList.isEmpty()) {
-            throw IllegalArgumentException("Variables list cannot be empty")
+            throw RuntimeException("Variables list cannot be empty")
         }
 
         val types = selectedType!!.toTypes()

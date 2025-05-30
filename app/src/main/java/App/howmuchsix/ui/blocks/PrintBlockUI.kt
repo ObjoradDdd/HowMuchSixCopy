@@ -2,10 +2,11 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.PrintBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.PrintBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -21,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class PrintBlockUI : BlockUI() {
     private var textValue by mutableStateOf("")
@@ -49,15 +49,6 @@ class PrintBlockUI : BlockUI() {
                 focusedBorderColor = TextWhite
             )
         }
-    }
-
-    fun initializeFromBD(value: String) {
-        this.textValue = value
-    }
-
-    override fun toDBBlock(): BlockDB {
-        val printBlock = PrintBlockBD(value = textValue)
-        return printBlock
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {

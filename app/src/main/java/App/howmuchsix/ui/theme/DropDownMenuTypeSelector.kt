@@ -1,12 +1,15 @@
 package App.howmuchsix.ui.theme
 
-import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.ui.blocks.FunctionTypes
 import App.howmuchsix.ui.blocks._types
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.PlaceholderText
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size80
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -14,13 +17,11 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -46,15 +47,17 @@ fun DropDownMenuTypeSelector(
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = {expanded = false}
+            onDismissRequest = { expanded = false }
         ) {
-            _types.entries.forEach{ type ->
+            _types.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(
-                        text = type.name,
-                        style = SubTitle1,
-                        color = BlockRed
-                    ) },
+                    text = {
+                        Text(
+                            text = type.name,
+                            style = SubTitle1,
+                            color = BlockRed
+                        )
+                    },
                     onClick = {
                         onTypeSelected(type)
                         expanded = false
@@ -88,15 +91,17 @@ fun DropDownFunctionMenuTypeSelector(
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = {expanded = false}
+            onDismissRequest = { expanded = false }
         ) {
-            FunctionTypes.entries.forEach{ type ->
+            FunctionTypes.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(
-                        text = type.name,
-                        style = SubTitle1,
-                        color = BlockRed
-                    ) },
+                    text = {
+                        Text(
+                            text = type.name,
+                            style = SubTitle1,
+                            color = BlockRed
+                        )
+                    },
                     onClick = {
                         onTypeSelected(type)
                         expanded = false

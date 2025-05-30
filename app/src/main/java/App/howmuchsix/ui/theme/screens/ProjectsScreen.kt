@@ -1,11 +1,30 @@
 package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
-import App.howmuchsix.localeDataStorage.project.Program
 import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
 import App.howmuchsix.ui.theme.CustomTextField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.Beige
+import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.BlockPink
+import App.howmuchsix.ui.theme.design_elements.BlockYellow
+import App.howmuchsix.ui.theme.design_elements.FunTitle
+import App.howmuchsix.ui.theme.design_elements.InputText
+import App.howmuchsix.ui.theme.design_elements.LighterBeige
+import App.howmuchsix.ui.theme.design_elements.ProjectTitle
+import App.howmuchsix.ui.theme.design_elements.SubTitle2
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size100
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size128
+import App.howmuchsix.ui.theme.design_elements.size16
+import App.howmuchsix.ui.theme.design_elements.size20
+import App.howmuchsix.ui.theme.design_elements.size200
+import App.howmuchsix.ui.theme.design_elements.size290
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size8
+import App.howmuchsix.ui.theme.design_elements.size85
 import App.howmuchsix.viewmodel.ProjectViewModel
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -44,7 +63,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
@@ -99,8 +117,7 @@ fun ProjectsScreen(
                         viewModel.addProject(
                             Project(
                                 title,
-                                description,
-                                program = Program(emptyList())
+                                description
                             )
                         )
                         isAddPanelVisible = false

@@ -2,10 +2,10 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.SleepBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.SleepBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class SleepBlockUI : BlockUI() {
 
@@ -51,17 +50,6 @@ class SleepBlockUI : BlockUI() {
             )
         }
     }
-
-    fun initializeFromBD(value: String) {
-        this.value = value
-    }
-
-
-    override fun toDBBlock(): BlockDB {
-        val sleepBlock = SleepBlockBD(value = value)
-        return sleepBlock
-    }
-
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         val block = SleepBlock(value)

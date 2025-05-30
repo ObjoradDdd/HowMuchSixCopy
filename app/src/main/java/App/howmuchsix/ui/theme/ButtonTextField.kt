@@ -1,9 +1,14 @@
 package App.howmuchsix.ui.theme
 
-import App.howmuchsix.ui.theme.design_elements.ButtonText
-import App.howmuchsix.ui.theme.design_elements.*
-import App.howmuchsix.ui.theme.design_elements.TextOrange
-import App.howmuchsix.ui.theme.design_elements.inter
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.InputText
+import App.howmuchsix.ui.theme.design_elements.PlaceholderText
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size1
+import App.howmuchsix.ui.theme.design_elements.size10
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size60
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
@@ -29,14 +31,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 
 @Composable
 fun ButtonTextField(
@@ -58,10 +57,10 @@ fun ButtonTextField(
 
     LaunchedEffect(value) {
         val layoutResult = textMeasurer.measure(
-            AnnotatedString(value.ifEmpty{placeholder}),
+            AnnotatedString(value.ifEmpty { placeholder }),
             style = textStyle
         )
-        measuredWith = with(density){
+        measuredWith = with(density) {
             layoutResult.size.width.toDp() + size10
         }
     }
@@ -86,13 +85,14 @@ fun ButtonTextField(
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 },
-            decorationBox = {innerTextField ->
+            decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
-                ){
-                    if (value.isEmpty()){
-                        Text(text = placeholder,
+                ) {
+                    if (value.isEmpty()) {
+                        Text(
+                            text = placeholder,
                             style = PlaceholderText
                         )
                     }

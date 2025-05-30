@@ -2,12 +2,11 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.ReturnBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.ReturnBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownFunctionMenuTypeSelector
-import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockPink
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -23,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class ReturnBlockUI : BlockUI() {
 
@@ -50,7 +48,7 @@ class ReturnBlockUI : BlockUI() {
             DropDownFunctionMenuTypeSelector(
 
                 selectedType = selectedType,
-                onTypeSelected = { selectedType = it}
+                onTypeSelected = { selectedType = it }
             )
             Spacer(Modifier.width(size8))
             ButtonTextField(
@@ -62,23 +60,12 @@ class ReturnBlockUI : BlockUI() {
         }
     }
 
-    fun initializeFromBD(value: String) {
-        this.value = value
-    }
-
-    override fun toDBBlock(): BlockDB {
-        val returnBlock = ReturnBlockBD(value = value)
-        return returnBlock
-    }
-
-
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (selectedType != null) {
             val block = ReturnBlock(value, selectedType!!.toTypes())
             block.uuid = this.id
             return block
-        }
-        else{
+        } else {
             throw RuntimeException("type required")
         }
     }

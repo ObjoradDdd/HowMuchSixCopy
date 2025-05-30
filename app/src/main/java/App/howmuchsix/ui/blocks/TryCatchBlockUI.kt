@@ -1,9 +1,19 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
-import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.ui.DropZone
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size1
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size140
+import App.howmuchsix.ui.theme.design_elements.size220
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size50
+import App.howmuchsix.ui.theme.design_elements.size6
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.ConsoleViewModel
@@ -23,7 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
-class TryCatchBlockUI: BlockUI() {
+class TryCatchBlockUI : BlockUI() {
 
     private var ownerBlockId by mutableStateOf("")
 
@@ -119,10 +129,6 @@ class TryCatchBlockUI: BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO("Not yet implemented")
-    }
-
-    override fun toDBBlock(): BlockDB {
         TODO("Not yet implemented")
     }
 

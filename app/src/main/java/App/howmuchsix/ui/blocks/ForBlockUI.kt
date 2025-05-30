@@ -4,14 +4,26 @@ import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
 import App.howmuchsix.hms.Blocks.ForBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.ForBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size1
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size140
+import App.howmuchsix.ui.theme.design_elements.size220
+import App.howmuchsix.ui.theme.design_elements.size270
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size50
+import App.howmuchsix.ui.theme.design_elements.size6
+import App.howmuchsix.ui.theme.design_elements.size60
+import App.howmuchsix.ui.theme.design_elements.size73
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
-import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
+import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -19,7 +31,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -32,7 +43,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class ForBlockUI : BlockUI() {
 
@@ -43,19 +53,19 @@ class ForBlockUI : BlockUI() {
     var assignBlock: BlockUI? = null
     var doBlocks = mutableListOf<BlockUI>()
 
-    fun setOwnerId(id: String){
+    fun setOwnerId(id: String) {
         ownerBlockId = id
     }
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Column (
+        Column(
             modifier = modifier
                 .background(BlockOrange, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size140)
-        ){
-            Row (
+        ) {
+            Row(
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -81,7 +91,7 @@ class ForBlockUI : BlockUI() {
                     Spacer(Modifier.width(size4))
                     ButtonTextField(
                         value = value,
-                        onValueChange = {value = it},
+                        onValueChange = { value = it },
                         textStyle = SubTitle1,
                         placeholder = "condition",
                         modifier = Modifier.defaultMinSize(minWidth = size60)
@@ -140,38 +150,16 @@ class ForBlockUI : BlockUI() {
         }
     }
 
-    override fun toDBBlock(): BlockDB {
-        val forBlockDB = ForBlockBD(
-            iterator = declareBlock?.toDBBlock(),
-            condition = value,
-            action = assignBlock?.toDBBlock(),
-            body = doBlocks.map { it.toDBBlock() }
-        )
-        return forBlockDB
-    }
-
-    fun initializeFromBD(
-        iteratorUI: BlockUI?,
-        conditionString: String,
-        actionUI: BlockUI?,
-        bodyUI: List<BlockUI>
-    ) {
-        declareBlock = iteratorUI
-        value = conditionString
-        assignBlock = actionUI
-        doBlocks.clear()
-        doBlocks.addAll(bodyUI)
-    }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (declareBlock == null) {
-            throw IllegalArgumentException("Iterator is required")
+            throw RuntimeException("Iterator is required")
         }
         if (value.isEmpty()) {
-            throw IllegalArgumentException("Condition is required")
+            throw RuntimeException("Condition is required")
         }
         if (assignBlock == null) {
-            throw IllegalArgumentException("Action is required")
+            throw RuntimeException("Action is required")
         }
 
         val iteratorBlock = declareBlock!!.metamorphosis(consoleViewModel)
@@ -184,12 +172,14 @@ class ForBlockUI : BlockUI() {
                 block.uuid = this.id
                 block
             }
+
             is DeclarationBlock -> {
                 val block = ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
                 block.uuid = this.id
                 block
             }
-            else -> throw IllegalStateException("Iterator must be AssignmentBlock or DeclarationBlock")
+
+            else -> throw RuntimeException("Iterator must be AssignmentBlock or DeclarationBlock")
         }
     }
 }

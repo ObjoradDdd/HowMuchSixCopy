@@ -5,13 +5,11 @@ import App.howmuchsix.ui.blocks.ForBlockUI
 import App.howmuchsix.ui.blocks.FunctionBlockUI
 import App.howmuchsix.ui.blocks.FunctionDeclarationBlockUI
 import App.howmuchsix.ui.blocks.IfBlockUI
-import App.howmuchsix.ui.blocks.PrintBlockUI
-import App.howmuchsix.ui.blocks.ReturnBlockUI
-import App.howmuchsix.ui.blocks.SleepBlockUI
 import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.theme.design_elements.FieldBG
 import App.howmuchsix.ui.theme.design_elements.GridColor
-import App.howmuchsix.viewmodel.*
+import App.howmuchsix.viewmodel.BlockEditorViewModel
+import App.howmuchsix.viewmodel.NearbyConnection
 import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -33,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,19 +40,15 @@ import kotlin.math.roundToInt
 fun ZoomableField(
     placedBlocks: List<PlacedBlockUI>,
     nearbyConnectionPoint: NearbyConnection?,
-    dropZoneHighlight: DropZoneHighlight?,
     onStartDragPlacedBlock: (String, Offset) -> Unit,
     onTransformChange: (scale: Float, offset: Offset) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: BlockEditorViewModel = viewModel()
-){
+) {
     val horizontalScrollState = rememberScrollState(initial = 1000)
     val verticalScrollState = rememberScrollState(initial = 1000)
-    val density = LocalDensity.current
 
     val fieldSizeDp = 2000.dp
-    val fieldSizePx = with(density) { fieldSizeDp.toPx() }
-
 
     val scale = 1f
 
@@ -105,7 +98,7 @@ fun ZoomableField(
                         }
                         .pointerInput(block.id) {
                             detectDragGestures(
-                                onDragStart = { dragOffset ->
+                                onDragStart = {
                                     onStartDragPlacedBlock(block.id, block.position)
                                 },
                                 onDrag = { change, _ ->
