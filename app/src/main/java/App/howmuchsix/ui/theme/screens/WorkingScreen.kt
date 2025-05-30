@@ -46,6 +46,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -73,6 +75,9 @@ fun WorkingScreen(
 ) {
     var isBlockPanelVisible by remember { mutableStateOf(false) }
     var isConsoleVisible by remember { mutableStateOf(false) }
+
+    var fieldScale by remember { mutableFloatStateOf(1f) }
+    var fieldOffset by remember { mutableStateOf(Offset.Zero) }
 
     val interpreterViewModel = remember {
         InterpreterViewModel(consoleViewModel, viewModel)
@@ -216,6 +221,10 @@ fun WorkingScreen(
             onStartDragPlacedBlock = { blockId, offset ->
                 viewModel.startDraggingPlacedBlock(blockId, offset)
             },
+            onTransformChange = { scale, offset ->
+                fieldScale = scale
+                fieldOffset = offset
+            },
             viewModel = viewModel
         )
 
@@ -227,6 +236,10 @@ fun WorkingScreen(
                 modifier = Modifier
                     .offset { IntOffset(dragPosition.x.roundToInt(), dragPosition.y.roundToInt()) }
                     .wrapContentSize()
+                    .graphicsLayer(
+                        scaleX = fieldScale,
+                        scaleY = fieldScale
+                    )
             ) {
                 if (draggedPlacedBlock != null) {
                     draggedPlacedBlock.uiBlock.Render(Modifier, viewModel)

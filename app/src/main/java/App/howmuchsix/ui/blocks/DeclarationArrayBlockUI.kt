@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -41,6 +42,7 @@ class DeclarationArrayBlockUI : BlockUI() {
     private var value by mutableStateOf("")
     private var ownerBlockId by mutableStateOf("")
     private var arrName by mutableStateOf("")
+    private var arrSize by mutableStateOf("")
     private var selectedType by mutableStateOf<_types?>(null)
 
     fun setOwnerId(id: String) {
@@ -55,19 +57,31 @@ class DeclarationArrayBlockUI : BlockUI() {
                 .padding(12.dp)
                 .defaultMinSize(minWidth = 190.dp, minHeight = 140.dp)
         ) {
-            Text(
-                text = "Array",
-                style = SubTitle1,
-                color = TextWhite
-            )
+            Row (verticalAlignment = Alignment.CenterVertically){
+                Text(
+                    text = "Array",
+                    style = SubTitle1,
+                    color = TextWhite
+                )
+                Spacer(Modifier.width(45.dp))
+                DropDownMenuTypeSelector(
+                    selectedType = selectedType,
+                    onTypeSelected = { selectedType = it}
+                )
+            }
             Spacer(Modifier.height(12.dp))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                DropDownMenuTypeSelector(
-                    selectedType = selectedType,
-                    onTypeSelected = { selectedType = it}
+                ButtonTextField(
+                    value = arrSize,
+                    onValueChange = { newSize ->
+                        arrSize = newSize
+                        viewModel?.updateFunctionName(ownerBlockId, newSize)
+                    },
+                    textStyle = SubTitle1,
+                    placeholder = "arr size"
                 )
 
                 Spacer(Modifier.width(12.dp))
@@ -87,7 +101,7 @@ class DeclarationArrayBlockUI : BlockUI() {
                 onValueChange = {value = it},
                 textStyle = SubTitle1,
                 placeholder = "components",
-                modifier = Modifier.defaultMinSize(minWidth = 180.dp)
+                modifier = Modifier.defaultMinSize(minWidth = 170.dp)
             )
         }
     }
