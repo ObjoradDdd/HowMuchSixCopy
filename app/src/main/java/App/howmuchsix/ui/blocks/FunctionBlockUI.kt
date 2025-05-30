@@ -41,16 +41,16 @@ class FunctionBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Column (
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(8.dp))
-                .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 60.dp)
+                .background(BlockPink, RoundedCornerShape(size8))
+                .padding(size12)
+                .defaultMinSize(minWidth = size220, minHeight = size60)
         ){
             Text(
                 text = "Call fun",
                 style = SubTitle1,
                 color = TextWhite
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(size12))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
@@ -65,12 +65,12 @@ class FunctionBlockUI : BlockUI() {
                     buttonBackgroundColor = BlockRed
                 )
 
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(size12))
                 Text(
                     text = ":",
                     style = SubTitle1
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(size8))
                 ButtonTextField(
                     value = value,
                     onValueChange = {value = it},

@@ -8,9 +8,7 @@ import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.ForBlockBD
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
@@ -21,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -52,9 +51,9 @@ class ForBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Column (
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(8.dp))
-                .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
+                .background(BlockOrange, RoundedCornerShape(size8))
+                .padding(size12)
+                .defaultMinSize(minWidth = size220, minHeight = size140)
         ){
             Row (
                 modifier = Modifier.wrapContentSize(),
@@ -65,7 +64,7 @@ class ForBlockUI : BlockUI() {
                     style = SubTitle1,
                     color = TextWhite
                 )
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(size12))
 
                 if (viewModel != null) {
                     DropZone(
@@ -77,17 +76,17 @@ class ForBlockUI : BlockUI() {
                             BlockType.Assignment
                         ),
                         placeholder = "declare",
-                        modifier = Modifier.defaultMinSize(minWidth = 73.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size73, minHeight = size40)
                     )
-                    Spacer(Modifier.width(4.dp))
+                    Spacer(Modifier.width(size4))
                     ButtonTextField(
                         value = value,
                         onValueChange = {value = it},
                         textStyle = SubTitle1,
                         placeholder = "condition",
-                        modifier = Modifier.defaultMinSize(minWidth = 60.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size60)
                     )
-                    Spacer(Modifier.width(4.dp))
+                    Spacer(Modifier.width(size4))
                     DropZone(
                         id = "for_assign_dropzone_${ownerBlockId}",
                         ownerBlockId = ownerBlockId,
@@ -96,24 +95,24 @@ class ForBlockUI : BlockUI() {
                             BlockType.Assignment
                         ),
                         placeholder = "assign",
-                        modifier = Modifier.defaultMinSize(minWidth = 73.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size73, minHeight = size40)
                     )
                 }
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(size8))
             Text(
                 text = "Do:",
                 style = SubTitle1,
                 color = TextWhite
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(size4))
             if (viewModel != null) {
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .padding(6.dp)
+                        .defaultMinSize(minHeight = size50)
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(size4))
+                        .border(size1, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(size4))
+                        .padding(size6)
                 ) {
                     DropZone(
                         id = "for_do_dropzone_${ownerBlockId}",
@@ -134,7 +133,7 @@ class ForBlockUI : BlockUI() {
                         ),
                         placeholder = "do statements",
                         multipleBlocks = true,
-                        modifier = Modifier.defaultMinSize(minWidth = 270.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size270, minHeight = size40)
                     )
                 }
             }

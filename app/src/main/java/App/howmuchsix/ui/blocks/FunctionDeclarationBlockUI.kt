@@ -9,9 +9,7 @@ import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownFunctionMenuTypeSelector
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
@@ -52,16 +50,16 @@ class FunctionDeclarationBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Column (
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(8.dp))
-                .padding(12.dp)
-                .defaultMinSize(minWidth = 220.dp, minHeight = 140.dp)
+                .background(BlockPink, RoundedCornerShape(size8))
+                .padding(size12)
+                .defaultMinSize(minWidth = size220, minHeight = size140)
         ) {
             Text(
                 text = "Fun",
                 style = SubTitle1,
                 color = TextWhite
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(size12))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
@@ -72,7 +70,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
                     onTypeSelected = { selectedType = it}
                 )
 
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(size12))
                 ButtonTextField(
                     value = funName,
                     onValueChange = { newName ->
@@ -82,12 +80,12 @@ class FunctionDeclarationBlockUI : BlockUI() {
                     textStyle = SubTitle1,
                     placeholder = "name"
                 )
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(size12))
                 Text(
                     text = ":",
                     style = SubTitle1
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(size8))
                 ButtonTextField(
                     value = value,
                     onValueChange = {value = it},
@@ -95,14 +93,14 @@ class FunctionDeclarationBlockUI : BlockUI() {
                     placeholder = "parameters"
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(size12))
             if (viewModel != null) {
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(minHeight = 50.dp)
-                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(4.dp))
-                        .border(1.dp, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
-                        .padding(6.dp)
+                        .defaultMinSize(minHeight = size50)
+                        .background(TextWhite.copy(alpha = 0.2f), RoundedCornerShape(size4))
+                        .border(size1, TextWhite.copy(alpha = 0.1f), RoundedCornerShape(size4))
+                        .padding(size6)
                 ) {
                     DropZone(
                         id = "function_body_dropzone_${ownerBlockId}",
@@ -124,7 +122,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
 
                         placeholder = "body",
                         multipleBlocks = true,
-                        modifier = Modifier.defaultMinSize(minWidth = 270.dp, minHeight = 40.dp)
+                        modifier = Modifier.defaultMinSize(minWidth = size270, minHeight = size40)
                     )
                 }
             }

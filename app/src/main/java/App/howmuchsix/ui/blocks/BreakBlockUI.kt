@@ -25,15 +25,15 @@ class BreakBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Row (
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(8.dp))
-                .padding(8.dp)
+                .background(BlockOrange, RoundedCornerShape(size8))
+                .padding(size8)
         ){
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
             Text(text = "Break",
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(size8))
         }
     }
 

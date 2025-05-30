@@ -2,12 +2,7 @@ package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
 import App.howmuchsix.navigation.Screens
-import App.howmuchsix.ui.theme.design_elements.BackgroundOrange
-import App.howmuchsix.ui.theme.design_elements.Beige
-import App.howmuchsix.ui.theme.design_elements.ButtonText
-import App.howmuchsix.ui.theme.design_elements.StrictTitle
-import App.howmuchsix.ui.theme.design_elements.SubTitle1
-import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,16 +38,16 @@ fun StartingScreen(navController: NavController) {
                 painter = painterResource(id = R.drawable.backgsiximg),
                 contentDescription = null,
                 modifier = Modifier
-                    .requiredHeight(1300.dp)
-                    .requiredWidth(850.dp)
-                    .padding(end = 150.dp)
+                    .requiredHeight(size1300)
+                    .requiredWidth(size850)
+                    .padding(end = size150)
             )
         }
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
             StartingText()
-            Spacer(modifier = Modifier.height(350.dp))
+            Spacer(modifier = Modifier.height(size350))
             DisplayButton(navController)
         }
     }
@@ -63,17 +58,17 @@ fun StartingText() {
     Column(
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(140.dp))
+        Spacer(modifier = Modifier.height(size140))
         Text(
             modifier = Modifier
-                .padding(start = 40.dp, end = 25.dp),
+                .padding(start = size40, end = size25),
             text = "Get into coding easily with our app",
             style = StrictTitle
         )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(size25))
         Text(
             modifier = Modifier
-                .padding(start = 40.dp, end = 25.dp),
+                .padding(start = size40, end = size25),
             text = "Build your code by using drag-and-drop blocks. It’s a great way to learn and teach coding principles",
             style = SubTitle1
         )
@@ -84,16 +79,16 @@ fun StartingText() {
 fun DisplayButton(navController: NavController) {
     Button(
         onClick = { navController.navigate(Screens.ProjectListScreen.name) },
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(size20),
         colors = ButtonDefaults.buttonColors(
             containerColor = Beige,
             contentColor = TextOrange
         ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = size4),
         modifier = Modifier
-            .width(335.dp)
-            .height(65.dp)
-            .offset(40.dp)
+            .width(size335)
+            .height(size65)
+            .offset(size40)
     ) {
         Text(
             text = "Get started!",

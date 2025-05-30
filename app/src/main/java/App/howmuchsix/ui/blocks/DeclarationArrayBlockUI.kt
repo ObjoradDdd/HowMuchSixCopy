@@ -12,6 +12,12 @@ import App.howmuchsix.ui.theme.design_elements.BlockPink
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
 import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size140
+import App.howmuchsix.ui.theme.design_elements.size170
+import App.howmuchsix.ui.theme.design_elements.size190
+import App.howmuchsix.ui.theme.design_elements.size45
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import App.howmuchsix.viewmodel.BlockType
@@ -53,9 +59,9 @@ class DeclarationArrayBlockUI : BlockUI() {
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
         Column (
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(8.dp))
-                .padding(12.dp)
-                .defaultMinSize(minWidth = 190.dp, minHeight = 140.dp)
+                .background(BlockYellow, RoundedCornerShape(size8))
+                .padding(size12)
+                .defaultMinSize(minWidth = size190, minHeight = size140)
         ) {
             Row (verticalAlignment = Alignment.CenterVertically){
                 Text(
@@ -63,13 +69,13 @@ class DeclarationArrayBlockUI : BlockUI() {
                     style = SubTitle1,
                     color = TextWhite
                 )
-                Spacer(Modifier.width(45.dp))
+                Spacer(Modifier.width(size45))
                 DropDownMenuTypeSelector(
                     selectedType = selectedType,
                     onTypeSelected = { selectedType = it}
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(size12))
             Row (
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
@@ -84,7 +90,7 @@ class DeclarationArrayBlockUI : BlockUI() {
                     placeholder = "arr size"
                 )
 
-                Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(size12))
                 ButtonTextField(
                     value = arrName,
                     onValueChange = { newName ->
@@ -95,13 +101,13 @@ class DeclarationArrayBlockUI : BlockUI() {
                     placeholder = "arr name"
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(size12))
             ButtonTextField(
                 value = value,
                 onValueChange = {value = it},
                 textStyle = SubTitle1,
                 placeholder = "components",
-                modifier = Modifier.defaultMinSize(minWidth = 170.dp)
+                modifier = Modifier.defaultMinSize(minWidth = size170)
             )
         }
     }
