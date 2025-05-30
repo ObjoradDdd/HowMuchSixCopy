@@ -40,7 +40,9 @@ class ContinueBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return ContinueBlock()
+        val block = ContinueBlock()
+        block.uuid = this.id
+        return block
     }
 
     override fun toDBBlock(): BlockDB {

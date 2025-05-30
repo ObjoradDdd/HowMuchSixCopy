@@ -7,7 +7,7 @@ import App.howmuchsix.hms.Library.Variables;
 public class ContinueBlock extends Block {
     @Override
     public void Action(List<String> scopes, Variables lib) {
-        throw new ContinueException();
+        throw new ContinueException(this.getUUID());
     }
 }
 

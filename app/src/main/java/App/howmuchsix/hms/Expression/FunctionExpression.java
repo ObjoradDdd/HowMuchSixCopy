@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import App.howmuchsix.hms.Blocks.Block;
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.ReturnException;
 import App.howmuchsix.hms.Blocks.Types;
 import App.howmuchsix.hms.Library.Variables;
@@ -27,7 +28,7 @@ public final class FunctionExpression<T> implements Expression<T> {
         this.returnType = returnType;
     }
 
-    public Expression<T> functionReturn(List<String> argumentsValuesStrings, List<String> newScopes) {
+    public Expression<T> functionReturn(List<String> argumentsValuesStrings, List<String> newScopes, String id) {
 
 
         this.scopes = new ArrayList<>(newScopes);
@@ -36,11 +37,11 @@ public final class FunctionExpression<T> implements Expression<T> {
         List<String> nameScope = List.of(name);
 
         if (argumentsValuesStrings.size() != argumentsTypes.size()) {
-            throw new RuntimeException("Function " + name + " has " + argumentsTypes.size() + " arguments but " + argumentsValuesStrings.size() + " given");
+            throw new ProgramRunException("Function " + name + " has " + argumentsTypes.size() + " arguments but " + argumentsValuesStrings.size() + " given", id);
         }
 
         for (int i = 0; i < argumentsTypes.size(); i++) {
-            lib.set(argumentNames.get(i), argumentsTypes.get(i).getValue(argumentsValuesStrings.get(i), scopes, lib), name);
+            lib.set(argumentNames.get(i), argumentsTypes.get(i).getValue(argumentsValuesStrings.get(i), scopes, lib, id), name);
         }
 
         try {
@@ -49,7 +50,7 @@ public final class FunctionExpression<T> implements Expression<T> {
             }
 
             if (returnType != Types.VOID) {
-                throw new RuntimeException("No return in " + returnType + " function");
+                throw new ProgramRunException("No return in " + returnType + " function", id);
             }
         } catch (ReturnException exception) {
             if (returnType == Types.VOID) {
@@ -60,7 +61,7 @@ public final class FunctionExpression<T> implements Expression<T> {
             if (returnExpression.getType() == returnType) {
                 return (Expression<T>) returnExpression;
             } else {
-                throw new RuntimeException("Invalid return expression type. " + returnType + " was expected");
+                throw new ProgramRunException("Invalid return expression type. " + returnType + " was expected", id );
             }
         } finally {
             lib.deleteScope(name);

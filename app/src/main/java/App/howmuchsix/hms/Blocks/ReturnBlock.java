@@ -26,9 +26,9 @@ public final class ReturnBlock extends Block {
     @Override
     public void Action(List<String> scopes, Variables lib) throws ReturnException {
         if (returnType == Types.VOID) {
-            throw new ReturnException(new NullExpression<>(Types.VOID));
+            throw new ReturnException(new NullExpression<>(Types.VOID), this.getUUID());
         }
-        Expression<?> valueExpression = returnType.getValue(valueString, scopes, lib);
-        throw new ReturnException(valueExpression);
+        Expression<?> valueExpression = returnType.getValue(valueString, scopes, lib, this.getUUID());
+        throw new ReturnException(valueExpression, this.getUUID());
     }
 }

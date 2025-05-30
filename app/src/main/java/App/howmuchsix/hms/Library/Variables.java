@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
 import App.howmuchsix.hms.Expression.ArrayExpression;
 import App.howmuchsix.hms.Expression.Expression;
@@ -44,7 +46,7 @@ public final class Variables {
         return true;
     }
 
-    public <T> Expression<T> getExpression(String key, Class<?> expectedType, List<String> scopes) {
+    public <T> Expression<T> getExpression(String key, Class<?> expectedType, List<String> scopes, String id) {
         Expression<?> expression;
         for (String scope : scopes) {
             Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
@@ -53,12 +55,12 @@ public final class Variables {
                 if (expression != null) {
 
                     if (!expectedType.isAssignableFrom(expression.getType().getTypeClass())) {
-                        throw new RuntimeException(String.format(
+                        throw new ProgramRunException(String.format(
                                 "Type mismatch for variable %s: expected %s but got %s",
                                 key,
                                 expectedType.getSimpleName(),
                                 expression.getType().getTypeClass().getSimpleName()
-                        ));
+                        ), id);
                     }
                     @SuppressWarnings("unchecked")
                     Expression<T> typedExpression = (Expression<T>) expression;
@@ -66,11 +68,11 @@ public final class Variables {
                 }
             }
         }
-        throw new RuntimeException("Unknown variable " + key);
+        throw new ProgramRunException("Unknown variable " + key, id);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Expression<T> getFromArray(String key, String indexString, Class<?> expectedType, List<String> scopes) {
+    public <T> Expression<T> getFromArray(String key, String indexString, Class<?> expectedType, List<String> scopes, String id) {
         if (isExistsVariable(key)) {
             for (String scope : scopes) {
                 Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
@@ -79,26 +81,26 @@ public final class Variables {
                     if (expression != null && expression.getType() == Types.ARRAY) {
                         ArrayExpression array = ((ArrayExpression) expression);
                         if (!expectedType.isAssignableFrom(array.getInsideType().getTypeClass())) {
-                            throw new RuntimeException("Wrong type");
+                            throw new ProgramRunException("Wrong type", id);
                         }
                         int length = array.getLength();
-                        int index = (int) Types.INT.getValue(indexString, scopes, this).eval();
+                        int index = (int) Types.INT.getValue(indexString, scopes, this, id).eval();
                         if (index > length - 1 || index < 0) {
-                            throw new RuntimeException("Wrong index");
+                            throw new ProgramRunException("Wrong index", id);
                         }
                         Expression<?>[] values = array.eval();
                         return (Expression<T>) values[index];
 
                     } else {
-                        throw new RuntimeException(key + " is not subscriptable");
+                        throw new ProgramRunException(key + " is not subscriptable", id);
                     }
                 }
             }
         }
-        throw new RuntimeException("Unknown variable " + key);
+        throw new ProgramRunException("Unknown variable " + key, id);
     }
 
-    public void setValueIntoArray(String key, String indexString, Expression<?> value, List<String> scopes) {
+    public void setValueIntoArray(String key, String indexString, Expression<?> value, List<String> scopes, String id) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             String scope = scopes.get(i);
             Map<String, Expression<?>> scopeMap = variablesScopes.get(scope);
@@ -109,20 +111,20 @@ public final class Variables {
                     if (expression != null && expression.getType() == Types.ARRAY) {
                         ArrayExpression array = ((ArrayExpression) expression);
                         int length = array.getLength();
-                        int index = (int) Types.INT.getValue(indexString, scopes, this).eval();
+                        int index = (int) Types.INT.getValue(indexString, scopes, this, id).eval();
                         if (index > length - 1 || index < 0) {
-                            throw new RuntimeException("Wrong index");
+                            throw new ProgramRunException("Wrong index", id);
                         }
                         array.set(index, value);
                     } else {
-                        throw new RuntimeException(key + " is not subscriptable");
+                        throw new ProgramRunException(key + " is not subscriptable", id);
                     }
                 }
             }
         }
     }
 
-    public Expression<?> getExpressionWithNoType(String key, List<String> scopes) {
+    public Expression<?> getExpressionWithNoType(String key, List<String> scopes, String id) {
         if (scopes == null || scopes.isEmpty()) {
             scopes = List.of("MainScope");
         }
@@ -137,9 +139,9 @@ public final class Variables {
                 }
             }
         }
-        throw new RuntimeException("Unknown variable " + key);
+        throw new ProgramRunException("Unknown variable " + key, id);
     }
-    public FunctionExpression<?> getFunction(String key) {
+    public FunctionExpression<?> getFunction(String key, String id) {
         if (isExistsVariable(key)) {
             Set<String> scopes = variablesScopes.keySet();
             for (String scope : scopes) {
@@ -149,16 +151,16 @@ public final class Variables {
                     if (expression != null && expression.getType() == Types.FUNCTION) {
                         return (FunctionExpression<?>) expression;
                     } else {
-                        throw new RuntimeException(key + " is not a function");
+                        throw new ProgramRunException(key + " is not a function", id);
                     }
                 }
             }
         }
-        throw new RuntimeException("Unknown function " + key);
+        throw new ProgramRunException("Unknown function " + key, id);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Expression<T> getFunctionValue(String key, List<String> scopes, List<String> arguments, Class<?> expectedType) {
+    public <T> Expression<T> getFunctionValue(String key, List<String> scopes, List<String> arguments, Class<?> expectedType, String id) {
         FunctionExpression<?> function;
         if (!scopes.contains("MainScope")) {
             scopes = new ArrayList<>(scopes);
@@ -172,20 +174,20 @@ public final class Variables {
                     if (expression != null && expression.getType() == Types.FUNCTION) {
                         function = (FunctionExpression<?>) expression;
                         if (function.getReturnType() == Types.VOID) {
-                            function.functionReturn(arguments, scopes);
+                            function.functionReturn(arguments, scopes, id);
                             return new NullExpression<>(Types.VOID);
                         }
                         if (!expectedType.isAssignableFrom(function.getReturnType().getTypeClass())) {
-                            throw new RuntimeException("Invalid type");
+                            throw new ProgramRunException("Invalid type", id);
                         }
-                        return (Expression<T>) function.functionReturn(arguments, scopes);
+                        return (Expression<T>) function.functionReturn(arguments, scopes, id);
                     } else {
-                        throw new RuntimeException(key + " is not a function");
+                        throw new ProgramRunException(key + " is not a function", id);
                     }
                 }
             }
         }
-        throw new RuntimeException("Unknown function " + key);
+        throw new ProgramRunException("Unknown function " + key, id);
     }
 
 

@@ -180,8 +180,16 @@ class ForBlockUI : BlockUI() {
         val bodyBlocks = doBlocks.map { it.metamorphosis(consoleViewModel) }
 
         return when (iteratorBlock) {
-            is AssignmentBlock -> ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
-            is DeclarationBlock -> ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
+            is AssignmentBlock -> {
+                val block = ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
+                block.uuid = this.id
+                block
+            }
+            is DeclarationBlock -> {
+                val block = ForBlock(iteratorBlock, value, actionBlock, bodyBlocks)
+                block.uuid = this.id
+                block
+            }
             else -> throw IllegalStateException("Iterator must be AssignmentBlock or DeclarationBlock")
         }
     }

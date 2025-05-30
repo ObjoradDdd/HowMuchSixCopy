@@ -34,7 +34,7 @@ public final class ForBlock extends Block {
         String iteratorScope = "Scope - " + (lib.getNumberOfScopes() + 1);
         List<String> newScopes = new ArrayList<>(scopes);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenize();
-        Parser logicalExpression = new Parser(tokens, newScopes, lib);
+        Parser logicalExpression = new Parser(tokens, newScopes, lib, this.getUUID());
         lib.newScope(iteratorScope);
         try {
             iterator.Action(newScopes, lib);

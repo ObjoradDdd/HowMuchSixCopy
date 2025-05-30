@@ -95,6 +95,9 @@ class DeclarationBlockUI : BlockUI() {
 
         val types = selectedType!!.toTypes()
 
-        return DeclarationBlock(variablesList, valuesList, types)
+        val block = DeclarationBlock(variablesList, valuesList, types)
+        block.uuid = this.id
+
+        return block
     }
 }

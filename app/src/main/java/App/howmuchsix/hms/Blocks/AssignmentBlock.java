@@ -22,29 +22,29 @@ public final class AssignmentBlock extends Block {
     public void Action(List<String> scopes, Variables lib) {
         Token isSubscriptable = new Lexer(variable).tokenizeForAssignment();
         if (isSubscriptable.getBody() == null) {
-            Expression<?> variableExpression = lib.getExpressionWithNoType(variable, scopes);
+            Expression<?> variableExpression = lib.getExpressionWithNoType(variable, scopes, this.getUUID());
             Types variableType = variableExpression.getType();
             if (variableType == Types.ARRAY) {
-                ArrayExpression newValue = (ArrayExpression) variableType.getValue(stringValue, scopes, lib);
+                ArrayExpression newValue = (ArrayExpression) variableType.getValue(stringValue, scopes, lib, this.getUUID());
                 ArrayExpression currentValue = (ArrayExpression) variableExpression;
                 if (newValue.getInsideType() == currentValue.getInsideType()) {
                     lib.set(variable, newValue, scopes);
                     return;
                 } else {
-                    throw new RuntimeException(variable + " contains " + currentValue.getInsideType() + " not " + newValue.getInsideType());
+                    throw new ProgramRunException(variable + " contains " + currentValue.getInsideType() + " not " + newValue.getInsideType(), this.getUUID());
                 }
             }
-            lib.set(variable, variableType.getValue(stringValue, scopes, lib), scopes);
+            lib.set(variable, variableType.getValue(stringValue, scopes, lib, this.getUUID()), scopes);
         } else {
-            Expression<?> variableExpression = lib.getExpressionWithNoType(isSubscriptable.getText(), scopes);
+            Expression<?> variableExpression = lib.getExpressionWithNoType(isSubscriptable.getText(), scopes, this.getUUID());
             Types variableType = variableExpression.getType();
             Types insideType;
             if (variableType == Types.ARRAY) {
                 insideType = ((ArrayExpression) variableExpression).getInsideType();
             } else {
-                throw new RuntimeException(variable + " is not subscriptable");
+                throw new ProgramRunException(variable + " is not subscriptable", this.getUUID());
             }
-            lib.setValueIntoArray(isSubscriptable.getText(), isSubscriptable.getBody(), insideType.getValue(stringValue, scopes, lib), scopes);
+            lib.setValueIntoArray(isSubscriptable.getText(), isSubscriptable.getBody(), insideType.getValue(stringValue, scopes, lib, this.getUUID()), scopes, this.getUUID());
         }
     }
 }
