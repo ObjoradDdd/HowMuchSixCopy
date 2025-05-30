@@ -47,7 +47,7 @@ class ReturnBlockUI : BlockUI() {
             )
 
             Spacer(Modifier.width(size8))
-            DropDownMenuTypeSelector(
+            DropDownFunctionMenuTypeSelector(
 
                 selectedType = selectedType,
                 onTypeSelected = { selectedType = it}

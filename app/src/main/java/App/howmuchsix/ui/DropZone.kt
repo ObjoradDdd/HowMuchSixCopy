@@ -91,6 +91,7 @@ fun DropZone(
             },
         contentAlignment = Alignment.Center
     ) {
+
         if (currBlocks.isNotEmpty()) {
             if (multipleBlocks) {
                 LazyColumn(
@@ -99,19 +100,22 @@ fun DropZone(
                 ) {
                     items(
                         items = currBlocks,
-                        key = {block -> block?.id!! }
+                        key = { block -> block?.id!! }
                     ) { block ->
                         if (block != null) {
                             Box(
                                 modifier = Modifier
-                                    //.scale(0.9f)
                                     .pointerInput(block.id) {
                                         detectTapGestures(
                                             onLongPress = {
                                                 if (viewModel != null) {
                                                     viewModel.removeBlockFromDropZone(id, block.id)
-                                                    viewModel.addToFieldFromDropZone(block, id)
-                                                    viewModel.startDraggingPlacedBlock(block.id, block.position)
+                                                    val fieldPosition = viewModel.screenToFieldCoords(block.position)
+                                                    viewModel.addToFieldFromDropZone(
+                                                        block.copy(position = fieldPosition),
+                                                        id
+                                                    )
+                                                    viewModel.startDraggingPlacedBlock(block.id, fieldPosition)
                                                 }
                                             }
                                         )
@@ -133,13 +137,17 @@ fun DropZone(
                                     onLongPress = {
                                         if (viewModel != null) {
                                             viewModel.removeBlockFromDropZone(id, singleBlock.id)
-                                            viewModel.addToFieldFromDropZone(singleBlock, id)
-                                            viewModel.startDraggingPlacedBlock(singleBlock.id, singleBlock.position)
+                                            val fieldPosition = viewModel.screenToFieldCoords(singleBlock.position)
+                                            viewModel.addToFieldFromDropZone(
+                                                singleBlock.copy(position = fieldPosition),
+                                                id
+                                            )
+                                            viewModel.startDraggingPlacedBlock(singleBlock.id, fieldPosition)
                                         }
                                     }
                                 )
                             }
-                    ){
+                    ) {
                         singleBlock.uiBlock.Render(Modifier, viewModel)
                     }
                 }

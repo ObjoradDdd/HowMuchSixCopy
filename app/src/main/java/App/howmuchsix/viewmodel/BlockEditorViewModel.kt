@@ -181,20 +181,15 @@ class BlockEditorViewModel : ViewModel() {
     private var _fieldScale = 1f
     private var _fieldOffset = Offset.Zero
 
+    fun updateFieldTransform(scale: Float, offset: Offset) {
+        _fieldScale = scale
+        _fieldOffset = offset
+    }
+
     private fun getStartProgramBlock(): PlacedBlockUI? {
         return _placedBlocks.find { it.type == BlockType.StartProgram }
     }
 
-    fun updateFieldTransform(scale: Float, offset: Offset){
-        _fieldScale = scale
-        _fieldOffset = offset
-    }
-    private fun screenToFieldCords(screenPosition: Offset): Offset {
-        return (screenPosition - _fieldOffset) / _fieldScale
-    }
-    private fun fieldToScreenCords(fieldPosition: Offset): Offset {
-        return fieldPosition *  _fieldScale + _fieldOffset
-    }
 
     fun getBlockChain(): List<PlacedBlockUI> {
         val startBlock = getStartProgramBlock() ?: return emptyList()
@@ -329,16 +324,17 @@ class BlockEditorViewModel : ViewModel() {
         _functionNames.remove(blockId)
     }
 
-    private fun findDropZoneAtPosition(position: Offset): DropZoneTarget? {
+    private fun findDropZoneAtPosition(screenPosition: Offset): DropZoneTarget? {
         return _dropZoneTargets.filter { target ->
             val dropZoneRect = Rect(
                 offset = target.position,
                 size = target.size
             )
-            dropZoneRect.contains(position)
+            dropZoneRect.contains(screenPosition)
         }
             .minByOrNull { it.size.width * it.size.height }
     }
+
     private fun findBlockInDropZones(blockId: String): PlacedBlockUI? {
         _dropZoneContents.values.forEach { blockList ->
             val foundBlock = blockList.find { it.id == blockId }
@@ -454,14 +450,16 @@ class BlockEditorViewModel : ViewModel() {
     }
     fun updatePosition(newPosition: Offset) {
         if (_isDragging.value) {
-            _dragPosition.value = newPosition
+
+            val fieldPosition = screenToFieldCoords(newPosition)
+            _dragPosition.value = fieldPosition
 
             val draggedBlock = _draggedBlock.value
             val draggedBlockId = _draggedPlacedBlockId.value
 
             if (draggedBlock != null) {
+                findNearbyConnectionPoint(fieldPosition, draggedBlockId)
 
-                findNearbyConnectionPoint(newPosition, draggedBlockId)
 
                 val dropZone = findDropZoneAtPosition(newPosition)
                 _dropZoneHighlight.value = dropZone?.let { zone ->
@@ -474,16 +472,17 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
     }
+
     fun stopDragging(placeOnField: Boolean) {
         val currentBlock = _draggedBlock.value
-        val currentPosition = _dragPosition.value
+        val fieldPosition = _dragPosition.value
         val placedBlockId = _draggedPlacedBlockId.value
         val nearbyConnection = _nearbyConnectionPoint.value
 
         if (currentBlock != null) {
-            val fieldPosition = currentPosition
 
-            val dropZoneTarget = findDropZoneAtPosition(fieldPosition)
+            val screenPosition = fieldToScreenCoords(fieldPosition)
+            val dropZoneTarget = findDropZoneAtPosition(screenPosition)
             val isValid = dropZoneTarget != null && (dropZoneTarget.acceptedTypes.isEmpty() ||
                     dropZoneTarget.acceptedTypes.contains(currentBlock.type))
 
@@ -555,6 +554,7 @@ class BlockEditorViewModel : ViewModel() {
         _nearbyConnectionPoint.value = null
         _dropZoneHighlight.value = null
     }
+
 
     fun updateBlockSize(blockId: String, size: Size) {
         val index = _placedBlocks.indexOfFirst { it.id == blockId }
@@ -727,6 +727,7 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
     }
+
     private fun findNearbyConnectionPoint(dragPosition: Offset, excludeBlockId: String?) {
         var closestPoint: ConnectionPoint? = null
         var closestDistance = Float.MAX_VALUE
@@ -749,11 +750,12 @@ class BlockEditorViewModel : ViewModel() {
             }
         }
 
-        _nearbyConnectionPoint.value = if (closestDistance < snapThreshold
-        ) {
+        _nearbyConnectionPoint.value = if (closestDistance < snapThreshold) {
             NearbyConnection(closestPoint!!, ownerBlockId!!)
         } else null
     }
+
+
     private fun calculateSnapPosition(
         targetBlock: PlacedBlockUI,
         connectionPoint: ConnectionPoint,
@@ -809,5 +811,13 @@ class BlockEditorViewModel : ViewModel() {
             BlockType.Declaration, BlockType.Assignment -> 80f
             else -> 80f
         }
+    }
+
+    fun screenToFieldCoords(screenPosition: Offset): Offset {
+        return (screenPosition - _fieldOffset) / _fieldScale
+    }
+
+    private fun fieldToScreenCoords(fieldPosition: Offset): Offset {
+        return fieldPosition * _fieldScale + _fieldOffset
     }
 }
