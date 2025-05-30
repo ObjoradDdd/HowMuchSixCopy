@@ -272,7 +272,7 @@ fun WorkingScreen(
             items = listOf(
                 BottomMenuContent("Blocks", R.drawable.ic_blocks),
                 BottomMenuContent("Console", R.drawable.ic_console),
-                BottomMenuContent("Save", R.drawable.ic_save),
+                BottomMenuContent("Run", R.drawable.ic_play),
                 BottomMenuContent("Home", R.drawable.ic_home),
             ),
             onItemClick = { item ->
@@ -287,7 +287,7 @@ fun WorkingScreen(
                         isBlockPanelVisible = false
                     }
 
-                    "Save" -> {
+                    "Run" -> {
                         consoleViewModel.clearConsole()
                         interpreterViewModel.runProgram()
                     }

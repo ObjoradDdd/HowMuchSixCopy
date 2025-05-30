@@ -124,6 +124,10 @@ data class PlacedBlockUI(
     val size: Size = Size(80f, 100f),
     val chainNeighbors: ChainNeighbors = ChainNeighbors()
 ) {
+    init {
+        this.uiBlock.setUUID(id)
+    }
+
     override fun toString(): String {
         return this.type.toString()
     }
