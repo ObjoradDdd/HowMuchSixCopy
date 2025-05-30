@@ -29,6 +29,7 @@ public final class Variables {
 
             Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
             if (scopeVariables != null && scopeVariables.containsKey(key)) {
+                System.out.println(scope);
                 return true;
             }
 
@@ -220,7 +221,7 @@ public final class Variables {
 
     public void deleteScope(String name) {
         if (!"MainScope".equals(name)) {
-            variablesScopes.remove(name);
+            this.variablesScopes.remove(name);
         }
     }
 }

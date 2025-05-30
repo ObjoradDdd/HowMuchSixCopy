@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import java.util.UUID
 import kotlin.collections.List
-import kotlin.collections.Map
 import kotlin.collections.MutableList
 import kotlin.collections.emptyList
 import kotlin.collections.filter
@@ -152,20 +151,19 @@ class BlockEditorViewModel : ViewModel() {
     private val _draggedPlacedBlockId = mutableStateOf<String?>(null)
     val draggedPlacedBlockId: String? get() = _draggedPlacedBlockId.value
 
-    private val _connections = mutableStateListOf<BlockConnection>()
-    val connections: List<BlockConnection> = _connections
 
     private val _nearbyConnectionPoint = mutableStateOf<NearbyConnection?>(null)
     val nearbyConnectionPoint: NearbyConnection? get() = _nearbyConnectionPoint.value
 
     private val _dropZoneTargets = mutableStateListOf<DropZoneTarget>()
-    val dropzoneTargets: List<DropZoneTarget> = _dropZoneTargets
 
     private val _dropZoneHighlight = mutableStateOf<DropZoneHighlight?>(null)
     val dropZoneHighlight: DropZoneHighlight? get() = _dropZoneHighlight.value
 
     private val _dropZoneContents = mutableStateMapOf<String, MutableList<PlacedBlockUI>>()
-    val dropZoneContents: Map<String, List<PlacedBlockUI>> = _dropZoneContents
+
+    private val _dragScreenPosition = mutableStateOf(Offset.Zero)
+    val dragScreenPosition: Offset get() = _dragScreenPosition.value
 
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")
@@ -174,7 +172,6 @@ class BlockEditorViewModel : ViewModel() {
         put("doubleToString", "doubleToString")
         put("stringToDouble", "stringToDouble")
     }
-    val functionNames: Map<String, String> = _functionNames
 
     private val _directConnections = mutableStateMapOf<String, String>()
 
@@ -215,6 +212,7 @@ class BlockEditorViewModel : ViewModel() {
 
         return chain
     }
+
     private fun updateChainNeighbors() {
         _placedBlocks.forEachIndexed { index, block ->
             _placedBlocks[index] = block.copy(chainNeighbors = ChainNeighbors())
@@ -241,6 +239,7 @@ class BlockEditorViewModel : ViewModel() {
             _placedBlocks[index] = _placedBlocks[index].copy(chainNeighbors = neighbors)
         }
     }
+
     private fun clearBlockNeighbors(blockId: String) {
         val index = _placedBlocks.indexOfFirst { it.id == blockId }
         if (index != -1) {
@@ -249,6 +248,7 @@ class BlockEditorViewModel : ViewModel() {
             )
         }
     }
+
     private fun insertBlockInChain(
         newBlockId: String,
         beforeBlockId: String?,
@@ -268,6 +268,7 @@ class BlockEditorViewModel : ViewModel() {
 
         updateChainNeighbors()
     }
+
     private fun removeBlockFromChain(blockId: String) {
         val parentId = _directConnections.entries.find { it.value == blockId }?.key
         val childId = _directConnections[blockId]
@@ -286,9 +287,11 @@ class BlockEditorViewModel : ViewModel() {
     private fun addDirectConnection(parentId: String, childId: String) {
         _directConnections[parentId] = childId
     }
+
     private fun removeDirectConnection(parentId: String) {
         _directConnections.remove(parentId)
     }
+
     private fun handleBlockConnection(
         newBlockId: String,
         targetBlockId: String,
@@ -317,9 +320,11 @@ class BlockEditorViewModel : ViewModel() {
             _functionNames[blockId] = functionName
         }
     }
+
     fun getAllFunNames(): List<String> {
         return _functionNames.values.filter { it.isNotBlank() }
     }
+
     private fun removeFunctionName(blockId: String) {
         _functionNames.remove(blockId)
     }
@@ -344,6 +349,7 @@ class BlockEditorViewModel : ViewModel() {
         }
         return null
     }
+
     private fun setOwnerIdForNestedBlocks(blockUI: BlockUI, blockId: String) {
         when (blockUI) {
             is IfBlockUI -> blockUI.setOwnerId(blockId)
@@ -373,6 +379,7 @@ class BlockEditorViewModel : ViewModel() {
 
         return true
     }
+
     fun removeBlockFromDropZone(dropZoneId: String, blockId: String? = null) {
         val blocks = _dropZoneContents[dropZoneId] ?: return
         val zone = _dropZoneTargets.find { it.id == dropZoneId }
@@ -396,6 +403,7 @@ class BlockEditorViewModel : ViewModel() {
             _dropZoneContents.remove(dropZoneId)
         }
     }
+
     fun addToFieldFromDropZone(block: PlacedBlockUI, dropZoneId: String) {
         val zone = _dropZoneTargets.find { it.id == dropZoneId }
         val fieldPosition = zone?.position ?: Offset.Zero
@@ -413,16 +421,16 @@ class BlockEditorViewModel : ViewModel() {
             )
         )
     }
+
     fun getDropZoneContents(dropZoneId: String): List<PlacedBlockUI?> {
         return _dropZoneContents[dropZoneId] ?: emptyList()
     }
-    /*fun getDropZoneContent(dropZoneId: String): PlacedBlockUI? {
-        return _dropZoneContents[dropZoneId]?.firstOrNull()
-    }*/
+
     fun registerDropZone(dropZone: DropZoneTarget) {
         _dropZoneTargets.removeIf { it.id == dropZone.id }
         _dropZoneTargets.add(dropZone)
     }
+
     fun unregisterDropZone(dropZoneId: String) {
         _dropZoneTargets.removeIf { it.id == dropZoneId }
     }
@@ -433,6 +441,7 @@ class BlockEditorViewModel : ViewModel() {
         _isDragging.value = true
         _draggedPlacedBlockId.value = null
     }
+
     fun startDraggingPlacedBlock(blockId: String, initialOffset: Offset) {
         val block = _placedBlocks.find { it.id == blockId } ?: return
 
@@ -448,10 +457,13 @@ class BlockEditorViewModel : ViewModel() {
         _isDragging.value = true
         _draggedPlacedBlockId.value = blockId
     }
+
     fun updatePosition(newPosition: Offset) {
         if (_isDragging.value) {
+            _dragScreenPosition.value = newPosition
 
-            val fieldPosition = screenToFieldCoords(newPosition)
+
+            val fieldPosition = screenToFieldCoords(newPosition, _fieldOffset, _fieldScale)
             _dragPosition.value = fieldPosition
 
             val draggedBlock = _draggedBlock.value
@@ -476,12 +488,11 @@ class BlockEditorViewModel : ViewModel() {
     fun stopDragging(placeOnField: Boolean) {
         val currentBlock = _draggedBlock.value
         val fieldPosition = _dragPosition.value
+        val screenPosition = _dragScreenPosition.value
         val placedBlockId = _draggedPlacedBlockId.value
         val nearbyConnection = _nearbyConnectionPoint.value
 
         if (currentBlock != null) {
-
-            val screenPosition = fieldToScreenCoords(fieldPosition)
             val dropZoneTarget = findDropZoneAtPosition(screenPosition)
             val isValid = dropZoneTarget != null && (dropZoneTarget.acceptedTypes.isEmpty() ||
                     dropZoneTarget.acceptedTypes.contains(currentBlock.type))
@@ -527,6 +538,7 @@ class BlockEditorViewModel : ViewModel() {
                         it.copy(blockId = newBlockId)
                     }
 
+
                     val newBlock = PlacedBlockUI(
                         id = newBlockId,
                         type = currentBlock.type,
@@ -549,6 +561,7 @@ class BlockEditorViewModel : ViewModel() {
 
         _draggedBlock.value = null
         _dragPosition.value = Offset.Zero
+        _dragScreenPosition.value = Offset.Zero
         _isDragging.value = false
         _draggedPlacedBlockId.value = null
         _nearbyConnectionPoint.value = null
@@ -596,6 +609,7 @@ class BlockEditorViewModel : ViewModel() {
         setOwnerIdForNestedBlocks(uiBlock, blockId)
         return uiBlock
     }
+
     private fun addToUIBlockBody(block: PlacedBlockUI, dropZoneTarget: DropZoneTarget) {
         val ownerBlock = _placedBlocks.find { it.id == dropZoneTarget.ownerBlockId }
             ?: findBlockInDropZones(dropZoneTarget.ownerBlockId) ?: return
@@ -644,6 +658,7 @@ class BlockEditorViewModel : ViewModel() {
 
         setOwnerIdForNestedBlocks(block.uiBlock, block.id)
     }
+
     private fun removeFromUIBlockBody(block: PlacedBlockUI, dropZoneTarget: DropZoneTarget) {
         val ownerBlock = _placedBlocks.find { it.id == dropZoneTarget.ownerBlockId }
             ?: findBlockInDropZones(dropZoneTarget.ownerBlockId) ?: return
@@ -791,15 +806,6 @@ class BlockEditorViewModel : ViewModel() {
         }
     }
 
-    /*private fun createConnection(parentId: String, childId: String, connectionPointId: String) {
-        val connection = BlockConnection(
-            parentBlockId = parentId,
-            childBlockId = childId,
-            parentConnectionPoint = connectionPointId,
-            childConnectionPoint = ""
-        )
-        _connections.add(connection)
-    }*/
 
     private fun getBlockHeight(blockType: BlockType): Float {
         return when (blockType) {
@@ -807,6 +813,7 @@ class BlockEditorViewModel : ViewModel() {
             else -> 100f
         }
     }
+
     private fun getBlockWidth(blockType: BlockType): Float {
         return when (blockType) {
             BlockType.Declaration, BlockType.Assignment -> 80f
@@ -814,11 +821,11 @@ class BlockEditorViewModel : ViewModel() {
         }
     }
 
-    fun screenToFieldCoords(screenPosition: Offset): Offset {
-        return (screenPosition - _fieldOffset) / _fieldScale
-    }
-
-    private fun fieldToScreenCoords(fieldPosition: Offset): Offset {
-        return fieldPosition * _fieldScale + _fieldOffset
+    private fun screenToFieldCoords(
+        screenPosition: Offset,
+        fieldOffset: Offset,
+        fieldScale: Float
+    ): Offset {
+        return (screenPosition - fieldOffset) / fieldScale
     }
 }

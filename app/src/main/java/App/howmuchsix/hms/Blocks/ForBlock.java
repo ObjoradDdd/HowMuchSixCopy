@@ -31,8 +31,9 @@ public final class ForBlock extends Block {
     @Override
     public void Action(List<String> scopes, Variables lib) throws ReturnException {
         String name = "Scope - " + lib.getNumberOfScopes();
-        String iteratorScope = "Scope - " + (lib.getNumberOfScopes() + 1);
+        String iteratorScope = "Scope - " + (lib.getNumberOfScopes() + 1) + " it";
         List<String> newScopes = new ArrayList<>(scopes);
+        newScopes.add(iteratorScope);
         List<Token> tokens = new Lexer(logicalExpressionString).tokenize();
         Parser logicalExpression = new Parser(tokens, newScopes, lib, this.getUUID());
         lib.newScope(iteratorScope);
@@ -56,6 +57,7 @@ public final class ForBlock extends Block {
         } catch (BreakException ignored) {
         } finally {
             lib.deleteScope(name);
+            lib.deleteScope(iteratorScope);
         }
     }
 
