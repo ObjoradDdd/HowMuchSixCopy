@@ -134,14 +134,13 @@ class TryCatchBlockUI : BlockUI() {
         if (tryBlocks.isEmpty()) {
             throw RuntimeException("Try body required")
         }
-        if (catchBlocks.isEmpty()) {
-            throw RuntimeException("Catch body required")
-        }
 
         val tryBody = tryBlocks.map { it.metamorphosis(consoleViewModel) }
         val catchBody = catchBlocks.map { it.metamorphosis(consoleViewModel) }
 
-        return TryCatchBlock(tryBody, catchBody)
+        val block = TryCatchBlock(tryBody, catchBody)
+        block.uuid = this.id
+        return block
     }
 
 }

@@ -356,6 +356,7 @@ class BlockEditorViewModel : ViewModel() {
             is ForBlockUI -> blockUI.setOwnerId(blockId)
             is WhileBlockUI -> blockUI.setOwnerId(blockId)
             is FunctionDeclarationBlockUI -> blockUI.setOwnerId(blockId)
+            is TryCatchBlockUI -> blockUI.setOwnerId(blockId)
         }
     }
 
