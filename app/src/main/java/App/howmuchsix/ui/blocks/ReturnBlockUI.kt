@@ -5,6 +5,7 @@ import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.localeDataStorage.project.BlockDB
 import App.howmuchsix.localeDataStorage.project.blocks.ReturnBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
+import App.howmuchsix.ui.theme.DropDownFunctionMenuTypeSelector
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.dp
 class ReturnBlockUI : BlockUI() {
 
     private var value by mutableStateOf("")
-    private var selectedType by mutableStateOf<_types?>(null)
+    private var selectedType by mutableStateOf<FunctionTypes?>(null)
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
@@ -44,8 +45,10 @@ class ReturnBlockUI : BlockUI() {
                 style = SubTitle1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
+
             Spacer(Modifier.width(size8))
             DropDownMenuTypeSelector(
+
                 selectedType = selectedType,
                 onTypeSelected = { selectedType = it}
             )
@@ -70,7 +73,13 @@ class ReturnBlockUI : BlockUI() {
 
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return ReturnBlock()
+        if (selectedType != null) {
+            val block = ReturnBlock(value, selectedType!!.toTypes())
+            block.uuid = this.id
+            return block
+        }
+        else{
+            throw RuntimeException("type required")
+        }
     }
-
 }

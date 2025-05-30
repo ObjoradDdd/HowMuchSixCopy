@@ -38,7 +38,9 @@ class BreakBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return BreakBlock()
+        val block = BreakBlock()
+        block.uuid = this.id
+        return block
     }
 
     override fun toDBBlock(): BlockDB {

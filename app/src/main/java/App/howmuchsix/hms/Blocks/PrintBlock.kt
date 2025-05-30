@@ -12,7 +12,7 @@ class PrintBlock(private val output: String, private val consoleViewModel: Conso
     override fun Action(scopes: List<String>, lib: Variables) {
         val tokens: List<Token> = Lexer(output).tokenizeInterpolation()
         val outputString: Expression<String> =
-            Parser(tokens, scopes, lib).parseStringInterpolation()
+            Parser(tokens, scopes, lib, this.uuid).parseStringInterpolation()
         println(outputString.eval())
         consoleViewModel.addToConsole(outputString.eval())
     }

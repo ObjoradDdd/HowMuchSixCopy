@@ -60,7 +60,9 @@ class PrintBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        return PrintBlock(textValue, consoleViewModel)
+        val block = PrintBlock(textValue, consoleViewModel)
+        block.uuid = this.id
+        return block
     }
 
 }

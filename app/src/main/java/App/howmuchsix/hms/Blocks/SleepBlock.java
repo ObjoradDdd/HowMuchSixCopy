@@ -13,7 +13,7 @@ public class SleepBlock extends Block {
 
     @Override
     public void Action(List<String> scopes, Variables lib) {
-        int timeExpression = (int) Types.INT.getValue(timeInMili, scopes, lib).eval();
+        int timeExpression = (int) Types.INT.getValue(timeInMili, scopes, lib, this.getUUID()).eval();
         try {
             Thread.sleep(timeExpression);
         } catch (Exception ignored) {

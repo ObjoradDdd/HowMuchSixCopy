@@ -2,6 +2,7 @@ package App.howmuchsix.hms.Expression;
 
 import java.util.Objects;
 
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class BinaryExpression<T> implements Expression<T> {
@@ -9,13 +10,16 @@ public final class BinaryExpression<T> implements Expression<T> {
     private final Expression<T> ex2;
     private final String operation;
 
-    public BinaryExpression(String operation, Expression<T> ex1, Expression<T> ex2) {
+    private final String id;
+
+    public BinaryExpression(String operation, Expression<T> ex1, Expression<T> ex2, String id) {
         this.operation = operation;
         this.ex1 = ex1;
         this.ex2 = ex2;
         if (ex1.eval() == null || ex2.eval() == null) {
             throw new RuntimeException("You can't use operator " + operation + " with null");
         }
+        this.id = id;
     }
 
     @SuppressWarnings("unchecked")
@@ -30,8 +34,8 @@ public final class BinaryExpression<T> implements Expression<T> {
             return (T) evaluateNumber((Number) val1, (Number) val2);
         }
 
-        throw new IllegalArgumentException("Unsupported types for operation: " +
-                val1.getClass() + " and " + val2.getClass());
+        throw new ProgramRunException("Unsupported types for operation: " +
+                val1.getClass() + " and " + val2.getClass(), id);
     }
 
     @Override
@@ -43,8 +47,9 @@ public final class BinaryExpression<T> implements Expression<T> {
         if (Objects.equals(operation, "+")) {
             return String.valueOf(val1) + String.valueOf(val2);
         } else {
-            throw new UnsupportedOperationException(
-                    "Operation " + operation + " is not supported for Strings"
+            throw new ProgramRunException(
+                    "Operation " + operation + " is not supported for Strings",
+                    id
             );
         }
     }
@@ -62,8 +67,8 @@ public final class BinaryExpression<T> implements Expression<T> {
                 case "/" -> v1 / v2;
                 case "%" -> v1 % v2;
                 case "^" -> Math.pow(v1, v2);
-                default -> throw new UnsupportedOperationException(
-                        "Unknown operation: " + operation
+                default -> throw new ProgramRunException(
+                        "Unknown operation: " + operation, id
                 );
             };
         } else {
@@ -76,8 +81,8 @@ public final class BinaryExpression<T> implements Expression<T> {
                 case "/" -> v1 / v2;
                 case "%" -> v1 % v2;
                 case "^" -> (int) Math.pow(v1, v2);
-                default -> throw new UnsupportedOperationException(
-                        "Unknown operation: " + operation
+                default -> throw new ProgramRunException(
+                        "Unknown operation: " + operation, id
                 );
             };
         }

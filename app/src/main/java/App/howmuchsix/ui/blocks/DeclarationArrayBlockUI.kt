@@ -144,8 +144,11 @@ class DeclarationArrayBlockUI : BlockUI() {
                 DeclarationArrayBlock(types, arrayName, length, values!!)
              */
 
-            value != "" ->
-                DeclarationArrayBlock(types, arrName, value.split(","))
+            value != "" -> {
+                val block =  DeclarationArrayBlock(types, arrName, value.split(","))
+                block.uuid = id
+                block
+                }
             else ->
                 DeclarationArrayBlock(types, arrName, 0)
         }

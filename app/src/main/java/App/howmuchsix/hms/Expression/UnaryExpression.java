@@ -1,14 +1,18 @@
 package App.howmuchsix.hms.Expression;
 
+import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class UnaryExpression<T> implements Expression<T> {
     private final Expression<T> ex1;
     private final String operation;
 
-    public UnaryExpression(String operation, Expression<T> ex1) {
+    private final String id;
+
+    public UnaryExpression(String operation, Expression<T> ex1, String id) {
         this.operation = operation;
         this.ex1 = ex1;
+        this.id = id;
     }
 
     @SuppressWarnings("unchecked")
@@ -21,9 +25,9 @@ public final class UnaryExpression<T> implements Expression<T> {
             return (T) evaluateNumber(num);
         }
 
-        throw new IllegalArgumentException(
+        throw new ProgramRunException(
                 "Unary operations are only supported for numeric types, got: " +
-                        value.getClass().getSimpleName()
+                        value.getClass().getSimpleName(), id
         );
     }
 
@@ -41,8 +45,8 @@ public final class UnaryExpression<T> implements Expression<T> {
             return switch (operation) {
                 case "-" -> -val;
                 case "+" -> val;
-                default -> throw new IllegalArgumentException(
-                        "Unknown operation: " + operation
+                default -> throw new ProgramRunException(
+                        "Unknown operation: " + operation, id
                 );
             };
         } else {
@@ -50,8 +54,8 @@ public final class UnaryExpression<T> implements Expression<T> {
             return switch (operation) {
                 case "-" -> -val;
                 case "+" -> val;
-                default -> throw new IllegalArgumentException(
-                        "Unknown operation: " + operation
+                default -> throw new ProgramRunException(
+                        "Unknown operation: " + operation, id
                 );
             };
         }

@@ -200,11 +200,17 @@ class IfBlockUI : BlockUI() {
         } else null
 
         return when {
-            falseActionBlocks != null ->
-                IfBlock(value, trueActionBlocks, falseActionBlocks)
+            falseActionBlocks != null -> {
+                val block = IfBlock(value, trueActionBlocks, falseActionBlocks)
+                block.uuid = this.id
+                block
+            }
 
-            else ->
-                IfBlock(value, trueActionBlocks)
+            else -> {
+                val block = IfBlock(value, trueActionBlocks)
+                block.uuid = this.id
+                block
+            }
         }
     }
 }
