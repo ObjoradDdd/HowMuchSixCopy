@@ -195,7 +195,7 @@ fun WorkingScreen(
 
     Box(
         modifier = Modifier
-            .wrapContentSize()
+            .fillMaxSize()
             .pointerInput(Unit) {
                 detectPointerPositionChanges { position ->
                     if (viewModel.isDragging) {
@@ -234,12 +234,11 @@ fun WorkingScreen(
             }
             Box(
                 modifier = Modifier
-                    .offset { IntOffset(dragPosition.x.roundToInt(), dragPosition.y.roundToInt()) }
+                    .offset {
+                        val screenPos = fieldToScreenCoords(dragPosition, fieldOffset, fieldScale)
+                        IntOffset(screenPos.x.roundToInt(), screenPos.y.roundToInt())
+                    }
                     .wrapContentSize()
-                    .graphicsLayer(
-                        scaleX = fieldScale,
-                        scaleY = fieldScale
-                    )
             ) {
                 if (draggedPlacedBlock != null) {
                     draggedPlacedBlock.uiBlock.Render(Modifier, viewModel)
@@ -368,4 +367,8 @@ suspend fun PointerInputScope.detectPointerPositionChanges(onPositionChanged: (O
             }
         }
     }
+}
+
+fun fieldToScreenCoords(fieldPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
+    return fieldPosition * fieldScale + fieldOffset
 }
