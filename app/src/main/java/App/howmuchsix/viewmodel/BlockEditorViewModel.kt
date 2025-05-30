@@ -167,6 +167,9 @@ class BlockEditorViewModel : ViewModel() {
     private val _dropZoneContents = mutableStateMapOf<String, MutableList<PlacedBlockUI>>()
     val dropZoneContents: Map<String, List<PlacedBlockUI>> = _dropZoneContents
 
+    private val _dragScreenPosition = mutableStateOf(Offset.Zero)
+    val dragScreenPosition: Offset get() = _dragScreenPosition.value
+
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")
         put("booleanToString", "BooleanToString")
@@ -450,8 +453,11 @@ class BlockEditorViewModel : ViewModel() {
     }
     fun updatePosition(newPosition: Offset) {
         if (_isDragging.value) {
+            // Сохраняем экранные координаты
+            _dragScreenPosition.value = newPosition
 
-            val fieldPosition = screenToFieldCoords(newPosition)
+            // Преобразуем в координаты поля
+            val fieldPosition = screenToFieldCoords(newPosition, _fieldOffset, _fieldScale)
             _dragPosition.value = fieldPosition
 
             val draggedBlock = _draggedBlock.value
@@ -460,8 +466,8 @@ class BlockEditorViewModel : ViewModel() {
             if (draggedBlock != null) {
                 findNearbyConnectionPoint(fieldPosition, draggedBlockId)
 
-
-                val dropZone = findDropZoneAtPosition(newPosition)
+                // Используем экранные координаты для поиска дроп-зон
+                val dropZone = findDropZoneAtPosition(newPosition) // ← ИСПРАВЛЕНО
                 _dropZoneHighlight.value = dropZone?.let { zone ->
                     DropZoneHighlight(
                         targetId = zone.id,
@@ -476,12 +482,11 @@ class BlockEditorViewModel : ViewModel() {
     fun stopDragging(placeOnField: Boolean) {
         val currentBlock = _draggedBlock.value
         val fieldPosition = _dragPosition.value
+        val screenPosition = _dragScreenPosition.value
         val placedBlockId = _draggedPlacedBlockId.value
         val nearbyConnection = _nearbyConnectionPoint.value
 
         if (currentBlock != null) {
-
-            val screenPosition = fieldToScreenCoords(fieldPosition)
             val dropZoneTarget = findDropZoneAtPosition(screenPosition)
             val isValid = dropZoneTarget != null && (dropZoneTarget.acceptedTypes.isEmpty() ||
                     dropZoneTarget.acceptedTypes.contains(currentBlock.type))
@@ -527,11 +532,12 @@ class BlockEditorViewModel : ViewModel() {
                         it.copy(blockId = newBlockId)
                     }
 
+                    // Теперь блок создается с прямыми координатами
                     val newBlock = PlacedBlockUI(
                         id = newBlockId,
                         type = currentBlock.type,
                         uiBlock = uiBlock,
-                        position = finalPosition,
+                        position = finalPosition, // Используем координаты напрямую
                         originalBlockData = currentBlock,
                         connectionPoints = connectionPoints,
                         isConnected = nearbyConnection != null
@@ -549,11 +555,13 @@ class BlockEditorViewModel : ViewModel() {
 
         _draggedBlock.value = null
         _dragPosition.value = Offset.Zero
+        _dragScreenPosition.value = Offset.Zero
         _isDragging.value = false
         _draggedPlacedBlockId.value = null
         _nearbyConnectionPoint.value = null
         _dropZoneHighlight.value = null
     }
+
 
 
     fun updateBlockSize(blockId: String, size: Size) {
@@ -813,11 +821,11 @@ class BlockEditorViewModel : ViewModel() {
         }
     }
 
-    fun screenToFieldCoords(screenPosition: Offset): Offset {
-        return (screenPosition - _fieldOffset) / _fieldScale
+    fun screenToFieldCoords(screenPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
+        return (screenPosition - fieldOffset) / fieldScale
     }
 
-    private fun fieldToScreenCoords(fieldPosition: Offset): Offset {
-        return fieldPosition * _fieldScale + _fieldOffset
+    fun fieldToScreenCoords(fieldPosition: Offset, fieldOffset: Offset, fieldScale: Float): Offset {
+        return fieldPosition * fieldScale + fieldOffset
     }
 }

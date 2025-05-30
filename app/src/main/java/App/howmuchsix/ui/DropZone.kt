@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -91,7 +92,6 @@ fun DropZone(
             },
         contentAlignment = Alignment.Center
     ) {
-
         if (currBlocks.isNotEmpty()) {
             if (multipleBlocks) {
                 LazyColumn(
@@ -105,23 +105,23 @@ fun DropZone(
                         if (block != null) {
                             Box(
                                 modifier = Modifier
+                                    .wrapContentSize() // Добавлено для ограничения размера
                                     .pointerInput(block.id) {
                                         detectTapGestures(
                                             onLongPress = {
-                                                if (viewModel != null) {
-                                                    viewModel.removeBlockFromDropZone(id, block.id)
-                                                    val fieldPosition = viewModel.screenToFieldCoords(block.position)
-                                                    viewModel.addToFieldFromDropZone(
-                                                        block.copy(position = fieldPosition),
-                                                        id
-                                                    )
-                                                    viewModel.startDraggingPlacedBlock(block.id, fieldPosition)
-                                                }
+                                                viewModel.removeBlockFromDropZone(id, block.id)
+                                                // Просто используем текущую позицию блока
+                                                val fieldPosition = Offset(0f, 0f) // Позиция по умолчанию
+                                                viewModel.addToFieldFromDropZone(
+                                                    block.copy(position = fieldPosition),
+                                                    id
+                                                )
+                                                viewModel.startDraggingPlacedBlock(block.id, fieldPosition)
                                             }
                                         )
                                     }
                             ) {
-                                block.uiBlock.Render(Modifier, viewModel)
+                                block.uiBlock.Render(Modifier.wrapContentSize(), viewModel)
                             }
                         }
                     }
@@ -131,24 +131,24 @@ fun DropZone(
                 if (singleBlock != null) {
                     Box(
                         modifier = Modifier
+                            .wrapContentSize() // Добавлено для ограничения размера
                             .scale(1f)
                             .pointerInput(singleBlock.id) {
                                 detectTapGestures(
                                     onLongPress = {
-                                        if (viewModel != null) {
-                                            viewModel.removeBlockFromDropZone(id, singleBlock.id)
-                                            val fieldPosition = viewModel.screenToFieldCoords(singleBlock.position)
-                                            viewModel.addToFieldFromDropZone(
-                                                singleBlock.copy(position = fieldPosition),
-                                                id
-                                            )
-                                            viewModel.startDraggingPlacedBlock(singleBlock.id, fieldPosition)
-                                        }
+                                        viewModel.removeBlockFromDropZone(id, singleBlock.id)
+                                        // Просто используем текущую позицию блока
+                                        val fieldPosition = Offset(0f, 0f) // Позиция по умолчанию
+                                        viewModel.addToFieldFromDropZone(
+                                            singleBlock.copy(position = fieldPosition),
+                                            id
+                                        )
+                                        viewModel.startDraggingPlacedBlock(singleBlock.id, fieldPosition)
                                     }
                                 )
                             }
                     ) {
-                        singleBlock.uiBlock.Render(Modifier, viewModel)
+                        singleBlock.uiBlock.Render(Modifier.wrapContentSize(), viewModel)
                     }
                 }
             }

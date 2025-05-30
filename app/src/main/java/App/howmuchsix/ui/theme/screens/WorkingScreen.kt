@@ -215,6 +215,7 @@ fun WorkingScreen(
             }
     ) {
         ZoomableField(
+            modifier = Modifier.fillMaxSize(),
             placedBlocks = placedBlocks.filter { it.id != draggedPlacedBlockId },
             nearbyConnectionPoint = nearbyConnectionPoint,
             dropZoneHighlight = dropZoneHighlight,
@@ -235,8 +236,11 @@ fun WorkingScreen(
             Box(
                 modifier = Modifier
                     .offset {
-                        val screenPos = fieldToScreenCoords(dragPosition, fieldOffset, fieldScale)
-                        IntOffset(screenPos.x.roundToInt(), screenPos.y.roundToInt())
+                        // Используйте экранные координаты напрямую
+                        IntOffset(
+                            viewModel.dragScreenPosition.x.roundToInt(),
+                            viewModel.dragScreenPosition.y.roundToInt()
+                        )
                     }
                     .wrapContentSize()
             ) {
@@ -251,7 +255,6 @@ fun WorkingScreen(
                 }
             }
         }
-
         AnimatedVisibility(
             visible = isBlockPanelVisible,
             enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
