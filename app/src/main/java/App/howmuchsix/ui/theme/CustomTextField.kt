@@ -4,6 +4,9 @@ import App.howmuchsix.ui.theme.design_elements.ButtonText
 import App.howmuchsix.ui.theme.design_elements.DarkerBeige
 import App.howmuchsix.ui.theme.design_elements.InputText
 import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.size10
+import App.howmuchsix.ui.theme.design_elements.size2
+import App.howmuchsix.ui.theme.design_elements.size8
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +45,7 @@ fun CustomTextField(
         Text(
             text = label,
             style = ButtonText,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = size8)
         )
         BasicTextField(
             value = value,
@@ -53,11 +56,11 @@ fun CustomTextField(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(cornerRadius.dp))
                 .border(
-                    width = 2.dp,
+                    width = size2,
                     color = if (isFocused) focusedBorderColor else borderColor,
                     shape = RoundedCornerShape(cornerRadius.dp)
                 )
-                .padding(10.dp)
+                .padding(size10)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 }

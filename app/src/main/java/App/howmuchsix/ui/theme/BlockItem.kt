@@ -1,6 +1,6 @@
 package App.howmuchsix.ui.theme
 
-import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockItemData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -63,10 +63,10 @@ fun BlockItem(
     Surface (
         modifier = baseModifier,
         color = color,
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(size8)
     ){
         Row (
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(size16),
             verticalAlignment = Alignment.CenterVertically
         ){
             Text(

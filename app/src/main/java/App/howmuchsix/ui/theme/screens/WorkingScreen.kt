@@ -1,17 +1,7 @@
 package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
-import App.howmuchsix.hms.Blocks.ContinueBlock
-import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
-import App.howmuchsix.ui.blocks.AssignmentBlockUI
-import App.howmuchsix.ui.blocks.BreakBlockUI
-import App.howmuchsix.ui.blocks.ContinueBlockUI
-import App.howmuchsix.ui.blocks.DeclarationBlockUI
-import App.howmuchsix.ui.blocks.PrintBlockUI
-import App.howmuchsix.ui.blocks.ReturnBlockUI
-import App.howmuchsix.ui.blocks.SleepBlockUI
-import App.howmuchsix.ui.blocks.WhileBlockUI
 import App.howmuchsix.ui.console.Console
 import App.howmuchsix.ui.theme.BlockCategory
 import App.howmuchsix.ui.theme.BlockItem
@@ -61,7 +51,6 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import kotlin.math.roundToInt
@@ -187,6 +176,11 @@ fun WorkingScreen(
                     type = BlockType.Sleep,
                     label = "Sleep",
                     color = BlockRed
+                ),
+                BlockItemData(
+                    type = BlockType.Try_catch,
+                    label = "Try / catch",
+                    color = BlockRed
                 )
             ),
             blockColor = BlockRed
@@ -258,7 +252,7 @@ fun WorkingScreen(
             exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 88.dp)
+                .padding(bottom = size88)
         ) {
             BlockPanel(
                 categories = blockCategories,
@@ -275,7 +269,7 @@ fun WorkingScreen(
             exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 88.dp)
+                .padding(bottom = size88)
         ) {
             Console(consoleViewModel)
         }
@@ -324,17 +318,17 @@ fun BottomMenu(
 ) {
     Surface(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = size16, vertical = size12)
             .fillMaxWidth()
-            .height(72.dp),
+            .height(size72),
         color = TextOrange,
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 4.dp
+        shape = RoundedCornerShape(size20),
+        shadowElevation = size4
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = size16),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -342,7 +336,7 @@ fun BottomMenu(
                 Column(
                     modifier = Modifier
                         .clickable { onItemClick(item) }
-                        .padding(8.dp),
+                        .padding(size8),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
@@ -350,7 +344,7 @@ fun BottomMenu(
                         contentDescription = item.title,
                         tint = Color.White,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(size40)
                     )
                 }
             }

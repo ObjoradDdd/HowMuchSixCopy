@@ -37,9 +37,9 @@ fun DropdownMenuFunSelector(
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
             onClick = { expanded = true },
-            shape = RoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(size4),
             modifier = Modifier
-                .defaultMinSize(minWidth = 90.dp, minHeight = 40.dp)
+                .defaultMinSize(minWidth = size90, minHeight = size40)
         ) {
             Text(
                 text = if (selectedFun.isNotBlank()) selectedFun

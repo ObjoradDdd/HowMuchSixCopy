@@ -29,12 +29,12 @@ fun BlockPanel(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp)
-            .padding(16.dp),
+            .height(size500)
+            .padding(size16),
         color = LighterBeige,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(size16),
     ) {
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
+        LazyColumn(modifier = Modifier.padding(size16)) {
             items(categories) { category ->
                 CategorySection(
                     category = category,
@@ -54,7 +54,7 @@ private fun CategorySection(
         Text(
             text = category.name,
             style = SubTitle2,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = size8)
         )
         category.blocks.forEach { block ->
             BlockItem(
@@ -62,7 +62,7 @@ private fun CategorySection(
                 color = category.blockColor,
                 onStartDrag = onBlockStartDrag
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(size8))
         }
     }
 }
