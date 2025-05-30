@@ -2,11 +2,15 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionBlock
-import App.howmuchsix.localeDataStorage.project.BlockDB
-import App.howmuchsix.localeDataStorage.project.blocks.FunctionBlockBD
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropdownMenuFunSelector
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockPink
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size220
+import App.howmuchsix.ui.theme.design_elements.size60
+import App.howmuchsix.ui.theme.design_elements.size8
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.ConsoleViewModel
 import androidx.compose.foundation.background
@@ -26,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 class FunctionBlockUI : BlockUI() {
     private var value by mutableStateOf("")
@@ -39,19 +42,19 @@ class FunctionBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
-        Column (
+        Column(
             modifier = modifier
                 .background(BlockPink, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size60)
-        ){
+        ) {
             Text(
                 text = "Call fun",
                 style = SubTitle1,
                 color = TextWhite
             )
             Spacer(Modifier.height(size12))
-            Row (
+            Row(
                 modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -61,8 +64,7 @@ class FunctionBlockUI : BlockUI() {
                         selectedFun = functionName
                     },
                     viewModel = viewModel,
-                    placeholderText = "name",
-                    buttonBackgroundColor = BlockRed
+                    placeholderText = "name"
                 )
 
                 Spacer(Modifier.width(size12))
@@ -73,21 +75,12 @@ class FunctionBlockUI : BlockUI() {
                 Spacer(Modifier.width(size8))
                 ButtonTextField(
                     value = value,
-                    onValueChange = {value = it},
+                    onValueChange = { value = it },
                     textStyle = SubTitle1,
                     placeholder = "parameters"
                 )
             }
         }
-    }
-
-    fun initializeFromBD(name: String, arguments : String){
-        this.selectedFun = name
-        this.value = arguments
-    }
-
-    override fun toDBBlock(): BlockDB {
-        return FunctionBlockBD(functionName = selectedFun, arguments = value)
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {

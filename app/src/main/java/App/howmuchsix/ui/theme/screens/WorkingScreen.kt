@@ -212,7 +212,6 @@ fun WorkingScreen(
             modifier = Modifier.fillMaxSize(),
             placedBlocks = placedBlocks.filter { it.id != draggedPlacedBlockId },
             nearbyConnectionPoint = nearbyConnectionPoint,
-            dropZoneHighlight = dropZoneHighlight,
             onStartDragPlacedBlock = { blockId, offset ->
                 viewModel.startDraggingPlacedBlock(blockId, offset)
             },

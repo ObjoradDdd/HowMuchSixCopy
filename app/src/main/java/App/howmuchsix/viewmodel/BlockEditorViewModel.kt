@@ -651,6 +651,16 @@ class BlockEditorViewModel : ViewModel() {
                 funcBlock?.body?.add(block.uiBlock)
             }
 
+            dropZoneId.startsWith("try_dropzone_") -> {
+                val tryCatchBlock = ownerBlock.uiBlock as? TryCatchBlockUI
+                tryCatchBlock?.tryBlocks?.add(block.uiBlock)
+            }
+
+            dropZoneId.startsWith("catch_dropzone_") -> {
+                val tryCatchBlock = ownerBlock.uiBlock as? TryCatchBlockUI
+                tryCatchBlock?.catchBlocks?.add(block.uiBlock)
+            }
+
             else -> {
                 ownerBlock.uiBlock.addToBody(block.uiBlock)
             }
@@ -698,6 +708,16 @@ class BlockEditorViewModel : ViewModel() {
             dropZoneId.startsWith("function_body_dropzone_") -> {
                 val funcBlock = ownerBlock.uiBlock as? FunctionDeclarationBlockUI
                 funcBlock?.body?.remove(block.uiBlock)
+            }
+
+            dropZoneId.startsWith("try_dropzone_") -> {
+                val tryCatchBlock = ownerBlock.uiBlock as? TryCatchBlockUI
+                tryCatchBlock?.tryBlocks?.remove(block.uiBlock)
+            }
+
+            dropZoneId.startsWith("catch_dropzone_") -> {
+                val tryCatchBlock = ownerBlock.uiBlock as? TryCatchBlockUI
+                tryCatchBlock?.catchBlocks?.remove(block.uiBlock)
             }
 
             else -> {

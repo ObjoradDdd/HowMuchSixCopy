@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.TryCatchBlock
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.design_elements.BlockRed
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
@@ -39,6 +40,7 @@ class TryCatchBlockUI : BlockUI() {
 
     var tryBlocks = mutableListOf<BlockUI>()
     var catchBlocks = mutableListOf<BlockUI>()
+
 
     fun setOwnerId(id: String) {
         ownerBlockId = id
@@ -129,7 +131,17 @@ class TryCatchBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
-        TODO("Not yet implemented")
+        if (tryBlocks.isEmpty()) {
+            throw RuntimeException("Try body required")
+        }
+        if (catchBlocks.isEmpty()) {
+            throw RuntimeException("Catch body required")
+        }
+
+        val tryBody = tryBlocks.map { it.metamorphosis(consoleViewModel) }
+        val catchBody = catchBlocks.map { it.metamorphosis(consoleViewModel) }
+
+        return TryCatchBlock(tryBody, catchBody)
     }
 
 }
