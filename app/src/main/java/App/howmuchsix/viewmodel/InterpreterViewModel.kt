@@ -86,8 +86,7 @@ class InterpreterViewModel(
                 }
             } catch (e: InterruptedException) {
                 consoleViewModel.addToConsole("\nProgram execution was interrupted")
-            } catch (e: Exception) {
-                consoleViewModel.addToConsole("\nProgram execution failed with error: ${e.message}")
+            } catch (_: Exception) {
             } finally {
                 _isRunning.value = false
                 executionThread = null
@@ -138,11 +137,8 @@ class InterpreterViewModel(
                         blockEditorViewModel.markBlock(e.id)
                     }
                     break
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     isSuccess = false
-                    withContext(Dispatchers.Main) {
-                        consoleViewModel.addToConsole("\nUnexpected error: ${e.message}")
-                    }
                     break
                 }
             }
@@ -163,10 +159,7 @@ class InterpreterViewModel(
                 consoleViewModel.addToConsole("\nProgram execution forcibly stopped")
             }
             Thread.currentThread().interrupt()
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                consoleViewModel.addToConsole("\nCritical error during execution: ${e.message}")
-            }
+        } catch (_: Exception) {
         }
     }
 
