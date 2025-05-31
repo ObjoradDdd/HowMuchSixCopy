@@ -13,6 +13,7 @@ import App.howmuchsix.ui.theme.design_elements.InputText
 import App.howmuchsix.ui.theme.design_elements.LighterBeige
 import App.howmuchsix.ui.theme.design_elements.ProjectTitle
 import App.howmuchsix.ui.theme.design_elements.SubTitle2
+import App.howmuchsix.ui.theme.design_elements.TextOrange
 import App.howmuchsix.ui.theme.design_elements.TextWhite
 import App.howmuchsix.ui.theme.design_elements.size100
 import App.howmuchsix.ui.theme.design_elements.size12
@@ -50,6 +51,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -109,7 +111,6 @@ fun ProjectsScreen(
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(horizontal = size16)
-            //.padding(bottom = 88.dp)
         ) {
             AddPanel(
                 onAddProject = { title, description ->
@@ -224,6 +225,10 @@ fun AddPanel(
             )
             Spacer(modifier = Modifier.height(size8))
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BlockPink,
+                    contentColor = TextWhite
+                ),
                 onClick = {
                     onAddProject(title, description)
                     title = ""

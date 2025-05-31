@@ -1,27 +1,16 @@
 package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
+import App.howmuchsix.localeDataStorage.project.Project
 import App.howmuchsix.navigation.Screens
 import App.howmuchsix.ui.console.Console
 import App.howmuchsix.ui.theme.BlockCategory
 import App.howmuchsix.ui.theme.BlockItem
 import App.howmuchsix.ui.theme.BlockPanel
 import App.howmuchsix.ui.theme.BottomMenuContent
+import App.howmuchsix.ui.theme.CustomTextField
 import App.howmuchsix.ui.theme.ZoomableField
-import App.howmuchsix.ui.theme.design_elements.BlockOrange
-import App.howmuchsix.ui.theme.design_elements.BlockPeach
-import App.howmuchsix.ui.theme.design_elements.BlockPink
-import App.howmuchsix.ui.theme.design_elements.BlockRed
-import App.howmuchsix.ui.theme.design_elements.BlockYellow
-import App.howmuchsix.ui.theme.design_elements.TextOrange
-import App.howmuchsix.ui.theme.design_elements.size12
-import App.howmuchsix.ui.theme.design_elements.size16
-import App.howmuchsix.ui.theme.design_elements.size20
-import App.howmuchsix.ui.theme.design_elements.size4
-import App.howmuchsix.ui.theme.design_elements.size40
-import App.howmuchsix.ui.theme.design_elements.size72
-import App.howmuchsix.ui.theme.design_elements.size8
-import App.howmuchsix.ui.theme.design_elements.size88
+import App.howmuchsix.ui.theme.design_elements.*
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockItemData
 import App.howmuchsix.viewmodel.BlockType
@@ -32,21 +21,28 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -56,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -76,6 +73,9 @@ fun WorkingScreen(
 ) {
     var isBlockPanelVisible by remember { mutableStateOf(false) }
     var isConsoleVisible by remember { mutableStateOf(false) }
+    var isDeleteConfirmVisible by remember { mutableStateOf(false) }
+
+    var blockToDelId by remember { mutableStateOf<String?>(null) }
 
     var fieldScale by remember { mutableFloatStateOf(1f) }
     var fieldOffset by remember { mutableStateOf(Offset.Zero) }
@@ -219,6 +219,26 @@ fun WorkingScreen(
                     }
                 }
             }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onDoubleTap = { tapPosition ->
+                        val fieldPosition =
+                            viewModel.screenToFieldCoords(tapPosition, fieldOffset, fieldScale)
+                        val clickedBlock = placedBlocks.find { block ->
+                            val blockRect = Rect(
+                                offset = block.position,
+                                size = block.size
+                            )
+                            blockRect.contains(fieldPosition)
+                        }
+                        clickedBlock?.let { block ->
+                            blockToDelId = block.id
+                            isDeleteConfirmVisible = true
+                           // viewModel.deleteBlock(block.id)
+                        }
+                    }
+                )
+            }
     ) {
         ZoomableField(
             modifier = Modifier.fillMaxSize(),
@@ -325,6 +345,25 @@ fun WorkingScreen(
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+        AnimatedVisibility(
+            visible = isDeleteConfirmVisible,
+            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = size16)
+        ) {
+            blockToDelId?.let { blockId ->
+                ConfirmPanel(
+                    blockId = blockId,
+                    onDismiss = {
+                        isDeleteConfirmVisible = false
+                        blockToDelId = null
+                    },
+                    viewModel = viewModel
+                )
+            }
+        }
     }
 }
 
@@ -364,6 +403,64 @@ fun BottomMenu(
                         modifier = Modifier
                             .size(size40)
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ConfirmPanel(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    viewModel: BlockEditorViewModel,
+    blockId: String
+) {
+    Surface(
+        modifier = modifier
+            .padding(horizontal = size16, vertical = size12)
+            //.fillMaxWidth()
+            .size(size220, size140),
+        color = LighterBeige,
+        shape = RoundedCornerShape(size16),
+        shadowElevation = size4
+    ) {
+        Column(modifier = Modifier.padding(size16)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Delete block?",
+                    style = SubTitle2
+                )
+            }
+            Spacer(Modifier.height(size16))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ){
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BlockPink,
+                        contentColor = TextWhite
+                    ),
+                    onClick = {
+                        viewModel.deleteBlock(blockId)
+                        onDismiss()
+                    },
+                ) {
+                    Text("Yes")
+                }
+                Spacer(Modifier.width(size16))
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BlockPink,
+                        contentColor = TextWhite
+                    ),
+                    onClick = onDismiss
+                ) {
+                    Text("No")
                 }
             }
         }
