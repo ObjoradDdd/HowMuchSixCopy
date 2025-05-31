@@ -307,8 +307,13 @@ fun WorkingScreen(
                     }
 
                     "Run" -> {
-                        consoleViewModel.clearConsole()
-                        interpreterViewModel.runProgram()
+                        if (!interpreterViewModel.isRunning.value) {
+                            consoleViewModel.clearConsole()
+                            interpreterViewModel.runProgram()
+                        } else {
+                            println("rfgrwgtregtrehmtyylkhmetlkmhelktmheltkmyhytklmh")
+                            interpreterViewModel.stopExecution()
+                        }
                     }
 
                     "Home" -> {
@@ -375,5 +380,7 @@ suspend fun PointerInputScope.detectPointerPositionChanges(onPositionChanged: (O
         }
     }
 }
+
+
 
 
