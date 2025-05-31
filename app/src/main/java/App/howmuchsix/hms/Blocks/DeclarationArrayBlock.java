@@ -49,7 +49,7 @@ public final class DeclarationArrayBlock extends Block {
         } else {
             List<Expression<?>> valueExpressions = new ArrayList<>();
             for (String input : values) {
-                valueExpressions.add(type.getValue(input, scopes, lib,this.getUUID()));
+                valueExpressions.add(type.getValue(input, scopes, lib, this.getUUID()));
             }
             lib.set(name, new ArrayExpression(type, valueExpressions), scopes.get(scopes.size() - 1));
         }

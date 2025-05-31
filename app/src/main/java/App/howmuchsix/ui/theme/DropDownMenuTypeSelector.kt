@@ -22,18 +22,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun DropDownMenuTypeSelector(
     selectedType: _types?,
-    onTypeSelected: (_types) -> Unit
+    onTypeSelected: (_types) -> Unit,
+    error: Boolean? = false
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box {
         Button(
-            colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
+            colors = ButtonDefaults.buttonColors(containerColor = if (error == true) Color.Gray else BlockRed),
             onClick = { expanded = true },
             shape = RoundedCornerShape(size4),
             modifier = Modifier.defaultMinSize(minWidth = size80, minHeight = size40)
@@ -71,13 +73,14 @@ fun DropDownMenuTypeSelector(
 @Composable
 fun DropDownFunctionMenuTypeSelector(
     selectedType: FunctionTypes?,
-    onTypeSelected: (FunctionTypes) -> Unit
+    onTypeSelected: (FunctionTypes) -> Unit,
+    error: Boolean? = false
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box {
         Button(
-            colors = ButtonDefaults.buttonColors(containerColor = BlockRed),
+            colors = ButtonDefaults.buttonColors(containerColor = if (error == true) Color.Gray else BlockRed),
             onClick = { expanded = true },
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier.defaultMinSize(minWidth = 80.dp, minHeight = 40.dp)

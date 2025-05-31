@@ -23,21 +23,24 @@ class InterpreterViewModel(
 
     fun runProgram() {
         viewModelScope.launch {
+            blockEditorViewModel.clearBlocks()
+
             _isRunning.value = true
 
             consoleViewModel.addToConsole("\nStarting program execution...")
 
-            val blocks : List<Block>
-            val functions : List<Block>
+            val blocks: List<Block>
+            val functions: List<Block>
 
             try {
                 functions = withContext(Dispatchers.Default) {
-                    blockEditorViewModel.placedBlocks.filter{it.type == BlockType.FunctionDeclaration}.map{ it.uiBlock }
+                    blockEditorViewModel.placedBlocks.filter { it.type == BlockType.FunctionDeclaration }
+                        .map { it.uiBlock }
                         .map { it.metamorphosis(consoleViewModel) }
                 }
-            }
-            catch (e : Exception){
+            } catch (e: ProgramRunException) {
                 withContext(Dispatchers.Main) {
+                    blockEditorViewModel.markBlock(e.id)
                     consoleViewModel.addToConsole("\n${e.message}")
                     consoleViewModel.addToConsole("\nProgram failed")
                 }
@@ -49,9 +52,9 @@ class InterpreterViewModel(
                     blockEditorViewModel.getBlockChain().drop(1).map { it.uiBlock }
                         .map { it.metamorphosis(consoleViewModel) }
                 }
-            }
-            catch (e : Exception){
+            } catch (e: ProgramRunException) {
                 withContext(Dispatchers.Main) {
+                    blockEditorViewModel.markBlock(e.id)
                     consoleViewModel.addToConsole("\n${e.message}")
                     consoleViewModel.addToConsole("\nProgram failed")
                 }
@@ -78,7 +81,7 @@ class InterpreterViewModel(
                     isSuccess = false
                     withContext(Dispatchers.Main) {
                         consoleViewModel.addToConsole("\n${e.message}")
-                        consoleViewModel.addToConsole("\n${blockEditorViewModel.placedBlocks.find { it.id == e.id }}")
+                        blockEditorViewModel.markBlock(e.id)
                     }
                     break
                 }

@@ -6,8 +6,8 @@ import App.howmuchsix.hms.Blocks.Types;
 
 public final class DoubleExpression implements Expression<Double> {
 
-    private final Double value;
     private static final Types type = Types.DOUBLE;
+    private final Double value;
 
     public DoubleExpression(Double value) {
         this.value = value;

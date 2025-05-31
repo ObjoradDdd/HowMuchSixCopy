@@ -1,18 +1,21 @@
 package App.howmuchsix.ui
 
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.DarkerBeige
+import App.howmuchsix.ui.theme.design_elements.PlaceholderText
+import App.howmuchsix.ui.theme.design_elements.TextWhite
+import App.howmuchsix.ui.theme.design_elements.size1
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size5000
+import App.howmuchsix.ui.theme.design_elements.size60
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockType
 import App.howmuchsix.viewmodel.DropZoneTarget
-import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -22,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -32,8 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun DropZone(
@@ -112,7 +112,10 @@ fun DropZone(
                                                     block.copy(position = fieldPosition),
                                                     id
                                                 )
-                                                viewModel.startDraggingPlacedBlock(block.id, fieldPosition)
+                                                viewModel.startDraggingPlacedBlock(
+                                                    block.id,
+                                                    fieldPosition
+                                                )
                                             }
                                         )
                                     }
@@ -139,7 +142,10 @@ fun DropZone(
                                             singleBlock.copy(position = fieldPosition),
                                             id
                                         )
-                                        viewModel.startDraggingPlacedBlock(singleBlock.id, fieldPosition)
+                                        viewModel.startDraggingPlacedBlock(
+                                            singleBlock.id,
+                                            fieldPosition
+                                        )
                                     }
                                 )
                             }

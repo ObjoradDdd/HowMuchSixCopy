@@ -6,8 +6,8 @@ import java.util.List;
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class ArrayExpression implements Expression<Expression<?>[]> {
-    Expression<?>[] array;
     private final int length;
+    Expression<?>[] array;
     Types type = Types.ARRAY;
     Types insideType;
 

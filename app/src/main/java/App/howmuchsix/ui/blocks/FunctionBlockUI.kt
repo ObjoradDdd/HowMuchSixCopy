@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class FunctionBlockUI : BlockUI() {
     private var value by mutableStateOf("")
@@ -42,9 +43,10 @@ class FunctionBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Column(
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(size8))
+                .background(if (error == true) Color.Gray else BlockPink, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size60)
         ) {

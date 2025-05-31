@@ -24,6 +24,7 @@ class StartProgramBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
                 .defaultMinSize(minHeight = size60)

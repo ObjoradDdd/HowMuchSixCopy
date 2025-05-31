@@ -9,6 +9,7 @@ import java.util.Set;
 
 import App.howmuchsix.hms.Blocks.ProgramRunException;
 import App.howmuchsix.hms.Blocks.Types;
+import App.howmuchsix.hms.Blocks.typeConverter.DefaultFunctions;
 import App.howmuchsix.hms.Expression.ArrayExpression;
 import App.howmuchsix.hms.Expression.Expression;
 import App.howmuchsix.hms.Expression.FunctionExpression;
@@ -18,9 +19,11 @@ import App.howmuchsix.hms.Expression.NullExpression;
 public final class Variables {
     private final Map<String, Map<String, Expression<?>>> variablesScopes = new HashMap<>();
 
-    public Variables(){
+    public Variables() {
         this.variablesScopes.put("MainScope", new HashMap<>());
+        DefaultFunctions.registerAll(this);
     }
+
 
     public boolean isExistsVariable(String key) {
         List<String> scopes = new ArrayList<>(variablesScopes.keySet());
@@ -29,7 +32,6 @@ public final class Variables {
 
             Map<String, Expression<?>> scopeVariables = variablesScopes.get(scope);
             if (scopeVariables != null && scopeVariables.containsKey(key)) {
-                System.out.println(scope);
                 return true;
             }
 
@@ -142,6 +144,7 @@ public final class Variables {
         }
         throw new ProgramRunException("Unknown variable " + key, id);
     }
+
     public FunctionExpression<?> getFunction(String key, String id) {
         if (isExistsVariable(key)) {
             Set<String> scopes = variablesScopes.keySet();

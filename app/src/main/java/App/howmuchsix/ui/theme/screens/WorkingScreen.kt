@@ -8,7 +8,20 @@ import App.howmuchsix.ui.theme.BlockItem
 import App.howmuchsix.ui.theme.BlockPanel
 import App.howmuchsix.ui.theme.BottomMenuContent
 import App.howmuchsix.ui.theme.ZoomableField
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BlockOrange
+import App.howmuchsix.ui.theme.design_elements.BlockPeach
+import App.howmuchsix.ui.theme.design_elements.BlockPink
+import App.howmuchsix.ui.theme.design_elements.BlockRed
+import App.howmuchsix.ui.theme.design_elements.BlockYellow
+import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.size12
+import App.howmuchsix.ui.theme.design_elements.size16
+import App.howmuchsix.ui.theme.design_elements.size20
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size72
+import App.howmuchsix.ui.theme.design_elements.size8
+import App.howmuchsix.ui.theme.design_elements.size88
 import App.howmuchsix.viewmodel.BlockEditorViewModel
 import App.howmuchsix.viewmodel.BlockItemData
 import App.howmuchsix.viewmodel.BlockType
@@ -44,7 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -58,7 +70,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WorkingScreen(
     viewModel: BlockEditorViewModel = viewModel(),
-    projectId : String,
+    projectId: String,
     navController: NavController,
     consoleViewModel: ConsoleViewModel = viewModel()
 ) {

@@ -45,8 +45,7 @@ public final class ForBlock extends Block {
                 for (Block block : body) {
                     try {
                         block.Action(newScopes, lib);
-                    }
-                    catch (ContinueException ignored){
+                    } catch (ContinueException ignored) {
                         break;
                     }
 

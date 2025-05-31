@@ -20,16 +20,13 @@ import App.howmuchsix.hms.Library.Variables;
 
 
 public final class Parser {
+    private static final Token EOF = new Token(TokenType.EOF, "");
     private final List<Token> tokens;
     private final int size;
-
     private final String id;
-    private static final Token EOF = new Token(TokenType.EOF, "");
-
     private final List<String> scopeNames;
-    private int pos;
-
     private final Variables lib;
+    private int pos;
 
     public Parser(List<Token> tokens, List<String> scopeNames, Variables lib, String id) {
         this.id = id;

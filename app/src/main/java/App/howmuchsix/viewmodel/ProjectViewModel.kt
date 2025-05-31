@@ -13,6 +13,7 @@ import java.util.UUID
 
 class ProjectViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ProjectRepository()
+
     init {
         repository.loadFromPrefs(getApplication())
     }
@@ -23,7 +24,7 @@ class ProjectViewModel(application: Application) : AndroidViewModel(application)
 
     fun getProjectByID(uuid: UUID): Flow<Project?> {
         return repository.projects.map { projects ->
-            projects.find { project -> project.id == uuid.toString()}
+            projects.find { project -> project.id == uuid.toString() }
         }
     }
 
@@ -31,7 +32,7 @@ class ProjectViewModel(application: Application) : AndroidViewModel(application)
         project.setUUID(UUID.randomUUID())
         repository.addProject(getApplication(), project)
     }
-    
+
     fun deleteProject(project: Project) {
         repository.deleteProject(getApplication(), project)
     }

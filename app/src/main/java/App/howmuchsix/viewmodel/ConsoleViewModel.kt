@@ -22,7 +22,7 @@ class ConsoleViewModel : ViewModel() {
         }
     }
 
-    fun updateConsole(newText: String){
+    fun updateConsole(newText: String) {
         _state.update { currentState ->
             currentState.copy(text = newText)
         }

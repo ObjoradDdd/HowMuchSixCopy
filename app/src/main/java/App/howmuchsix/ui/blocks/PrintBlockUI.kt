@@ -22,15 +22,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class PrintBlockUI : BlockUI() {
     private var textValue by mutableStateOf("")
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
-                .background(BlockRed, RoundedCornerShape(size8))
+                .background(if (error == true) Color.Gray else BlockRed, RoundedCornerShape(size8))
                 .padding(size8)
         ) {
             Spacer(Modifier.width(size8))

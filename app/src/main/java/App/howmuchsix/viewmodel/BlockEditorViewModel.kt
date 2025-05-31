@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import java.util.UUID
 import kotlin.collections.List
+import kotlin.collections.Map
 import kotlin.collections.MutableList
 import kotlin.collections.emptyList
 import kotlin.collections.filter
@@ -164,6 +165,21 @@ class BlockEditorViewModel : ViewModel() {
 
     private val _dragScreenPosition = mutableStateOf(Offset.Zero)
     val dragScreenPosition: Offset get() = _dragScreenPosition.value
+
+    private val _blocksWithErrors = mutableStateMapOf<String, Boolean>()
+    val blocksWithErrors: Map<String, Boolean> get() = _blocksWithErrors
+
+    fun markBlock(blockId: String) {
+        _blocksWithErrors[blockId] = true
+    }
+
+    fun clearBlocks() {
+        _blocksWithErrors.clear()
+    }
+
+    fun isBlockWithError(blockId: String): Boolean {
+        return _blocksWithErrors.containsKey(blockId)
+    }
 
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")

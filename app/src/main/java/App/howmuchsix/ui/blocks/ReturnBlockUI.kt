@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.hms.Blocks.ReturnBlock
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownFunctionMenuTypeSelector
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class ReturnBlockUI : BlockUI() {
 
@@ -30,9 +32,10 @@ class ReturnBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(size8))
+                .background(if (error == true) Color.Gray else BlockPink, RoundedCornerShape(size8))
                 .padding(size8),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -46,9 +49,9 @@ class ReturnBlockUI : BlockUI() {
 
             Spacer(Modifier.width(size8))
             DropDownFunctionMenuTypeSelector(
-
                 selectedType = selectedType,
-                onTypeSelected = { selectedType = it }
+                onTypeSelected = { selectedType = it },
+                error
             )
             Spacer(Modifier.width(size8))
             ButtonTextField(
@@ -66,7 +69,7 @@ class ReturnBlockUI : BlockUI() {
             block.uuid = this.id
             return block
         } else {
-            throw RuntimeException("type required")
+            throw ProgramRunException("type required", id)
         }
     }
 }

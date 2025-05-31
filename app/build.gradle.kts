@@ -55,7 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
@@ -68,9 +68,9 @@ dependencies {
     implementation(libs.gson.v2101)
     implementation(libs.androidx.navigation.compose)
 
-    implementation (libs.androidx.datastore)
-    implementation( libs.androidx.datastore.preferences)
-    implementation (libs.kotlinx.serialization.json)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.preferences.core)
 
 }

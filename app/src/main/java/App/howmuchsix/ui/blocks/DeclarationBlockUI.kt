@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationBlock
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
@@ -22,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class DeclarationBlockUI : BlockUI() {
     private var name by mutableStateOf("")
@@ -30,14 +32,19 @@ class DeclarationBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(size8))
+                .background(
+                    if (error == true) Color.Gray else BlockYellow,
+                    RoundedCornerShape(size8)
+                )
                 .padding(size8)
         ) {
             DropDownMenuTypeSelector(
                 selectedType = selectedType,
-                onTypeSelected = { selectedType = it }
+                onTypeSelected = { selectedType = it },
+                error
             )
             Spacer(Modifier.width(size8))
             ButtonTextField(
@@ -68,14 +75,14 @@ class DeclarationBlockUI : BlockUI() {
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
 
         if (selectedType == null) {
-            throw RuntimeException("Type must be selected")
+            throw ProgramRunException("Type must be selected", id)
         }
 
         val variablesList = name.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         val valuesList = value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
         if (variablesList.isEmpty()) {
-            throw RuntimeException("Variables list cannot be empty")
+            throw ProgramRunException("Variables list cannot be empty", id)
         }
 
         val types = selectedType!!.toTypes()

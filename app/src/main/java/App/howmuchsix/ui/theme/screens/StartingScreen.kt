@@ -2,7 +2,23 @@ package App.howmuchsix.ui.theme.screens
 
 import App.howmuchsix.R
 import App.howmuchsix.navigation.Screens
-import App.howmuchsix.ui.theme.design_elements.*
+import App.howmuchsix.ui.theme.design_elements.BackgroundOrange
+import App.howmuchsix.ui.theme.design_elements.Beige
+import App.howmuchsix.ui.theme.design_elements.ButtonText
+import App.howmuchsix.ui.theme.design_elements.StrictTitle
+import App.howmuchsix.ui.theme.design_elements.SubTitle1
+import App.howmuchsix.ui.theme.design_elements.TextOrange
+import App.howmuchsix.ui.theme.design_elements.size1300
+import App.howmuchsix.ui.theme.design_elements.size140
+import App.howmuchsix.ui.theme.design_elements.size150
+import App.howmuchsix.ui.theme.design_elements.size20
+import App.howmuchsix.ui.theme.design_elements.size25
+import App.howmuchsix.ui.theme.design_elements.size335
+import App.howmuchsix.ui.theme.design_elements.size350
+import App.howmuchsix.ui.theme.design_elements.size4
+import App.howmuchsix.ui.theme.design_elements.size40
+import App.howmuchsix.ui.theme.design_elements.size65
+import App.howmuchsix.ui.theme.design_elements.size850
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable

@@ -7,15 +7,14 @@ import App.howmuchsix.hms.Library.Variables;
 
 public class Block {
     public String blockID;
+    List<String> scopeNames = List.of("MainScope");
     private String id = "";
 
-    List<String> scopeNames = List.of("MainScope");
-
-    public String getUUID(){
+    public String getUUID() {
         return id;
     }
 
-    public void setUUID(String id){
+    public void setUUID(String id) {
         this.id = id;
     }
 
@@ -26,7 +25,7 @@ public class Block {
         this.scopeNames = scopes;
     }
 
-    public Object eval(List<String> scopes, Variables lib) {
+    public Object eval(List<String> scopes, Variables lib) throws ReturnException, BreakException {
         return null;
     }
 }

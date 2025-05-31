@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import App.howmuchsix.hms.Blocks.Types;
 
 public final class StringExpression implements Expression<String> {
-    private final String value;
     private static final Types type = Types.STRING;
+    private final String value;
 
     public StringExpression(String value) {
         this.value = value;

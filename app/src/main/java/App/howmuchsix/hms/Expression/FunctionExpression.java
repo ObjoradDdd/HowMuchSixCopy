@@ -15,8 +15,8 @@ public final class FunctionExpression<T> implements Expression<T> {
     final List<String> argumentNames;
     final String name;
     private final List<Block> body;
-    public List<String> scopes = List.of("MainScope");
     private final Types returnType;
+    public List<String> scopes = List.of("MainScope");
     private Variables lib;
 
     public FunctionExpression(Types returnType, String name, List<Types> argumentsTypes, List<String> argumentsNames, List<Block> body, Variables lib) {
@@ -61,7 +61,7 @@ public final class FunctionExpression<T> implements Expression<T> {
             if (returnExpression.getType() == returnType) {
                 return (Expression<T>) returnExpression;
             } else {
-                throw new ProgramRunException("Invalid return expression type. " + returnType + " was expected", id );
+                throw new ProgramRunException("Invalid return expression type. " + returnType + " was expected", id);
             }
         } finally {
             lib.deleteScope(name);

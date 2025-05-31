@@ -1,6 +1,7 @@
 package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.hms.Blocks.TryCatchBlock
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.design_elements.BlockRed
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class TryCatchBlockUI : BlockUI() {
 
@@ -48,9 +50,10 @@ class TryCatchBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Column(
             modifier = modifier
-                .background(BlockRed, RoundedCornerShape(size8))
+                .background(if (error == true) Color.Gray else BlockRed, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size140)
         ) {
@@ -132,7 +135,7 @@ class TryCatchBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (tryBlocks.isEmpty()) {
-            throw RuntimeException("Try body required")
+            throw ProgramRunException("Try body required", id)
         }
 
         val tryBody = tryBlocks.map { it.metamorphosis(consoleViewModel) }

@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.DeclarationArrayBlock
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.DropDownMenuTypeSelector
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
@@ -32,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class DeclarationArrayBlockUI : BlockUI() {
 
@@ -47,9 +49,13 @@ class DeclarationArrayBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Column(
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(size8))
+                .background(
+                    if (error == true) Color.Gray else BlockYellow,
+                    RoundedCornerShape(size8)
+                )
                 .padding(size12)
                 .defaultMinSize(minWidth = size190, minHeight = size140)
         ) {
@@ -62,7 +68,8 @@ class DeclarationArrayBlockUI : BlockUI() {
                 Spacer(Modifier.width(size45))
                 DropDownMenuTypeSelector(
                     selectedType = selectedType,
-                    onTypeSelected = { selectedType = it }
+                    onTypeSelected = { selectedType = it },
+                    error
                 )
             }
             Spacer(Modifier.height(size12))
@@ -105,19 +112,19 @@ class DeclarationArrayBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (selectedType == null) {
-            throw RuntimeException("Type is required")
+            throw ProgramRunException("Type is required", id)
         }
         if (arrName.isEmpty()) {
-            throw RuntimeException("Array name is required")
+            throw ProgramRunException("Array name is required", id)
         }
 
         val types = selectedType!!.toTypes()
 
         return when {
-            value != "" && arrSize != ""->
+            value != "" && arrSize != "" ->
                 DeclarationArrayBlock(types, arrName, arrSize, value.split(","))
 
-            value == "" && arrSize != ""->
+            value == "" && arrSize != "" ->
                 DeclarationArrayBlock(types, arrName, arrSize)
 
             value != "" -> {
@@ -127,7 +134,7 @@ class DeclarationArrayBlockUI : BlockUI() {
             }
 
             else ->
-                throw RuntimeException("Wrong array declaration")
+                throw ProgramRunException("Wrong array declaration", id)
         }
     }
 

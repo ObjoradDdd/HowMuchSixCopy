@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.IfBlock
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockOrange
@@ -41,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class IfBlockUI : BlockUI() {
 
@@ -57,9 +59,13 @@ class IfBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Column(
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(size8))
+                .background(
+                    if (error == true) Color.Gray else BlockOrange,
+                    RoundedCornerShape(size8)
+                )
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size140)
         ) {
@@ -172,10 +178,10 @@ class IfBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (value.isEmpty()) {
-            throw IllegalArgumentException("Condition is required")
+            throw ProgramRunException("Condition is required", id)
         }
         if (thenBlocks.isEmpty()) {
-            throw IllegalArgumentException("True action is required")
+            throw ProgramRunException("True action is required", id)
         }
 
         val trueActionBlocks = thenBlocks.map { it.metamorphosis(consoleViewModel) }

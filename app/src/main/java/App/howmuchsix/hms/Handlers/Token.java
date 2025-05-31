@@ -6,9 +6,8 @@ import java.util.List;
 
 public final class Token {
 
-    private TokenType type;
     private final String text;
-
+    private TokenType type;
     private String body = null;
     private List<String> arguments = emptyList();
 
@@ -33,6 +32,10 @@ public final class Token {
         return type;
     }
 
+    public void setType(TokenType type) {
+        this.type = type;
+    }
+
     public List<String> getArguments() {
         return arguments;
     }
@@ -43,9 +46,5 @@ public final class Token {
 
     public String getText() {
         return text;
-    }
-
-    public void setType(TokenType type) {
-        this.type = type;
     }
 }

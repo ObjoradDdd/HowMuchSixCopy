@@ -1,9 +1,9 @@
 package App.howmuchsix.ui.theme.design_elements
 
+import App.howmuchsix.R
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import App.howmuchsix.R
 
 val itim = FontFamily(
     Font(R.font.itim_regular, FontWeight.Normal)

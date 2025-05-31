@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.Block
 import App.howmuchsix.hms.Blocks.FunctionDeclarationBlock
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.hms.Blocks.Types
 import App.howmuchsix.ui.DropZone
 import App.howmuchsix.ui.theme.ButtonTextField
@@ -41,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class FunctionDeclarationBlockUI : BlockUI() {
 
@@ -56,9 +58,10 @@ class FunctionDeclarationBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Column(
             modifier = modifier
-                .background(BlockPink, RoundedCornerShape(size8))
+                .background(if (error == true) Color.Gray else BlockPink, RoundedCornerShape(size8))
                 .padding(size12)
                 .defaultMinSize(minWidth = size220, minHeight = size140)
         ) {
@@ -75,7 +78,8 @@ class FunctionDeclarationBlockUI : BlockUI() {
 
                 DropDownFunctionMenuTypeSelector(
                     selectedType = selectedType,
-                    onTypeSelected = { selectedType = it }
+                    onTypeSelected = { selectedType = it },
+                    error
                 )
 
                 Spacer(Modifier.width(size12))
@@ -145,7 +149,9 @@ class FunctionDeclarationBlockUI : BlockUI() {
             "STRING", "STR" -> Types.STRING
             "BOOLEAN", "BOOL" -> Types.BOOLEAN
             "ARRAY" -> Types.ARRAY
-            else -> throw RuntimeException("Unknown type string: $typeString")
+            else -> throw ProgramRunException(
+                "Unknown type string: $typeString", id
+            )
         }
     }
 
@@ -175,10 +181,10 @@ class FunctionDeclarationBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (funName == "") {
-            throw RuntimeException("Function name is required")
+            throw ProgramRunException("Function name is required", id)
         }
         if (selectedType == null) {
-            throw RuntimeException("Return type is required")
+            throw ProgramRunException("Return type is required", id)
         }
 
         val returnTypeEnum = selectedType!!.toTypes()
@@ -186,7 +192,7 @@ class FunctionDeclarationBlockUI : BlockUI() {
         val (argumentsTypes, argumentsNames) = parseArguments(value)
 
         if (argumentsTypes.size != argumentsNames.size) {
-            throw RuntimeException("Arguments types and names lists must have the same size")
+            throw ProgramRunException("Arguments types and names lists must have the same size", id)
         }
 
         val argumentsTypesEnum = argumentsTypes.map { stringToTypes(it) }

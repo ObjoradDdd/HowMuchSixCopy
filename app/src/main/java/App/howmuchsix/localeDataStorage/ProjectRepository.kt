@@ -1,15 +1,12 @@
 package App.howmuchsix.localeDataStorage
 
-import android.content.Context
-import androidx.datastore.dataStore
 import App.howmuchsix.localeDataStorage.project.Project
+import android.content.Context
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
-import kotlinx.coroutines.flow.Flow
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import com.google.gson.Gson
 
 class ProjectRepository {
     private var _projects = MutableStateFlow<List<Project>>(emptyList())

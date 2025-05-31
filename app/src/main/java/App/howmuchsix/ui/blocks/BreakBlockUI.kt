@@ -17,14 +17,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class BreakBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
-                .background(BlockOrange, RoundedCornerShape(size8))
+                .background(
+                    if (error == true) Color.Gray else BlockOrange,
+                    RoundedCornerShape(size8)
+                )
                 .padding(size8)
         ) {
             Spacer(Modifier.width(size8))
@@ -38,6 +43,7 @@ class BreakBlockUI : BlockUI() {
     }
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
+
         val block = BreakBlock()
         block.uuid = this.id
         return block

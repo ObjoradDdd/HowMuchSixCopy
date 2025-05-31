@@ -2,6 +2,7 @@ package App.howmuchsix.ui.blocks
 
 import App.howmuchsix.hms.Blocks.AssignmentBlock
 import App.howmuchsix.hms.Blocks.Block
+import App.howmuchsix.hms.Blocks.ProgramRunException
 import App.howmuchsix.ui.theme.ButtonTextField
 import App.howmuchsix.ui.theme.design_elements.BlockYellow
 import App.howmuchsix.ui.theme.design_elements.SubTitle1
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class AssignmentBlockUI : BlockUI() {
 
@@ -29,10 +31,10 @@ class AssignmentBlockUI : BlockUI() {
 
     override fun metamorphosis(consoleViewModel: ConsoleViewModel): Block {
         if (name.isEmpty()) {
-            throw IllegalArgumentException("Variable name is required")
+            throw ProgramRunException("Variable name is required", id)
         }
         if (value.isEmpty()) {
-            throw IllegalArgumentException("Value is required")
+            throw ProgramRunException("Value is required", id)
         }
 
         val block = AssignmentBlock(name.trim(), value)
@@ -42,9 +44,13 @@ class AssignmentBlockUI : BlockUI() {
 
     @Composable
     override fun Render(modifier: Modifier, viewModel: BlockEditorViewModel?) {
+        val error = viewModel?.isBlockWithError(this.id)
         Row(
             modifier = modifier
-                .background(BlockYellow, RoundedCornerShape(size8))
+                .background(
+                    if (error == true) Color.Gray else BlockYellow,
+                    RoundedCornerShape(size8)
+                )
                 .padding(size8)
         ) {
             Spacer(Modifier.width(size8))
