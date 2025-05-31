@@ -13,6 +13,7 @@ import App.howmuchsix.ui.theme.design_elements.size140
 import App.howmuchsix.ui.theme.design_elements.size150
 import App.howmuchsix.ui.theme.design_elements.size20
 import App.howmuchsix.ui.theme.design_elements.size25
+import App.howmuchsix.ui.theme.design_elements.size270
 import App.howmuchsix.ui.theme.design_elements.size335
 import App.howmuchsix.ui.theme.design_elements.size350
 import App.howmuchsix.ui.theme.design_elements.size4
@@ -37,8 +38,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
@@ -48,22 +51,29 @@ fun StartingScreen(navController: NavController) {
             .background(BackgroundOrange)
             .fillMaxSize()
     ) {
-        Column {
-            Image(
-                painter = painterResource(id = R.drawable.backgsiximg),
-                contentDescription = null,
-                modifier = Modifier
-                    .requiredHeight(size1300)
-                    .requiredWidth(size850)
-                    .padding(end = size150)
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.backgsiximg),
+            contentDescription = null,
+            modifier = Modifier
+                .requiredHeight(size1300)
+                .requiredWidth(size850)
+                .padding(end = size150)
+        )
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
-            StartingText()
-            Spacer(modifier = Modifier.height(size350))
-            DisplayButton(navController)
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier.padding(top = size140)
+            ) {
+                StartingText()
+            }
+            Box(
+                contentAlignment = Alignment.BottomCenter,
+                modifier = Modifier.padding(top = size270)
+            ) {
+                DisplayButton(navController)
+            }
         }
     }
 }
@@ -73,7 +83,7 @@ fun StartingText() {
     Column(
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(size140))
+        //Spacer(modifier = Modifier.height(size140))
         Text(
             modifier = Modifier
                 .padding(start = size40, end = size25),

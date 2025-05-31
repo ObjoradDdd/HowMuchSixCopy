@@ -14,6 +14,7 @@ import App.howmuchsix.viewmodel.PlacedBlockUI
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,7 +83,6 @@ fun ZoomableField(
                 Box(
                     modifier = Modifier
                         .offset {
-
                             IntOffset(
                                 block.position.x.roundToInt(),
                                 block.position.y.roundToInt()

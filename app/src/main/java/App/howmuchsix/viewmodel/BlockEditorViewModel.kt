@@ -181,6 +181,22 @@ class BlockEditorViewModel : ViewModel() {
         return _blocksWithErrors.containsKey(blockId)
     }
 
+    fun deleteBlock(blockId: String){
+        val toDelete = _placedBlocks.find { it.id ==blockId } ?: return
+        removeBlockFromChain(blockId)
+
+        if (toDelete.type == BlockType.FunctionDeclaration) {
+            removeFunctionName(blockId)
+        }
+
+        _placedBlocks.removeIf { it.id == blockId }
+        _dropZoneContents.values.forEach { blockList ->
+            blockList.removeIf { it.id == blockId }
+        }
+        _blocksWithErrors.remove(blockId)
+        updateChainNeighbors()
+    }
+
     private val _functionNames = mutableStateMapOf<String, String>().apply {
         put("intToString", "intToString")
         put("booleanToString", "BooleanToString")
@@ -858,7 +874,7 @@ class BlockEditorViewModel : ViewModel() {
         }
     }
 
-    private fun screenToFieldCoords(
+    fun screenToFieldCoords(
         screenPosition: Offset,
         fieldOffset: Offset,
         fieldScale: Float
